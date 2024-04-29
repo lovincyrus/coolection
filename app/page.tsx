@@ -1,9 +1,10 @@
 "use client";
 
-import { Footer } from "./components/footer";
 import React, { useState } from "react";
-import { Header } from "./components/header";
 import { uuid } from "uuidv4";
+
+import { Footer } from "./components/footer";
+import { Header } from "./components/header";
 
 interface Site {
   id: string;
@@ -44,6 +45,7 @@ export default function Home() {
     item.title.toLowerCase().includes(query.toLowerCase())
   );
 
+  // The rest of your component remains the same
   return (
     <main className="flex min-h-screen flex-col items-center justify-between w-full">
       <div className="max-w-xl px-4 md:px-0 mx-auto w-full pt-4 text-sm">
@@ -65,19 +67,16 @@ export default function Home() {
               </h2>
               <div className="grid grid-cols-1 gap-4">
                 {filteredData.map((item) => (
-                  <div
-                    key={item.id}
-                    className="flex flex-col p-4 bg-white rounded-lg shadow"
-                  >
-                    <a href={item.url} target="_blank">
+                  <a href={item.url} target="_blank" key={item.id}>
+                    <div className="flex flex-col p-4 bg-white rounded-lg shadow">
                       <h3 className="text-lg font-serif">{item.title}</h3>
                       <p className="mt-1 text-sm text-gray-700">
-                        {item.description.length > 100
+                        {item.description.length > 120
                           ? item.description.slice(0, 120) + "..."
                           : item.description}
                       </p>
-                    </a>
-                  </div>
+                    </div>
+                  </a>
                 ))}
               </div>
             </div>
