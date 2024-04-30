@@ -1,0 +1,19 @@
+{
+  "data": [
+    {
+      "url": "https://cooking.nytimes.com/recipes/1018684-classic-tiramisu",
+      "title": "Classic Tiramisù Recipe (with Video) - NYT Cooking",
+      "description": "Done correctly, a classic tiramisù can be transcendent A creamy dessert of espresso-soaked ladyfingers surrounded by lightly sweetened whipped cream and a rich mascarpone, tiramisù relies heavily on the quality of its ingredients If you don’t have a barista setup at home, pick up the espresso at a local coffee shop, or use strongly brewed coffee"
+    },
+    {
+      "url": "https://sfcompute.com",
+      "title": "The San Francisco Compute Company",
+      "description": "A large, low-cost H100 cluster you can rent by the hour"
+    },
+    {
+      "url": "https://latecheckout.studio",
+      "title": "Late Checkout",
+      "description": "Late Checkout is a community + product design firm. We are an agency, studio and fund building community-based businesses."
+    }
+  ]
+}

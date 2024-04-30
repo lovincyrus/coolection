@@ -12,6 +12,8 @@ interface Site {
   title: string;
   description: string;
   image?: string;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 const data: Site[] = [
@@ -45,7 +47,6 @@ export default function Home() {
     item.title.toLowerCase().includes(query.toLowerCase())
   );
 
-  // The rest of your component remains the same
   return (
     <main className="flex min-h-screen flex-col items-center justify-between w-full">
       <div className="max-w-xl px-4 md:px-0 mx-auto w-full pt-4 text-sm">
