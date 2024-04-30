@@ -1,24 +1,29 @@
 "use server";
 
-import type { NextApiRequest, NextApiResponse } from "next";
+import { NextResponse } from "next/server";
 
 import { addToCollection } from "../../../lib/crud";
 
-export async function POST(req: NextApiRequest, res: NextApiResponse) {
+export async function POST(req: Request) {
   const body = await req.json();
   const { link } = body;
 
   try {
     await addToCollection(link);
-    // FIXME: TypeError: res.status is not a function
-    res.status(200).json({ message: "Link added successfully" });
+
+    return NextResponse.json(
+      { message: "Link added successfully" },
+      { status: 200 }
+    );
   } catch (error) {
     if (error instanceof Error) {
-      // FIXME: TypeError: res.status is not a function
-      res.status(500).json({
-        message: "Failed to add the link",
-        error: error instanceof Error ? error.message : "Unknown error",
-      });
+      return NextResponse.json(
+        {
+          message: "Failed to add the link",
+          error: error instanceof Error ? error.message : "Unknown error",
+        },
+        { status: 500 }
+      );
     }
   }
 }
