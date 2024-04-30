@@ -4,6 +4,7 @@ import React, { useState } from "react";
 
 import { Footer } from "./components/footer";
 import { Header } from "./components/header";
+import { Results } from "./components/results";
 
 const isValidUrl = (input: string) => {
   try {
@@ -67,9 +68,9 @@ export default function Home() {
                 Submit
               </button>
             </form>
-            {/* <div className="mt-8">
+            <div className="my-8">
               <Results query={query} />
-            </div> */}
+            </div>
           </div>
         </div>
       </div>
