@@ -63,11 +63,6 @@ export function Results({ query }: { query: string }) {
     };
   }, [debouncedQuery]);
 
-  // TODO: fuzzy
-  // const filteredData = data.filter((item) =>
-  //   item.title.toLowerCase().includes(query.toLowerCase())
-  // );
-
   return (
     <>
       <h2 className="font-serif text-lg flex justify-between pb-2 gap-1">
