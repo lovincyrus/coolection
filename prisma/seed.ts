@@ -1,7 +1,7 @@
 import fs from "fs";
 import path from "path";
 
-import { generateEmbedding } from "@/lib/utils";
+import { generateEmbedding } from "@/lib/generate-embedding";
 
 import prisma from "../lib/prisma";
 import coolection from "./coolection-with-embeddings.json";

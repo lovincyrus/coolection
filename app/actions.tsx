@@ -1,17 +1,9 @@
 "use server";
 
+import { generateEmbedding } from "@/lib/generate-embedding";
 import prisma from "@/lib/prisma";
 
-interface Coolection {
-  id: string;
-  url: string;
-  title: string;
-  description: string;
-  image?: string;
-  embedding: number[];
-  createdAt?: string;
-  updatedAt?: string;
-}
+import { Coolection } from "./types";
 
 export async function searchCoolection(
   query: string
@@ -38,31 +30,3 @@ export async function searchCoolection(
     throw error;
   }
 }
-
-// export async function searchCoolection(
-//   query: string
-// ): Promise<Array<Coolection & { similarity: number }>> {
-//   try {
-//     if (query.trim().length === 0) return [];
-
-//     const coolection = await prisma.$queryRaw`
-//     SELECT
-//       id,
-//       "title", "description", "url"
-//     FROM coolection
-//     WHERE
-//       "title" ILIKE '%' || ${query} || '%'
-//       OR "description" ILIKE '%' || ${query} || '%'
-//     ORDER BY "createdAt" DESC
-//     LIMIT 8;
-//   `;
-
-//     return coolection.map((coolectionItem) => ({
-//       ...coolectionItem,
-//       similarity: 1, // Assuming a fixed similarity score
-//     })) as Array<Coolection & { similarity: number }>;
-//   } catch (error) {
-//     console.error(error);
-//     throw error;
-//   }
-// }
