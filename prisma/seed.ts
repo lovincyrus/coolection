@@ -1,3 +1,6 @@
+import fs from "fs";
+import path from "path";
+
 import { openai } from "../lib/openai";
 import prisma from "../lib/prisma";
 import coolection from "./coolection-with-embeddings.json";
