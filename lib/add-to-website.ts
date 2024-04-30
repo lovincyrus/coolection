@@ -4,7 +4,7 @@ import prisma from "@/lib/prisma";
 
 export async function addToCollection(url: string) {
   const { title, description } = await getMetatags(url);
-  const generatedEmbedding = await generateEmbedding(title);
+  const generatedEmbedding = await generateEmbedding(title + " " + description);
 
   console.log("adding to collection: ", {
     url,
@@ -13,7 +13,7 @@ export async function addToCollection(url: string) {
     embedding: JSON.stringify(generatedEmbedding),
   });
 
-  const newCoolection = await prisma.coolection.create({
+  const newCoolection = await prisma.website.create({
     data: {
       url,
       title: title || "Untitled",
@@ -23,9 +23,8 @@ export async function addToCollection(url: string) {
     },
   });
 
-  // Add the embedding
   await prisma.$executeRaw`
-    UPDATE coolection
+    UPDATE website
     SET embedding = ${JSON.stringify(generatedEmbedding)}::vector
     WHERE id = ${newCoolection.id}
   `;

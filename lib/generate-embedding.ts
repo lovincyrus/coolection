@@ -7,7 +7,10 @@ export async function generateEmbedding(_input: string) {
     model: "text-embedding-ada-002",
     input,
   });
-  console.log(embeddingData);
+  // console.log(embeddingData);
+
+  console.log("Generated embedding for:", input.slice(0, 50) + "...");
+
   const [{ embedding }] = (embeddingData as any).data;
   return embedding;
 }

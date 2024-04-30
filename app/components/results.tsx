@@ -77,11 +77,9 @@ export function Results({ query }: { query: string }) {
         {(searchResults.length === 0 ? data : searchResults).map((item) => (
           <a href={item.url} target="_blank" key={item.id}>
             <div className="flex flex-col p-4 bg-white rounded-lg shadow">
-              <h3 className="text-lg font-serif">{item.title}</h3>
-              <p className="mt-1 text-sm text-gray-700">
-                {item.description.length > 200
-                  ? item.description.slice(0, 200) + "..."
-                  : item.description}
+              <h3 className="text-lg font-serif">{item.title ?? "Untitled"}</h3>
+              <p className="mt-1 text-sm text-gray-700 line-clamp-2">
+                {item.description}
               </p>
             </div>
           </a>

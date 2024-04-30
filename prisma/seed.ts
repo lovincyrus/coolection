@@ -1,8 +1,7 @@
 import fs from "fs";
 import path from "path";
 
-import { generateEmbedding } from "@/lib/generate-embedding";
-
+import { generateEmbedding } from "../lib/generate-embedding";
 import prisma from "../lib/prisma";
 import coolection from "./coolection-with-embeddings.json";
 
@@ -37,7 +36,7 @@ async function _generateEmbeddingsFile() {
 
 async function main() {
   try {
-    const tiramisu = await prisma.coolection.findFirst({
+    const tiramisu = await prisma.website.findFirst({
       where: {
         title: "Classic Tiramisù Recipe (with Video) - NYT Cooking",
       },
@@ -54,13 +53,13 @@ async function main() {
   for (const record of (coolection as any).data) {
     const { embedding, ...p } = record;
 
-    const coolection = await prisma.coolection.create({
+    const coolection = await prisma.website.create({
       data: p,
     });
 
     // Add the embedding
     await prisma.$executeRaw`
-      UPDATE coolection
+      UPDATE website
       SET embedding = ${JSON.stringify(embedding)}::vector
       WHERE id = ${coolection.id}
     `;
