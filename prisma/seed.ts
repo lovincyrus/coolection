@@ -1,7 +1,8 @@
 import fs from "fs";
 import path from "path";
 
-import { openai } from "../lib/openai";
+import { generateEmbedding } from "@/lib/utils";
+
 import prisma from "../lib/prisma";
 import coolection from "./coolection-with-embeddings.json";
 
@@ -17,17 +18,12 @@ async function _generateEmbeddingsFile() {
   let dataWithEmbeddings = [];
 
   for (const record of coolection.data) {
-    console.log("record: ", record);
-
-    // Generate the embedding for each title
+    // TODO: combine title, description, tags
     const embedding = await generateEmbedding(record.title);
     await new Promise((r) => setTimeout(r, 500)); // Wait 500ms between requests
 
-    // Here, you should adjust according to your actual data structure
-    // Assuming `record` has all necessary fields except the embedding
     const data = { ...record, embedding };
 
-    // Add the data with embedding to the array
     dataWithEmbeddings.push(data);
   }
 
@@ -84,14 +80,3 @@ main()
     await prisma.$disconnect();
     process.exit(1);
   });
-
-async function generateEmbedding(_input: string) {
-  const input = _input.replace(/\n/g, " ");
-  const embeddingData = await openai.embeddings.create({
-    model: "text-embedding-ada-002",
-    input,
-  });
-  console.log(embeddingData);
-  const [{ embedding }] = (embeddingData as any).data;
-  return embedding;
-}

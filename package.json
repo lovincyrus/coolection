@@ -17,6 +17,7 @@
     "openai": "^4.39.0",
     "react": "^18",
     "react-dom": "^18",
+    "use-debounce": "^10.0.0",
     "uuidv4": "^6.2.13"
   },
   "devDependencies": {
