@@ -37,6 +37,7 @@ export async function addToTweetTable(twitterUrl: string) {
 
   console.log("adding to tweet table: ", {
     id: tweetID,
+    name: tweetContent.user.name,
     content: tweetContent.text.replace(/\n/g, ""),
     url: twitterUrl,
   });
@@ -44,6 +45,7 @@ export async function addToTweetTable(twitterUrl: string) {
   const newTweet = await prisma.tweet.create({
     data: {
       id: tweetID,
+      name: tweetContent.user.name,
       content: tweetContent.text.replace(/\n/g, ""),
       url: twitterUrl,
     },

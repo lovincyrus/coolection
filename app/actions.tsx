@@ -54,7 +54,7 @@ export async function searchCoolection(
     const tweetResults = await prisma.$queryRaw`
     SELECT
       id,
-      "content" as description, "url",
+      "content" as description, "name" as title, "url",
       1 - (embedding <=> ${vectorQuery}::vector) as similarity
     FROM tweet
     WHERE 1 - (embedding <=> ${vectorQuery}::vector) > .5

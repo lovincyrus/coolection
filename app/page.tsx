@@ -95,6 +95,10 @@ export default function Home() {
             />
 
             <div className="my-8">
+              <h2 className="font-serif text-lg flex justify-between pb-2 gap-1">
+                Results
+              </h2>
+
               <Results query={query} />
             </div>
           </div>

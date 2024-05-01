@@ -36,6 +36,7 @@ model Website {
 
 model Tweet {
   id        String   @unique
+  name      String
   content   Json
   url       String
   createdAt DateTime @default(now())

@@ -1,41 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useDebounce } from "use-debounce";
-import { v4 as uuid } from "uuid";
 
 import { searchCoolection } from "../actions";
-
-interface Coolection {
-  id: string;
-  url: string;
-  title: string;
-  description: string;
-  image?: string;
-  createdAt?: string;
-  updatedAt?: string;
-}
-
-const data: Coolection[] = [
-  {
-    id: uuid(),
-    url: "https://cooking.nytimes.com/recipes/1018684-classic-tiramisu",
-    title: "Classic Tiramisù Recipe (with Video) - NYT Cooking",
-    description:
-      "Done correctly, a classic tiramisù can be transcendent A creamy dessert of espresso-soaked ladyfingers surrounded by lightly sweetened whipped cream and a rich mascarpone, tiramisù relies heavily on the quality of its ingredients If you don’t have a barista setup at home, pick up the espresso at a local coffee shop, or use strongly brewed coffee",
-  },
-  {
-    id: uuid(),
-    url: "https://sfcompute.com",
-    title: "The San Francisco Compute Company",
-    description: "A large, low-cost H100 cluster you can rent by the hour",
-  },
-  {
-    id: uuid(),
-    url: "https://latecheckout.studio",
-    title: "Late Checkout",
-    description:
-      "Late Checkout is a community + product design firm. We are an agency, studio and fund building community-based businesses.",
-  },
-];
 
 export interface SearchProps {
   searchPokedex: (
@@ -65,11 +31,18 @@ export function Results({ query }: { query: string }) {
 
   return (
     <>
-      <h2 className="font-serif text-lg flex justify-between pb-2 gap-1">
-        Results
-      </h2>
+      {query.length === 0 && searchResults.length === 0 ? (
+        <p className="text-sm text-gray-700">
+          Search for websites, tweets, or bookmarks
+        </p>
+      ) : null}
+
+      {searchResults.length === 0 && debouncedQuery.trim().length > 0 ? (
+        <p className="text-sm text-gray-700">Sip, sip, sip...</p>
+      ) : null}
+
       <div className="grid grid-cols-1 gap-4">
-        {(searchResults.length === 0 ? data : searchResults).map((item) => (
+        {searchResults.map((item) => (
           <a href={item.url} target="_blank" key={item.id}>
             <div className="flex flex-col p-4 bg-white rounded-lg shadow">
               <h3 className="text-lg font-serif">{item.title ?? "Untitled"}</h3>
