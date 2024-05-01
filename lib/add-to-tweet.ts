@@ -27,6 +27,19 @@ function _replaceNewlinesWithSpaces(text: string) {
   return text.replace(/\n/g, " ");
 }
 
+function isTwitterBookmarkUrl(url: string): boolean {
+  try {
+    const urlObj = new URL(url);
+    return (
+      urlObj.hostname === "twitter.com" &&
+      urlObj.pathname === "/i/bookmarks" &&
+      urlObj.searchParams.has("post_id")
+    );
+  } catch {
+    return false;
+  }
+}
+
 export async function addToTweetTable(twitterUrl: string) {
   const tweetID = getTweetIdFromUrl(twitterUrl);
 
@@ -38,11 +51,14 @@ export async function addToTweetTable(twitterUrl: string) {
 
   // console.log("adding to tweet table: ", tweetContent);
 
+  // TODO: normalize https://twitter.com/i/bookmarks?post_id=1764083298840768800 to https://twitter.com/omarwasm/status/1764083298840768800
   console.log("adding to tweet table: ", {
     id: tweetID,
     name: tweetContent?.user.name,
     content: tweetContent?.text.replace(/\n/g, ""),
-    url: twitterUrl,
+    url: isTwitterBookmarkUrl(twitterUrl)
+      ? `https://twitter.com/${tweetContent?.user.screen_name}/status/${tweetID}`
+      : twitterUrl,
   });
 
   const newTweet = await prisma.tweet.create({
@@ -50,7 +66,9 @@ export async function addToTweetTable(twitterUrl: string) {
       id: tweetID,
       name: tweetContent?.user.name ?? "",
       content: tweetContent?.text.replace(/\n/g, "") ?? "",
-      url: twitterUrl,
+      url: isTwitterBookmarkUrl(twitterUrl)
+        ? `https://twitter.com/${tweetContent?.user.screen_name}/status/${tweetID}`
+        : twitterUrl,
     },
   });
 
