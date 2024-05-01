@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useDebounce } from "use-debounce";
 
 import { searchCoolection } from "../actions";
+import { Coolection } from "../types";
 
 export interface SearchProps {
   searchPokedex: (

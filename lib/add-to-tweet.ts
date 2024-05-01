@@ -5,7 +5,7 @@ import { getTweet } from "./get-tweet";
 
 // https://twitter.com/i/bookmarks?post_id=1784694622566187100
 // https://twitter.com/rauchg/status/1784694622566187100
-function getTweetIdFromUrl(url: string): string | null {
+function getTweetIdFromUrl(url: string) {
   const urlParts = url.split("/");
   const potentialId = urlParts[urlParts.length - 1];
 
@@ -20,33 +20,36 @@ function getTweetIdFromUrl(url: string): string | null {
     return bookmarkPostIdMatch[1];
   }
 
-  // If the URL is neither a regular tweet URL nor a bookmark URL, return null
-  return null;
+  return "";
+}
+
+function _replaceNewlinesWithSpaces(text: string) {
+  return text.replace(/\n/g, " ");
 }
 
 export async function addToTweetTable(twitterUrl: string) {
   const tweetID = getTweetIdFromUrl(twitterUrl);
 
-  const tweetContent = await getTweet(tweetID);
+  const tweetContent = await getTweet(tweetID as string);
 
   const generatedEmbedding = await generateEmbedding(
-    tweetContent.text.replace(/\n/g, " ")
+    String(tweetContent?.text.replace(/\n/g, ""))
   );
 
   // console.log("adding to tweet table: ", tweetContent);
 
   console.log("adding to tweet table: ", {
     id: tweetID,
-    name: tweetContent.user.name,
-    content: tweetContent.text.replace(/\n/g, ""),
+    name: tweetContent?.user.name,
+    content: tweetContent?.text.replace(/\n/g, ""),
     url: twitterUrl,
   });
 
   const newTweet = await prisma.tweet.create({
     data: {
       id: tweetID,
-      name: tweetContent.user.name,
-      content: tweetContent.text.replace(/\n/g, ""),
+      name: tweetContent?.user.name ?? "",
+      content: tweetContent?.text.replace(/\n/g, "") ?? "",
       url: twitterUrl,
     },
   });

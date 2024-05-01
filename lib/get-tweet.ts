@@ -1,4 +1,5 @@
-import type { Tweet } from "../app/types";
+import { Tweet } from "@/app/types";
+
 import { fetchTweet } from "./fetch-tweet";
 
 /**
