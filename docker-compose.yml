@@ -1,0 +1,19 @@
+version: "3.8"
+
+services:
+  postgres:
+    # ty https://github.com/johannesocean/pgvector-demo/blob/main/docker-compose.yml
+    image: ankane/pgvector
+    restart: always
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: coolection
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init-scripts:/docker-entrypoint-initdb.d
+
+volumes:
+  postgres_data:

@@ -8,7 +8,9 @@
     "start": "next start",
     "lint": "next lint",
     "db:seed": "prisma generate && prisma db seed",
-    "db:reset": "prisma db push --accept-data-loss"
+    "db:reset": "prisma db push --accept-data-loss",
+    "db:up": "docker-compose up -d",
+    "db:down": "docker-compose down -v"
   },
   "prisma": {
     "seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} prisma/seed.ts"

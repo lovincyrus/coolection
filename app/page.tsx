@@ -74,6 +74,7 @@ export default function Home() {
   }, [debouncedQuery]);
 
   const handleKeyPress = useCallback(async () => {
+    // TODO: consolidate into a single API endpoint
     if (isTwitterUrl(query)) {
       const response = await fetch("/api/add-tweet", {
         method: "POST",

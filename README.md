@@ -35,6 +35,26 @@ The easiest way to deploy your Next.js app is to use the [Vercel Platform](https
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
 
+## Database
+
+```bash
+# Start the database
+docker-compose up -d
+
+# Stop the database
+docker-compose down -v
+
+# Connect to the database using psql
+psql -h localhost -U root -d coolection
+```
+
+### Install [pgvector](https://github.com/pgvector/pgvector) in your local machine if you're using local database
+
+```bash
+# Install pgvector (might not be needed after using `ankane/pgvector` docker image)
+brew install pgvector
+```
+
 ## Data modeling
 
 Run `prisma migrate dev` to create and apply a migration or run `prisma db push` to apply the changes directly (in both cases Prisma Client is automatically generated)
@@ -45,9 +65,12 @@ Run `prisma migrate dev` to create and apply a migration or run `prisma db push`
 # Run the development server
 pnpm dev
 
-# Seed the database
-pnpm db:seed
+# Start the database
+pnpm db:up
 
 # Reset schema
 pnpm db:reset
+
+# Seed the database
+pnpm db:seed
 ```
