@@ -1,3 +1,4 @@
+import { ItemType } from "@/app/types/coolection";
 import { getMetatags } from "@/lib//get-metatags";
 import { generateEmbedding } from "@/lib/generate-embedding";
 import prisma from "@/lib/prisma";
@@ -20,7 +21,7 @@ export async function addToCollection(url: string) {
       url,
       title: title || "",
       description: description || "",
-      type: "website",
+      type: ItemType._WEBSITE,
       // See: https://github.com/prisma/prisma/discussions/18220#discussioncomment-5266901
       // embedding: JSON.stringify(embedding),
     },

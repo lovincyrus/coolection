@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 
 import { searchCoolection } from "../actions";
-import { CoolectionItem, CoolectionList } from "../types";
+import { CoolectionItem, CoolectionList, ItemType } from "../types";
 import {
   ContextMenu,
   ContextMenuContent,
@@ -48,8 +48,11 @@ function ResultItem({
   };
 
   const handleAddToList = async (listId: string) => {
+    console.log("listId: ", listId);
+    console.log("itemId: ", item.id);
+
     try {
-      const response = await fetch("/api/lists/add-item", {
+      const response = await fetch("/api/list/add-item", {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -74,9 +77,9 @@ function ResultItem({
   };
 
   function getDescription() {
-    if (item.type === "website") {
+    if (item.type === ItemType._WEBSITE) {
       return item.description;
-    } else if (item.type === "tweet") {
+    } else if (item.type === ItemType._TWEET) {
       return item.content;
     }
     return "No description";
@@ -88,7 +91,7 @@ function ResultItem({
         <ContextMenuTrigger>
           <a href={`${item.url}?ref=coolection`} target="_blank" key={item.id}>
             <div className="flex flex-col p-4 bg-white rounded-lg shadow">
-              <h3 className="text-lg font-serif">{item.title ?? "Untitled"}</h3>
+              <h3 className="text-lg font-serif">{item.title}</h3>
               <code className="mt-1">{item.similarity}</code>
               <p className="mt-1 text-sm text-gray-700 line-clamp-2">
                 {getDescription()}

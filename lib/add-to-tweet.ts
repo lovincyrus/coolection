@@ -1,3 +1,4 @@
+import { ItemType } from "@/app/types/coolection";
 import { generateEmbedding } from "@/lib/generate-embedding";
 import prisma from "@/lib/prisma";
 
@@ -46,34 +47,34 @@ export async function addToTweetTable(twitterUrl: string) {
   const tweetContent = await getTweet(tweetID as string);
 
   const generatedEmbedding = await generateEmbedding(
-    String(tweetContent?.text.replace(/\n/g, ""))
+    String(tweetContent?.text.replace(/\n/g, " "))
   );
 
   // console.log("adding to tweet table: ", tweetContent);
 
   // TODO: normalize https://twitter.com/i/bookmarks?post_id=1764083298840768800 to https://twitter.com/omarwasm/status/1764083298840768800
   console.log("adding to tweet table: ", {
-    id: tweetID,
     metadata: {
+      tweet_id: tweetID,
       name: tweetContent?.user.name ?? "",
     },
-    content: tweetContent?.text.replace(/\n/g, ""),
+    content: tweetContent?.text.replace(/\n/g, " "),
     url: isTwitterBookmarkUrl(twitterUrl)
       ? `https://twitter.com/${tweetContent?.user.screen_name}/status/${tweetID}`
       : twitterUrl,
-    type: "tweet",
+    type: ItemType._TWEET,
   });
 
   const newTweet = await prisma.item.create({
     data: {
-      id: tweetID,
       title: `Tweet by ${tweetContent?.user.name}`,
-      type: "tweet",
-      content: tweetContent?.text.replace(/\n/g, "") ?? "",
+      type: ItemType._TWEET,
+      content: tweetContent?.text.replace(/\n/g, " ") ?? "",
       url: isTwitterBookmarkUrl(twitterUrl)
         ? `https://twitter.com/${tweetContent?.user.screen_name}/status/${tweetID}`
         : twitterUrl,
       metadata: {
+        tweet_id: tweetID,
         name: tweetContent?.user.name ?? "",
       },
     },

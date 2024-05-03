@@ -7,7 +7,7 @@ export interface CoolectionItem {
   image?: string;
   createdAt: string;
   updatedAt: string;
-  type: string;
+  type: ItemType;
   metadata?: any;
 }
 
@@ -18,4 +18,9 @@ export interface CoolectionList {
   createdAt: string;
   updatedAt: string;
   items: Array<CoolectionItem>;
+}
+
+export enum ItemType {
+  _WEBSITE = "website",
+  _TWEET = "tweet",
 }
