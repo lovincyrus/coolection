@@ -4,7 +4,9 @@ import prisma from "@/lib/prisma";
 
 export async function addToCollection(url: string) {
   const { title, description } = await getMetatags(url);
-  const generatedEmbedding = await generateEmbedding(title + " " + description);
+  const generatedEmbedding = await generateEmbedding(
+    (title ?? "") + " " + (description ?? "")
+  );
 
   console.log("adding to collection: ", {
     url,
@@ -13,18 +15,19 @@ export async function addToCollection(url: string) {
     embedding: JSON.stringify(generatedEmbedding),
   });
 
-  const newCoolection = await prisma.website.create({
+  const newCoolection = await prisma.item.create({
     data: {
       url,
-      title: title || "Untitled",
-      description: description || "Untitled",
+      title: title || "",
+      description: description || "",
+      type: "website",
       // See: https://github.com/prisma/prisma/discussions/18220#discussioncomment-5266901
       // embedding: JSON.stringify(embedding),
     },
   });
 
   await prisma.$executeRaw`
-    UPDATE website
+    UPDATE item
     SET embedding = ${JSON.stringify(generatedEmbedding)}::vector
     WHERE id = ${newCoolection.id}
   `;

@@ -54,26 +54,33 @@ export async function addToTweetTable(twitterUrl: string) {
   // TODO: normalize https://twitter.com/i/bookmarks?post_id=1764083298840768800 to https://twitter.com/omarwasm/status/1764083298840768800
   console.log("adding to tweet table: ", {
     id: tweetID,
-    name: tweetContent?.user.name,
+    metadata: {
+      name: tweetContent?.user.name ?? "",
+    },
     content: tweetContent?.text.replace(/\n/g, ""),
     url: isTwitterBookmarkUrl(twitterUrl)
       ? `https://twitter.com/${tweetContent?.user.screen_name}/status/${tweetID}`
       : twitterUrl,
+    type: "tweet",
   });
 
-  const newTweet = await prisma.tweet.create({
+  const newTweet = await prisma.item.create({
     data: {
       id: tweetID,
-      name: tweetContent?.user.name ?? "",
+      title: `Tweet by ${tweetContent?.user.name}`,
+      type: "tweet",
       content: tweetContent?.text.replace(/\n/g, "") ?? "",
       url: isTwitterBookmarkUrl(twitterUrl)
         ? `https://twitter.com/${tweetContent?.user.screen_name}/status/${tweetID}`
         : twitterUrl,
+      metadata: {
+        name: tweetContent?.user.name ?? "",
+      },
     },
   });
 
   await prisma.$executeRaw`
-    UPDATE tweet
+    UPDATE item
     SET embedding = ${JSON.stringify(generatedEmbedding)}::vector
     WHERE id = ${newTweet.id}
   `;

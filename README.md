@@ -38,3 +38,16 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/deploym
 ## Data modeling
 
 Run `prisma migrate dev` to create and apply a migration or run `prisma db push` to apply the changes directly (in both cases Prisma Client is automatically generated)
+
+### Scripts
+
+```bash
+# Run the development server
+pnpm dev
+
+# Seed the database
+pnpm db:seed
+
+# Reset schema
+pnpm db:reset
+```

@@ -3,42 +3,29 @@
 import { generateEmbedding } from "@/lib/generate-embedding";
 import prisma from "@/lib/prisma";
 
-import { Coolection } from "./types";
+import { CoolectionItem } from "./types";
 
 export async function searchCoolection(
   query: string
-): Promise<Array<Coolection & { similarity: number }>> {
+): Promise<Array<CoolectionItem & { similarity: number }>> {
   try {
     if (query.trim().length === 0) return [];
 
     const embedding = await generateEmbedding(query);
     const vectorQuery = `[${embedding.join(",")}]`;
 
-    const websiteResults: Array<any> = await prisma.$queryRaw`
+    const results: Array<any> = await prisma.$queryRaw`
     SELECT
       id,
-      "title", "description", "url",
+      "title", "description", "url", "type", "content", "metadata",
       1 - (embedding <=> ${vectorQuery}::vector) as similarity
-    FROM website
+    FROM item
     WHERE 1 - (embedding <=> ${vectorQuery}::vector) > .5
     ORDER BY similarity DESC
     LIMIT 8;
   `;
 
-    const tweetResults: Array<any> = await prisma.$queryRaw`
-    SELECT
-      id,
-      "content" as description, "name" as title, "url",
-      1 - (embedding <=> ${vectorQuery}::vector) as similarity
-    FROM tweet
-    WHERE 1 - (embedding <=> ${vectorQuery}::vector) > .5
-    ORDER BY similarity DESC
-    LIMIT 8;
-  `;
-
-    const results = [...websiteResults, ...tweetResults];
-
-    return results as Array<Coolection & { similarity: number }>;
+    return results as Array<CoolectionItem & { similarity: number }>;
   } catch (error) {
     console.error(error);
     throw error;

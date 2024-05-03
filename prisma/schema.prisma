@@ -12,37 +12,32 @@ datasource db {
   extensions = [vector]
 }
 
-// model User {
-//   id        Int      @id @default(autoincrement())
-//   name      String
-//   email     String   @unique
-//   createdAt DateTime @default(now())
-//   updatedAt DateTime @updatedAt
-// }
+model Item {
+  id          String                       @id @default(uuid())
+  url         String? // For content that has a URL
+  title       String // Common title field for all content types
+  description String? // A brief description or summary of the content
+  content     String? // The main content body, e.g., the text of a tweet or article
+  image       String? // An optional image URL for content with images
+  createdAt   DateTime                     @default(now())
+  updatedAt   DateTime                     @updatedAt
+  type        String // A field to indicate the type of item ('website', 'tweet', 'text', 'image', 'music')
+  metadata    Json? // A JSON field to store any additional structured data relevant to the item type
+  embedding   Unsupported("vector(1536)")? // A field to store the vector embedding of the content
 
-model Website {
-  id          String   @id @default(uuid())
-  url         String
-  title       String
-  description String
-  image       String?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  // Relations
+  lists List[] @relation("ItemsOnList")
 
-  embedding Unsupported("vector(1536)")?
-
-  @@map("website")
+  @@map("item")
 }
 
-model Tweet {
-  id        String   @unique
-  name      String
-  content   Json
-  url       String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+model List {
+  id          String   @id @default(uuid())
+  name        String
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  items       Item[]   @relation("ItemsOnList")
 
-  embedding Unsupported("vector(1536)")?
-
-  @@map("tweet")
+  @@map("list")
 }

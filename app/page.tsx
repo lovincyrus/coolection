@@ -1,6 +1,9 @@
 "use client";
 
-import React, { useState } from "react";
+import { Search } from "lucide-react";
+import normalizeUrl from "normalize-url";
+import React, { useCallback, useEffect, useRef, useState } from "react";
+import { useDebounce } from "use-debounce";
 
 import { Footer } from "./components/footer";
 import { Header } from "./components/header";
@@ -24,10 +27,53 @@ function isTwitterUrl(input: string) {
   }
 }
 
+function _normalizeLink(input: string) {
+  return normalizeUrl(input, {
+    removeTrailingSlash: true,
+    stripWWW: false,
+  });
+}
+
 export default function Home() {
   const [query, setQuery] = useState("");
+  const [debouncedQuery] = useDebounce(query, 500);
+  const inputRef = useRef<HTMLInputElement>(null);
 
-  async function handleKeyPress() {
+  useEffect(() => {
+    inputRef.current?.focus();
+  }, []);
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const searchQuery = params.get("search");
+    if (searchQuery) {
+      setQuery(searchQuery);
+    }
+    inputRef.current?.focus();
+  }, []);
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (debouncedQuery) {
+      params.set("q", debouncedQuery);
+    } else {
+      params.delete("q");
+    }
+    const newRelativePathQuery = `${
+      window.location.pathname
+    }?${params.toString()}`;
+    history.pushState(null, "", newRelativePathQuery);
+
+    if (isValidUrl(debouncedQuery)) {
+      const normalizedLink = _normalizeLink(debouncedQuery);
+      setQuery(normalizedLink);
+      // console.log("Adding link:", normalizedLink);
+    } else {
+      console.log("Performing search for:", debouncedQuery);
+    }
+  }, [debouncedQuery]);
+
+  const handleKeyPress = useCallback(async () => {
     if (isTwitterUrl(query)) {
       const response = await fetch("/api/add-tweet", {
         method: "POST",
@@ -58,23 +104,21 @@ export default function Home() {
 
       if (response.ok) {
         console.log("Link added successfully");
-        setQuery(""); // Reset the input field after successful addition
+        setQuery("");
       } else {
         console.error("Failed to add the link");
       }
     } else {
-      // If the input is not a valid URL, perform a search
-      // TODO:
       console.log("Performing search for:", query);
     }
-  }
+  }, [query]);
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setQuery(event.target.value);
   };
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between w-full">
+    <main className="flex min-h-dvh flex-col items-center justify-between w-full">
       <div className="max-w-xl px-4 md:px-0 mx-auto w-full pt-4 text-sm">
         <Header />
 
@@ -82,24 +126,28 @@ export default function Home() {
           {/* <Intro /> */}
 
           <div className="flex flex-col mt-4">
-            <input
-              className="w-full px-3 py-2 text-sm leading-tight text-gray-700 border border-gray-300 rounded appearance-none focus:outline-none focus:shadow-outline"
-              placeholder="Insert a link, a tweet or search..."
-              value={query}
-              onChange={handleChange}
-              onKeyPress={(event) => {
-                if (event.key === "Enter") {
-                  handleKeyPress();
-                }
-              }}
-            />
+            <div className="relative">
+              <Search className="absolute left-2 top-2.5 h-4 w-4 grayscale opacity-60 text-muted-foreground" />
+              <input
+                ref={inputRef}
+                className="w-full pl-8 px-3 py-2 text-sm leading-tight text-gray-700 border border-gray-300 rounded appearance-none focus:outline-none focus:shadow-outline"
+                placeholder="Search websites, tweets or insert a link..."
+                value={query}
+                onChange={handleChange}
+                onKeyPress={(event) => {
+                  if (event.key === "Enter") {
+                    handleKeyPress();
+                  }
+                }}
+              />
+            </div>
 
             <div className="my-8">
               <h2 className="font-serif text-lg flex justify-between pb-2 gap-1">
                 Results
               </h2>
 
-              <Results query={query} />
+              <Results query={debouncedQuery} />
             </div>
           </div>
         </div>
