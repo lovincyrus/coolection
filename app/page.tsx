@@ -5,7 +5,7 @@ import React, { useCallback, useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { useDebounce } from "use-debounce";
 
-import { isTwitterUrl, isValidUrl, normalizeLink } from "@/lib/url";
+import { isTwitterUrl, isValidUrl } from "@/lib/url";
 
 import { Footer } from "./components/footer";
 import { Header } from "./components/header";
@@ -42,8 +42,7 @@ export default function Home() {
     history.pushState(null, "", newRelativePathQuery);
 
     if (isValidUrl(debouncedQuery)) {
-      const normalizedLink = normalizeLink(debouncedQuery);
-      setQuery(normalizedLink);
+      setQuery(debouncedQuery);
     } else {
       console.log("Performing search for:", debouncedQuery);
     }

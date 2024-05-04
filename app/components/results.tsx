@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { toast } from "sonner";
 
 import { searchCoolection } from "../actions";
 import { CoolectionItem, CoolectionList, ItemType } from "../types";
@@ -48,10 +49,7 @@ function ResultItem({
   };
 
   const handleAddToList = async (listId: string) => {
-    console.log("listId: ", listId);
-    console.log("itemId: ", item.id);
-
-    try {
+    const addItemToList = async () => {
       const response = await fetch("/api/list/add-item", {
         method: "POST",
         headers: {
@@ -70,10 +68,20 @@ function ResultItem({
         console.error("Failed to add item to list:", data);
         // Handle failure here
       }
-    } catch (error) {
-      console.error("Failed to add item to list:", error);
-      // Handle error here
+    };
+
+    function getListName() {
+      const list = lists.find((l) => l.id === listId);
+      return list ? list.name : "list";
     }
+
+    toast.promise(addItemToList(), {
+      loading: `Adding item to ${getListName()}...`,
+      success: `${
+        item.title.charAt(0).toUpperCase() + item.title.slice(1)
+      } added to ${getListName()} successfully`,
+      error: `Failed to add the item to ${getListName()}`,
+    });
   };
 
   function getDescription() {
