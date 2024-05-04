@@ -1,39 +1,15 @@
 "use client";
 
 import { Search } from "lucide-react";
-import normalizeUrl from "normalize-url";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { useDebounce } from "use-debounce";
 
+import { isTwitterUrl, isValidUrl, normalizeLink } from "@/lib/url";
+
 import { Footer } from "./components/footer";
 import { Header } from "./components/header";
 import { Results } from "./components/results";
-
-function isValidUrl(input: string) {
-  try {
-    new URL(input);
-    return true;
-  } catch {
-    return false;
-  }
-}
-
-function isTwitterUrl(input: string) {
-  try {
-    const url = new URL(input);
-    return url.hostname === "twitter.com";
-  } catch {
-    return false;
-  }
-}
-
-function _normalizeLink(input: string) {
-  return normalizeUrl(input, {
-    removeTrailingSlash: true,
-    stripWWW: false,
-  });
-}
 
 export default function Home() {
   const [query, setQuery] = useState("");
@@ -66,9 +42,8 @@ export default function Home() {
     history.pushState(null, "", newRelativePathQuery);
 
     if (isValidUrl(debouncedQuery)) {
-      const normalizedLink = _normalizeLink(debouncedQuery);
+      const normalizedLink = normalizeLink(debouncedQuery);
       setQuery(normalizedLink);
-      // console.log("Adding link:", normalizedLink);
     } else {
       console.log("Performing search for:", debouncedQuery);
     }
@@ -79,31 +54,33 @@ export default function Home() {
       console.log("Performing search for:", query);
       return;
     }
-  
-    const endpoint = isTwitterUrl(query) ? "/api/add-tweet" : "/api/add-website";
-    const body = JSON.stringify(isTwitterUrl(query) ? { twitterUrl: query } : { link: query });
+
     const toastMessage = isTwitterUrl(query) ? "tweet" : "website";
-  
-    const addResource = async () => {
-      const response = await fetch(endpoint, {
+
+    const saveItem = async () => {
+      const response = await fetch("/api/save-item", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: body,
+        body: JSON.stringify({
+          url: query,
+        }),
       });
       if (!response.ok) {
         throw new Error(`Failed to add the ${toastMessage}`);
       }
       return response.json();
     };
-  
-    toast.promise(addResource(), {
+
+    toast.promise(saveItem(), {
       loading: `Adding ${toastMessage}...`,
-      success: `${toastMessage.charAt(0).toUpperCase() + toastMessage.slice(1)} added successfully`,
+      success: `${
+        toastMessage.charAt(0).toUpperCase() + toastMessage.slice(1)
+      } added successfully`,
       error: `Failed to add the ${toastMessage}`,
     });
-  
+
     setQuery("");
   }, [query]);
 

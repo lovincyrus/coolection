@@ -41,8 +41,8 @@ function isTwitterBookmarkUrl(url: string): boolean {
   }
 }
 
-export async function addToTweetTable(twitterUrl: string) {
-  const tweetID = getTweetIdFromUrl(twitterUrl);
+export async function addToTweetTable(url: string) {
+  const tweetID = getTweetIdFromUrl(url);
 
   const tweetContent = await getTweet(tweetID as string);
 
@@ -59,9 +59,9 @@ export async function addToTweetTable(twitterUrl: string) {
       name: tweetContent?.user.name ?? "",
     },
     content: tweetContent?.text.replace(/\n/g, " "),
-    url: isTwitterBookmarkUrl(twitterUrl)
+    url: isTwitterBookmarkUrl(url)
       ? `https://twitter.com/${tweetContent?.user.screen_name}/status/${tweetID}`
-      : twitterUrl,
+      : url,
     type: ItemType._TWEET,
   });
 
@@ -70,9 +70,9 @@ export async function addToTweetTable(twitterUrl: string) {
       title: `Tweet by ${tweetContent?.user.name}`,
       type: ItemType._TWEET,
       content: tweetContent?.text.replace(/\n/g, " ") ?? "",
-      url: isTwitterBookmarkUrl(twitterUrl)
+      url: isTwitterBookmarkUrl(url)
         ? `https://twitter.com/${tweetContent?.user.screen_name}/status/${tweetID}`
-        : twitterUrl,
+        : url,
       metadata: {
         tweet_id: tweetID,
         name: tweetContent?.user.name ?? "",
