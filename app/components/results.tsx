@@ -49,6 +49,11 @@ function ResultItem({
   };
 
   const handleAddToList = async (listId: string) => {
+    function getListName() {
+      const list = lists.find((l) => l.id === listId);
+      return list ? list.name : "list";
+    }
+
     const addItemToList = async () => {
       const response = await fetch("/api/list/add-item", {
         method: "POST",
@@ -60,20 +65,11 @@ function ResultItem({
           itemId: item.id,
         }),
       });
-      const data = await response.json();
-      if (response.ok) {
-        console.log("Item added to list:", data);
-        // Handle successful addition to list here
-      } else {
-        console.error("Failed to add item to list:", data);
-        // Handle failure here
+      if (!response.ok) {
+        throw new Error(`Failed to add the item to ${getListName()}`);
       }
+      return response.json();
     };
-
-    function getListName() {
-      const list = lists.find((l) => l.id === listId);
-      return list ? list.name : "list";
-    }
 
     toast.promise(addItemToList(), {
       loading: `Adding item to ${getListName()}...`,
