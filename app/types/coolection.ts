@@ -7,6 +7,8 @@ export interface CoolectionItem {
   image?: string;
   createdAt: string;
   updatedAt: string;
+  deletedAt?: string;
+  isDeleted?: boolean;
   type: ItemType;
   metadata?: any;
 }

@@ -41,7 +41,7 @@ export function Header() {
       const toastMessage = isTwitterUrl(inputText) ? "tweet" : "website";
 
       const saveItem = async () => {
-        const response = await fetch("/api/save-item", {
+        const response = await fetch("/api/item/save-item", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",

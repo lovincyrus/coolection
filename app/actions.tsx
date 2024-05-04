@@ -17,7 +17,7 @@ export async function searchCoolection(
     const results: Array<any> = await prisma.$queryRaw`
     SELECT
       id,
-      "title", "description", "url", "type", "content", "metadata",
+      "title", "description", "url", "type", "content", "metadata", "isDeleted",
       1 - (embedding <=> ${vectorQuery}::vector) as similarity
     FROM item
     WHERE 1 - (embedding <=> ${vectorQuery}::vector) > .5
