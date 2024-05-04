@@ -7,9 +7,10 @@ export async function getMetatags(url: string) {
   const $ = cheerio.load(data);
   const title = $("head > title").text();
   const ogDescription = $('meta[property="og:description"]').attr("content");
+  const metaDescription = $('meta[name="description"]').attr("content");
 
   return {
     title,
-    description: ogDescription,
+    description: ogDescription ?? metaDescription,
   };
 }
