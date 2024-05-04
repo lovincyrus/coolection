@@ -3,7 +3,7 @@ import { getMetatags } from "@/lib//get-metatags";
 import { generateEmbedding } from "@/lib/generate-embedding";
 import prisma from "@/lib/prisma";
 
-export async function addToCollection(url: string) {
+export async function addToWebsite(url: string) {
   const { title, description } = await getMetatags(url);
   const generatedEmbedding = await generateEmbedding(
     (title ?? "") + " " + (description ?? "")

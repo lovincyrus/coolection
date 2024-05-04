@@ -2,14 +2,14 @@
 
 import { NextResponse } from "next/server";
 
-import { addToCollection } from "../../../lib/add-to-website";
+import { addToWebsite } from "../../../lib/add-to-website";
 
 export async function POST(req: Request) {
   const body = await req.json();
   const { link } = body;
 
   try {
-    await addToCollection(link);
+    await addToWebsite(link);
 
     return NextResponse.json(
       { message: "Link added successfully" },

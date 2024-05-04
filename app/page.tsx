@@ -3,6 +3,7 @@
 import { Search } from "lucide-react";
 import normalizeUrl from "normalize-url";
 import React, { useCallback, useEffect, useRef, useState } from "react";
+import { toast } from "sonner";
 import { useDebounce } from "use-debounce";
 
 import { Footer } from "./components/footer";
@@ -74,44 +75,36 @@ export default function Home() {
   }, [debouncedQuery]);
 
   const handleKeyPress = useCallback(async () => {
-    // TODO: consolidate into a single API endpoint
-    if (isTwitterUrl(query)) {
-      const response = await fetch("/api/add-tweet", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          twitterUrl: query,
-        }),
-      });
-
-      if (response.ok) {
-        console.log("Twitter link added successfully");
-        setQuery("");
-      } else {
-        console.error("Failed to add the Twitter link");
-      }
-    } else if (isValidUrl(query)) {
-      const response = await fetch("/api/add-website", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          link: query,
-        }),
-      });
-
-      if (response.ok) {
-        console.log("Link added successfully");
-        setQuery("");
-      } else {
-        console.error("Failed to add the link");
-      }
-    } else {
+    if (!isValidUrl(query)) {
       console.log("Performing search for:", query);
+      return;
     }
+  
+    const endpoint = isTwitterUrl(query) ? "/api/add-tweet" : "/api/add-website";
+    const body = JSON.stringify(isTwitterUrl(query) ? { twitterUrl: query } : { link: query });
+    const toastMessage = isTwitterUrl(query) ? "tweet" : "website";
+  
+    const addResource = async () => {
+      const response = await fetch(endpoint, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: body,
+      });
+      if (!response.ok) {
+        throw new Error(`Failed to add the ${toastMessage}`);
+      }
+      return response.json();
+    };
+  
+    toast.promise(addResource(), {
+      loading: `Adding ${toastMessage}...`,
+      success: `${toastMessage.charAt(0).toUpperCase() + toastMessage.slice(1)} added successfully`,
+      error: `Failed to add the ${toastMessage}`,
+    });
+  
+    setQuery("");
   }, [query]);
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
