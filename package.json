@@ -18,6 +18,7 @@
   "dependencies": {
     "@prisma/client": "^5.13.0",
     "@radix-ui/react-context-menu": "^2.1.5",
+    "@radix-ui/react-scroll-area": "^1.0.5",
     "cheerio": "1.0.0-rc.12",
     "clsx": "^2.1.1",
     "lucide-react": "^0.376.0",

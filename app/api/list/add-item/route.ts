@@ -4,22 +4,20 @@ import { NextResponse } from "next/server";
 
 import prisma from "@/lib/prisma";
 
-export async function PUT(req: Request) {
+export async function POST(req: Request) {
   const body = await req.json();
   const { listId, itemId } = body;
 
   try {
-    // Assuming 'items' is a field on the 'List' model that relates to a collection of items
-    const updatedList = await prisma.list.update({
+    await prisma.list.update({
       where: { id: listId },
       data: { items: { connect: { id: itemId } } },
     });
 
-    // return NextResponse.json(
-    //   { message: `${itemId} added to list successfully` },
-    //   { status: 200 }
-    // );
-    return NextResponse.json(updatedList);
+    return NextResponse.json(
+      { message: `${itemId} added to list successfully` },
+      { status: 200 }
+    );
   } catch (error) {
     return NextResponse.json(
       {

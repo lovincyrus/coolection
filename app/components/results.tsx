@@ -53,7 +53,7 @@ function ResultItem({
 
     try {
       const response = await fetch("/api/list/add-item", {
-        method: "PUT",
+        method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
