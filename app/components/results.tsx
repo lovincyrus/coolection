@@ -13,7 +13,7 @@ export function Results({ query }: { query: string }) {
 
   useEffect(() => {
     let current = true;
-    if (query.trim().length > 0) {
+    if (query.trim().length > 0 && userId) {
       searchCoolection(query, userId).then((results) => {
         if (current) {
           setSearchResults(results);

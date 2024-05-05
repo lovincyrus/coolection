@@ -1,15 +1,18 @@
 import prisma from "@/lib/prisma";
 
-export async function saveOrUpdateUser(userData) {
-  const {
-    userId,
-    email,
-    firstName,
-    lastName,
-    profileImageUrl,
-    createdAt,
-    updatedAt,
-  } = userData;
+interface UserData {
+  userId: string;
+  email: string;
+  firstName?: string | null;
+  lastName?: string | null;
+  imageUrl?: string;
+  createdAt: number;
+  updatedAt: number;
+}
+
+export async function saveOrUpdateUser(userData: UserData) {
+  const { userId, email, firstName, lastName, imageUrl, createdAt, updatedAt } =
+    userData;
   try {
     const user = await prisma.user.upsert({
       where: { id: userId },
@@ -17,7 +20,7 @@ export async function saveOrUpdateUser(userData) {
         email: email,
         firstName: firstName,
         lastName: lastName,
-        imageUrl: profileImageUrl,
+        imageUrl: imageUrl,
         createdAt: new Date(createdAt),
         updatedAt: new Date(updatedAt),
       },
@@ -26,7 +29,7 @@ export async function saveOrUpdateUser(userData) {
         email: email,
         firstName: firstName,
         lastName: lastName,
-        imageUrl: profileImageUrl,
+        imageUrl: imageUrl,
         createdAt: new Date(createdAt),
         updatedAt: new Date(updatedAt),
       },
