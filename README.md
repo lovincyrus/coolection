@@ -68,8 +68,8 @@ pnpm dev
 # Start the database
 pnpm db:up
 
-# Reset schema
-pnpm db:reset
+# Force push schema
+pnpm db:push
 
 # Seed the database
 pnpm db:seed

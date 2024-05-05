@@ -8,14 +8,9 @@ import { HomePage } from "./components/home";
 export default async function Home() {
   const { userId } = auth().protect();
 
-  // TODO: store userId to GlobalsProvider
-  // console.log("userId: ", userId);
-
   const user = await clerkClient.users.getUser(userId);
 
   if (!user) return null;
-
-  // console.log("user: ", user);
 
   const userData = {
     userId: user.id,
@@ -25,8 +20,6 @@ export default async function Home() {
     createdAt: user.createdAt,
     updatedAt: user.updatedAt,
   };
-
-  // console.log("userData: ", userData);
 
   await saveOrUpdateUser(userData);
 

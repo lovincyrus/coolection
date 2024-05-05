@@ -1,5 +1,6 @@
 import fs from "fs";
 import path from "path";
+import { empty } from "uuidv4";
 
 import { generateEmbedding } from "../lib/generate-embedding";
 import prisma from "../lib/prisma";
@@ -57,9 +58,7 @@ async function main() {
       data: {
         ...p,
         type: "website",
-        // TODO: create default test user
-        // userId: "00000000-0000-0000-0000-000000000000"
-        userId: "user_2g2RDrhosXcxkH3CKc0wCEMrcoa",
+        userId: empty(),
       },
     });
 

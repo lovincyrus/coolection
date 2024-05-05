@@ -11,6 +11,7 @@ const runSeedScript = (scriptPath: string) => {
 };
 
 const main = async () => {
+  runSeedScript('prisma/seed-user.ts');
   runSeedScript('prisma/seed-websites.ts');
   runSeedScript('prisma/seed-lists.ts');
 };
