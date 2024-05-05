@@ -27,10 +27,6 @@ body {
     rgb(var(--background-start-rgb)); */
 }
 
-code {
-  font-family: var(--font-jetbrains-mono);
-}
-
 @layer utilities {
   .text-balance {
     text-wrap: balance;

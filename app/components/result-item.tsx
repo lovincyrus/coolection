@@ -1,3 +1,4 @@
+import { LinkIcon } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { toast } from "sonner";
 
@@ -33,6 +34,11 @@ const useFetchLists = () => {
 
   return { lists, loading, error };
 };
+
+function extractDomain(url: string) {
+  const domain = url.replace("http://", "").replace("https://", "");
+  return domain.split("/")[0];
+}
 
 export function ResultItem({
   item,
@@ -124,6 +130,12 @@ export function ResultItem({
               <div className="flex flex-col gap-1 px-4">
                 <h3 className="text-sm">{item.title}</h3>
                 <code className="text-[12px]">{item.similarity}</code>
+                <div className="flex flex-row items-center space-x-2">
+                  <LinkIcon className="w-3 h-3 text-gray-400" />
+                  <p className="text-sm text-gray-400 line-clamp-2">
+                    {extractDomain(String(item.url))}
+                  </p>
+                </div>
                 <p className="text-sm text-gray-600 line-clamp-2">
                   {getDescription()}
                 </p>
