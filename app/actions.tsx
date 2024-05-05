@@ -37,7 +37,7 @@ export async function searchCoolection(
         "title", "description", "url", "type", "content", "metadata", "isDeleted",
         1 - (embedding <=> ${vectorQuery}::vector) as similarity
       FROM item
-      WHERE 1 - (embedding <=> ${vectorQuery}::vector) > .5
+      WHERE 1 - (embedding <=> ${vectorQuery}::vector) > .7
       ORDER BY similarity DESC
       LIMIT 8;
       `;

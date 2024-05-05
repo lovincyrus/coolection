@@ -120,7 +120,7 @@ export function ResultItem({
       <ContextMenu>
         <ContextMenuTrigger>
           <a href={item.url} target="_blank" key={item.id}>
-            <div className="flex flex-col py-4 hover:bg-white/80 hover:rounded-lg hover:shadow">
+            <div className="flex flex-col py-4 hover:bg-gray-50 hover:rounded-lg hover:shadow">
               <div className="flex flex-col gap-1 px-4">
                 <h3 className="text-sm">{item.title}</h3>
                 <code className="text-[12px]">{item.similarity}</code>

@@ -10,7 +10,7 @@ const GlobalsContext = createContext<GlobalsContextType | undefined>(undefined);
 export const GlobalsProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  const [toggleSearch, setToggleSearch] = useState<boolean>(false);
+  const [toggleSearch, setToggleSearch] = useState<boolean>(true);
 
   return (
     <GlobalsContext.Provider
