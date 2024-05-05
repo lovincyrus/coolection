@@ -28,22 +28,22 @@ export function Results({ query }: { query: string }) {
   }, [searchResults]);
 
   return (
-    <>
+    <div className="w-full mx-auto">
       {query.length === 0 && filteredResults.length === 0 ? (
-        <p className="text-sm text-gray-700">
+        <p className="text-sm text-gray-700 mt-4 px-4">
           Search for websites, tweets, or bookmarks
         </p>
       ) : null}
 
       {filteredResults.length === 0 && query.trim().length > 0 ? (
-        <p className="text-sm text-gray-700">Sip, sip, sippity, sip...</p>
+        <p className="text-sm text-gray-700 mt-4 px-4">
+          Sip, sip, sippity, sip...
+        </p>
       ) : null}
 
-      <div className="grid grid-cols-1 gap-4">
-        {filteredResults.map((item) => (
-          <ResultItem key={item.id} item={item} />
-        ))}
-      </div>
-    </>
+      {filteredResults.map((item) => (
+        <ResultItem key={item.id} item={item} />
+      ))}
+    </div>
   );
 }

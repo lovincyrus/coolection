@@ -120,17 +120,18 @@ export function ResultItem({
       <ContextMenu>
         <ContextMenuTrigger>
           <a href={`${item.url}?ref=coolection`} target="_blank" key={item.id}>
-            <div className="flex flex-col p-4 bg-white rounded-lg shadow">
-              <h3 className="text-lg font-serif">{item.title}</h3>
-              <code className="mt-1">{item.similarity}</code>
-              <p className="mt-1 text-sm text-gray-700 line-clamp-2">
-                {getDescription()}
-              </p>
+            <div className="flex flex-col py-4 hover:bg-white/80 hover:rounded-lg hover:shadow">
+              <div className="flex flex-col gap-1 px-4">
+                <h3 className="text-sm">{item.title}</h3>
+                <code className="text-[12px]">{item.similarity}</code>
+                <p className="text-sm text-gray-600 line-clamp-2">
+                  {getDescription()}
+                </p>
+              </div>
             </div>
           </a>
         </ContextMenuTrigger>
         <ContextMenuContent className="bg-white">
-          {/* <ContextMenuItem>Options</ContextMenuItem> */}
           <ContextMenuSub>
             <ContextMenuSubTrigger inset>Move...</ContextMenuSubTrigger>
             <ContextMenuSubContent className="w-48 bg-white">

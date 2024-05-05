@@ -47,31 +47,27 @@ export default function Home() {
 
   return (
     <main className="flex min-h-dvh flex-col items-center justify-between w-full">
-      <div className="max-w-xl px-4 md:px-0 mx-auto w-full pt-4 text-sm">
+      <div className="max-w-2xl px-4 md:px-0 mx-auto w-full mt-4">
         <Header />
 
-        <div className="mt-20">
-          {/* <Intro /> */}
+        <div className="flex flex-col mt-20">
+          <div className="relative">
+            <Search className="absolute left-2 top-2.5 h-4 w-4 grayscale opacity-60 text-muted-foreground" />
+            <input
+              ref={inputRef}
+              className="w-full pl-8 px-3 py-2 text-sm leading-tight text-gray-700 border border-gray-300 rounded appearance-none focus:outline-none focus:shadow-outline"
+              placeholder="Search websites, tweets"
+              value={query}
+              onChange={handleChange}
+            />
+          </div>
 
-          <div className="flex flex-col mt-4">
-            <div className="relative">
-              <Search className="absolute left-2 top-2.5 h-4 w-4 grayscale opacity-60 text-muted-foreground" />
-              <input
-                ref={inputRef}
-                className="w-full pl-8 px-3 py-2 text-sm leading-tight text-gray-700 border border-gray-300 rounded appearance-none focus:outline-none focus:shadow-outline"
-                placeholder="Search websites, tweets"
-                value={query}
-                onChange={handleChange}
-              />
-            </div>
+          <div className="my-8">
+            {/* <h2 className="font-serif text-lg flex justify-between gap-1 px-4">
+              Results
+            </h2> */}
 
-            <div className="my-8">
-              <h2 className="font-serif text-lg flex justify-between pb-2 gap-1">
-                Results
-              </h2>
-
-              <Results query={debouncedQuery} />
-            </div>
+            <Results query={debouncedQuery} />
           </div>
         </div>
       </div>
