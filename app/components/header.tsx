@@ -1,6 +1,8 @@
 "use client";
 
-import { PlusIcon, SearchIcon } from "lucide-react";
+import { useClerk } from "@clerk/clerk-react";
+import { LogOutIcon, PlusIcon, SearchIcon } from "lucide-react";
+import { useRouter } from "next/navigation";
 import React, { useCallback, useState } from "react";
 import { toast } from "sonner";
 
@@ -113,6 +115,8 @@ function NewItemDialog() {
 
 export function Header() {
   const { toggleSearch, setToggleSearch } = useGlobals();
+  const { signOut } = useClerk();
+  const router = useRouter();
 
   return (
     <div className="max-w-2xl mx-auto w-full">
@@ -123,12 +127,18 @@ export function Header() {
         </div>
 
         <div className="flex flex-row gap-1">
-          <NewItemDialog />
           <Button
             className="items-center bg-white justify-center whitespace-nowrap font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground rounded-lg px-3 text-xs ml-auto h-[30px]"
             onClick={() => setToggleSearch(!toggleSearch)}
           >
             <SearchIcon className="h-4 w-4" />
+          </Button>
+          <NewItemDialog />
+          <Button
+            className="items-center bg-white justify-center whitespace-nowrap font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground rounded-lg px-3 text-xs ml-auto h-[30px]"
+            onClick={() => signOut(() => router.push("/"))}
+          >
+            <LogOutIcon className="h-4 w-4" />
           </Button>
         </div>
       </div>
