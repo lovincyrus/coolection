@@ -72,48 +72,55 @@ export function Header() {
   );
 
   return (
-    <div className="max-w-2xl px-4 md:px-0 mx-auto w-full">
+    <div className="max-w-2xl mx-auto w-full">
       <div className="flex flex-row justify-between items-center gap-2">
         <div className="flex flex-row items-center gap-2">
           <div className="flex items-center justify-center w-5 h-5">🍵</div>
           <div className="text-gray-500 text-sm">Coolection</div>
         </div>
 
-        <Dialog open={isOpen} onOpenChange={setIsOpen}>
-          <DialogTrigger asChild>
-            <Button className="items-center bg-white justify-center whitespace-nowrap font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground rounded-lg px-3 text-xs ml-auto hidden h-[30px] lg:flex">
-              <PlusIcon className="mr-1 h-4 w-4" />
-              New item
-            </Button>
-          </DialogTrigger>
-          <DialogContent className="sm:max-w-[425px] bg-white">
-            <DialogHeader>
-              <DialogTitle>New item</DialogTitle>
-              <DialogDescription>
-                Add a new item to your collection. You can add a website or a
-                tweet you want to keep track of.
-              </DialogDescription>
-            </DialogHeader>
-            <form onSubmit={handleSubmit}>
-              <div className="pb-6">
-                <Input
-                  placeholder="https://coolection.co"
-                  value={inputText}
-                  onChange={handleInputChange}
-                />
-              </div>
-              <DialogFooter>
-                <Button
-                  className="items-center bg-white/80 justify-center whitespace-nowrap font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground rounded-md px-3 text-xs ml-auto hidden h-8 lg:flex"
-                  type="submit"
-                  disabled={!inputText.trim() || !isValidUrl(inputText)}
-                >
-                  Submit
-                </Button>
-              </DialogFooter>
-            </form>
-          </DialogContent>
-        </Dialog>
+        <div className="flex flex-row gap-1">
+          <Dialog open={isOpen} onOpenChange={setIsOpen}>
+            <DialogTrigger asChild>
+              <Button className="items-center bg-white justify-center whitespace-nowrap font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground rounded-lg px-3 text-xs ml-auto hidden h-[30px] lg:flex">
+                <PlusIcon className="mr-1 h-4 w-4" />
+                New item
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-[425px] bg-white">
+              <DialogHeader>
+                <DialogTitle>New item</DialogTitle>
+                <DialogDescription>
+                  Add a new item to your collection. You can add a website or a
+                  tweet you want to keep track of.
+                </DialogDescription>
+              </DialogHeader>
+              <form onSubmit={handleSubmit}>
+                <div className="pb-6">
+                  <Input
+                    placeholder="https://coolection.co"
+                    value={inputText}
+                    onChange={handleInputChange}
+                  />
+                </div>
+                <DialogFooter>
+                  <Button
+                    className="items-center bg-white/80 justify-center whitespace-nowrap font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground rounded-md px-3 text-xs ml-auto h-8"
+                    type="submit"
+                    disabled={!inputText.trim() || !isValidUrl(inputText)}
+                  >
+                    Submit
+                  </Button>
+                </DialogFooter>
+              </form>
+            </DialogContent>
+          </Dialog>
+
+          {/* TODO: toggle search bar */}
+          {/* <Button className="items-center bg-white justify-center whitespace-nowrap font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground rounded-lg px-3 text-xs ml-auto h-[30px]">
+            <SearchIcon className="h-4 w-4" />
+          </Button> */}
+        </div>
       </div>
     </div>
   );

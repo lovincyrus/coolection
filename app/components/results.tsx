@@ -30,13 +30,13 @@ export function Results({ query }: { query: string }) {
   return (
     <div className="w-full mx-auto">
       {query.length === 0 && filteredResults.length === 0 ? (
-        <p className="text-sm text-gray-700 mt-4 px-4">
+        <p className="text-sm text-gray-700 mt-4 text-center">
           Search for websites, tweets, or bookmarks
         </p>
       ) : null}
 
       {filteredResults.length === 0 && query.trim().length > 0 ? (
-        <p className="text-sm text-gray-700 mt-4 px-4">
+        <p className="text-sm text-gray-700 mt-4 text-center">
           Sip, sip, sippity, sip...
         </p>
       ) : null}

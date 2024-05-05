@@ -119,7 +119,7 @@ export function ResultItem({
     <div onContextMenu={handleRightClick}>
       <ContextMenu>
         <ContextMenuTrigger>
-          <a href={`${item.url}?ref=coolection`} target="_blank" key={item.id}>
+          <a href={item.url} target="_blank" key={item.id}>
             <div className="flex flex-col py-4 hover:bg-white/80 hover:rounded-lg hover:shadow">
               <div className="flex flex-col gap-1 px-4">
                 <h3 className="text-sm">{item.title}</h3>
@@ -133,7 +133,7 @@ export function ResultItem({
         </ContextMenuTrigger>
         <ContextMenuContent className="bg-white">
           <ContextMenuSub>
-            <ContextMenuSubTrigger inset>Move...</ContextMenuSubTrigger>
+            <ContextMenuSubTrigger>Move...</ContextMenuSubTrigger>
             <ContextMenuSubContent className="w-48 bg-white">
               {lists.map((list) => (
                 <ContextMenuItem
