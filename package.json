@@ -16,6 +16,7 @@
     "seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} prisma/seed.ts"
   },
   "dependencies": {
+    "@clerk/clerk-react": "^5.0.3",
     "@clerk/nextjs": "^5.0.6",
     "@prisma/client": "^5.13.0",
     "@radix-ui/react-context-menu": "^2.1.5",
