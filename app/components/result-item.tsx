@@ -93,7 +93,7 @@ export function ResultItem({
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          itemId: item.id,
+          item_id: item.id,
         }),
       });
 

@@ -6,7 +6,8 @@ import prisma from "@/lib/prisma";
 import { CoolectionItem } from "./types";
 
 export async function searchCoolection(
-  query: string
+  query: string,
+  userId: string
 ): Promise<Array<CoolectionItem & { similarity: number }>> {
   try {
     if (query.trim().length === 0) return [];
@@ -21,7 +22,7 @@ export async function searchCoolection(
         "title", "description", "url", "type", "content", "metadata", "isDeleted",
         1 as similarity
       FROM item
-      WHERE "title" ILIKE ${"%" + query + "%"}
+      WHERE "title" ILIKE ${"%" + query + "%"} AND "userId" = ${userId}
       ORDER BY "title"
       LIMIT 8;
       `;
@@ -37,7 +38,7 @@ export async function searchCoolection(
         "title", "description", "url", "type", "content", "metadata", "isDeleted",
         1 - (embedding <=> ${vectorQuery}::vector) as similarity
       FROM item
-      WHERE 1 - (embedding <=> ${vectorQuery}::vector) > .7
+      WHERE 1 - (embedding <=> ${vectorQuery}::vector) > .7 AND "userId" = ${userId}
       ORDER BY similarity DESC
       LIMIT 8;
       `;

@@ -136,7 +136,12 @@ export function Header() {
           <NewItemDialog />
           <Button
             className="items-center bg-white justify-center whitespace-nowrap font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground rounded-lg px-3 text-xs ml-auto h-[30px]"
-            onClick={() => signOut(() => router.push("/"))}
+            onClick={() => {
+              signOut(() => {
+                router.push("/");
+                window.location.reload();
+              });
+            }}
           >
             <LogOutIcon className="h-4 w-4" />
           </Button>

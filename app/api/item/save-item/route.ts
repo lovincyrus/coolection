@@ -1,5 +1,6 @@
 "use server";
 
+import { auth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 
 import { addToTweetTable } from "@/lib/add-to-tweet";
@@ -7,6 +8,8 @@ import { addToWebsite } from "@/lib/add-to-website";
 import { isTwitterUrl, normalizeLink } from "@/lib/url";
 
 export async function POST(req: Request) {
+  const { userId } = auth();
+
   const body = await req.json();
   const { url } = body;
 
@@ -14,13 +17,17 @@ export async function POST(req: Request) {
     return NextResponse.json({ message: "URL is required" }, { status: 400 });
   }
 
+  if (!userId) {
+    return new NextResponse("Unauthorized", { status: 401 });
+  }
+
   const normalizedLink = normalizeLink(url);
 
   try {
     if (isTwitterUrl(normalizedLink)) {
-      const tweetResult = await addToTweetTable(normalizedLink);
+      const tweetResult = await addToTweetTable(normalizedLink, userId);
     } else {
-      const websiteResult = await addToWebsite(normalizedLink);
+      const websiteResult = await addToWebsite(normalizedLink, userId);
     }
 
     return NextResponse.json(

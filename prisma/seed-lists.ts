@@ -24,6 +24,9 @@ async function main() {
     data: {
       name: "My Favorite Items",
       description: "A list of my favorite items.",
+      // TODO: create default test user
+      // userId: "00000000-0000-0000-0000-000000000000"
+      userId: "user_2g2RDrhosXcxkH3CKc0wCEMrcoa",
     },
   });
 

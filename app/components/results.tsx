@@ -1,3 +1,4 @@
+import { useAuth } from "@clerk/nextjs";
 import React, { useEffect, useMemo, useState } from "react";
 
 import { searchCoolection } from "../actions";
@@ -5,6 +6,7 @@ import { CoolectionItem } from "../types";
 import { ResultItem } from "./result-item";
 
 export function Results({ query }: { query: string }) {
+  const { userId } = useAuth();
   const [searchResults, setSearchResults] = useState<
     Array<CoolectionItem & { similarity?: number }>
   >([]);
@@ -12,7 +14,7 @@ export function Results({ query }: { query: string }) {
   useEffect(() => {
     let current = true;
     if (query.trim().length > 0) {
-      searchCoolection(query).then((results) => {
+      searchCoolection(query, userId).then((results) => {
         if (current) {
           setSearchResults(results);
         }
@@ -21,7 +23,7 @@ export function Results({ query }: { query: string }) {
     return () => {
       current = false;
     };
-  }, [query]);
+  }, [query, userId]);
 
   const filteredResults = useMemo(() => {
     return searchResults.filter((item) => !item.isDeleted);

@@ -12,6 +12,20 @@ datasource db {
   extensions = [vector]
 }
 
+model User {
+  id        String   @id @unique
+  email     String?
+  firstName String?
+  lastName  String?
+  imageUrl  String?
+  createdAt DateTime
+  updatedAt DateTime
+  items     Item[]
+  lists     List[]
+
+  @@map("user")
+}
+
 model Item {
   id          String                       @id @default(uuid())
   url         String? // For content that has a URL
@@ -21,13 +35,14 @@ model Item {
   image       String? // An optional image URL for content with images
   createdAt   DateTime                     @default(now())
   updatedAt   DateTime                     @updatedAt
-  deletedAt   DateTime? // For soft deletion
-  isDeleted   Boolean                      @default(false) // For soft deletion
+  deletedAt   DateTime?
+  isDeleted   Boolean                      @default(false)
   type        String                       @default("website") // "website", "tweet"
   metadata    Json? // A JSON field to store any additional structured data relevant to the item type
   embedding   Unsupported("vector(1536)")? // A field to store the vector embedding of the content
+  userId      String
+  user        User                         @relation(fields: [userId], references: [id])
 
-  // Relations
   lists List[] @relation("ItemsOnList")
 
   @@map("item")
@@ -39,9 +54,11 @@ model List {
   description String?
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
-  deletedAt   DateTime? // For soft deletion
-  isDeleted   Boolean   @default(false) // For soft deletion
+  deletedAt   DateTime?
+  isDeleted   Boolean   @default(false)
   items       Item[]    @relation("ItemsOnList")
+  userId      String
+  user        User      @relation(fields: [userId], references: [id])
 
   @@map("list")
 }
