@@ -5,6 +5,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { useDebounce } from "use-debounce";
 
 import { Footer } from "./components/footer";
+import { useGlobals } from "./components/globals-provider";
 import { Header } from "./components/header";
 import { Results } from "./components/results";
 
@@ -12,10 +13,13 @@ export default function Home() {
   const [query, setQuery] = useState("");
   const [debouncedQuery] = useDebounce(query, 500);
   const inputRef = useRef<HTMLInputElement>(null);
+  const { toggleSearch } = useGlobals();
 
   useEffect(() => {
-    inputRef.current?.focus();
-  }, []);
+    if (toggleSearch) {
+      inputRef.current?.focus();
+    }
+  }, [toggleSearch]);
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -51,16 +55,18 @@ export default function Home() {
         <Header />
 
         <div className="flex flex-col mt-20">
-          <div className="relative">
-            <Search className="absolute left-2 top-2.5 h-4 w-4 grayscale opacity-60 text-muted-foreground" />
-            <input
-              ref={inputRef}
-              className="w-full pl-8 px-3 py-2 text-sm leading-tight text-gray-700 border border-gray-300 rounded appearance-none focus:outline-none focus:shadow-outline"
-              placeholder="Search websites, tweets"
-              value={query}
-              onChange={handleChange}
-            />
-          </div>
+          {toggleSearch && (
+            <div className="relative">
+              <Search className="absolute left-2 top-2.5 h-4 w-4 grayscale opacity-60 text-muted-foreground" />
+              <input
+                ref={inputRef}
+                className="w-full pl-8 px-3 py-2 text-sm leading-tight text-gray-700 border border-gray-300 rounded appearance-none focus:outline-none focus:shadow-outline"
+                placeholder="Search websites, tweets"
+                value={query}
+                onChange={handleChange}
+              />
+            </div>
+          )}
 
           <div className="my-8">
             {/* <h2 className="font-serif text-lg flex justify-between gap-1 px-4">

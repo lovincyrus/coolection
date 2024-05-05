@@ -1,11 +1,12 @@
 "use client";
 
-import { PlusIcon } from "lucide-react";
+import { PlusIcon, SearchIcon } from "lucide-react";
 import React, { useCallback, useState } from "react";
 import { toast } from "sonner";
 
 import { isTwitterUrl, isValidUrl } from "@/lib/url";
 
+import { useGlobals } from "./globals-provider";
 import { Button } from "./ui/button";
 import {
   Dialog,
@@ -21,6 +22,7 @@ import { Input } from "./ui/input";
 export function Header() {
   const [inputText, setInputText] = useState("");
   const [isOpen, setIsOpen] = useState(false);
+  const { toggleSearch, setToggleSearch } = useGlobals();
 
   const handleInputChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -116,10 +118,12 @@ export function Header() {
             </DialogContent>
           </Dialog>
 
-          {/* TODO: toggle search bar */}
-          {/* <Button className="items-center bg-white justify-center whitespace-nowrap font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground rounded-lg px-3 text-xs ml-auto h-[30px]">
+          <Button
+            className="items-center bg-white justify-center whitespace-nowrap font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground rounded-lg px-3 text-xs ml-auto h-[30px]"
+            onClick={() => setToggleSearch(!toggleSearch)}
+          >
             <SearchIcon className="h-4 w-4" />
-          </Button> */}
+          </Button>
         </div>
       </div>
     </div>
