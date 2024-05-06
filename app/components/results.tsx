@@ -30,7 +30,7 @@ export function Results({ query }: { query: string }) {
   }, [searchResults]);
 
   const handleRemoveItem = useCallback(
-    (itemId) => {
+    (itemId: string) => {
       setSearchResults(searchResults.filter((item) => item.id !== itemId));
     },
     [searchResults]
@@ -40,7 +40,7 @@ export function Results({ query }: { query: string }) {
     <div className="w-full mx-auto">
       {query.length === 0 && filteredResults.length === 0 ? (
         <p className="text-sm text-gray-700 mt-4 text-center">
-          Search for websites, tweets, or bookmarks
+          Search for websites or tweets
         </p>
       ) : null}
 
