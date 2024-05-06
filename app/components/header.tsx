@@ -54,8 +54,19 @@ function NewItemDialog() {
             url: inputText,
           }),
         });
+
         if (!response.ok) {
-          throw new Error(`Failed to add the ${toastMessage}`);
+          let errorMessage = "Failed to add the item";
+
+          if (response.status === 409) {
+            errorMessage = "Item already exists";
+          } else {
+            const responseText = await response.text();
+            errorMessage = responseText || errorMessage;
+          }
+
+          toast.error(errorMessage);
+          throw new Error(errorMessage);
         }
         return response.json();
       };
@@ -65,7 +76,7 @@ function NewItemDialog() {
         success: `${
           toastMessage.charAt(0).toUpperCase() + toastMessage.slice(1)
         } added successfully`,
-        error: `Failed to add the ${toastMessage}`,
+        // error: `Failed to add the ${toastMessage}`,
       });
 
       setInputText("");
@@ -77,7 +88,7 @@ function NewItemDialog() {
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
-        <Button className="items-center bg-white justify-center whitespace-nowrap font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground rounded-lg px-3 text-xs ml-auto hidden h-[30px] lg:flex">
+        <Button className="items-center bg-white justify-center whitespace-nowrap font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground rounded-lg px-3 text-xs ml-auto h-[30px]">
           <PlusIcon className="mr-1 h-4 w-4" />
           New item
         </Button>

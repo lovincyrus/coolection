@@ -5,6 +5,7 @@ import { NextResponse } from "next/server";
 
 import { addTweet } from "@/lib/add-tweet";
 import { addWebsite } from "@/lib/add-website";
+import { checkDuplicateItem } from "@/lib/check-duplicate.item";
 import { isTwitterUrl, normalizeLink } from "@/lib/url";
 
 export async function POST(req: Request) {
@@ -22,6 +23,15 @@ export async function POST(req: Request) {
   }
 
   const normalizedLink = normalizeLink(url);
+
+  // Check for duplicate URL before adding the item
+  const isDuplicate = await checkDuplicateItem(normalizedLink, userId);
+  if (isDuplicate) {
+    return NextResponse.json(
+      { message: "Item already exists" },
+      { status: 409 }
+    );
+  }
 
   try {
     if (isTwitterUrl(normalizedLink)) {
