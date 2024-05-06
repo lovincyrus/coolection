@@ -40,7 +40,7 @@ function isTwitterBookmarkUrl(url: string): boolean {
   }
 }
 
-export async function addToTweetTable(url: string, user_id: string) {
+export async function addTweet(url: string, user_id: string) {
   const tweetID = getTweetIdFromUrl(url);
 
   const tweetContent = await getTweet(tweetID as string);

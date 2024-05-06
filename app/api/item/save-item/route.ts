@@ -3,8 +3,8 @@
 import { auth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 
-import { addToTweetTable } from "@/lib/add-to-tweet";
-import { addToWebsite } from "@/lib/add-to-website";
+import { addTweet } from "@/lib/add-tweet";
+import { addWebsite } from "@/lib/add-website";
 import { isTwitterUrl, normalizeLink } from "@/lib/url";
 
 export async function POST(req: Request) {
@@ -25,9 +25,9 @@ export async function POST(req: Request) {
 
   try {
     if (isTwitterUrl(normalizedLink)) {
-      const tweetResult = await addToTweetTable(normalizedLink, userId);
+      await addTweet(normalizedLink, userId);
     } else {
-      const websiteResult = await addToWebsite(normalizedLink, userId);
+      await addWebsite(normalizedLink, userId);
     }
 
     return NextResponse.json(
