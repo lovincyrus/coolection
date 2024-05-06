@@ -6,7 +6,7 @@ import { NextResponse } from "next/server";
 import { addTweet } from "@/lib/add-tweet";
 import { addWebsite } from "@/lib/add-website";
 import { checkDuplicateItem } from "@/lib/check-duplicate.item";
-import { isTwitterUrl, normalizeLink } from "@/lib/url";
+import { isTwitterPostOrBookmarkUrl, normalizeLink } from "@/lib/url";
 
 export async function POST(req: Request) {
   const { userId } = auth();
@@ -35,12 +35,12 @@ export async function POST(req: Request) {
 
   try {
     let newItem;
-    if (isTwitterUrl(normalizedLink)) {
+    if (isTwitterPostOrBookmarkUrl(normalizedLink)) {
       const newTweet = await addTweet(normalizedLink, userId);
       newItem = newTweet;
     } else {
       const newWebsite = await addWebsite(normalizedLink, userId);
-      newItem = newWebsite
+      newItem = newWebsite;
     }
 
     return NextResponse.json(

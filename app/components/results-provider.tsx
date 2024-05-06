@@ -18,6 +18,12 @@ export const ResultsProvider: React.FC<{ children: React.ReactNode }> = ({
 
   const updateResults = useCallback(
     (newResults: Array<CoolectionItemWithSimilarity>) => {
+      newResults.sort((a, b) => {
+        return (
+          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+        );
+      });
+
       setResults(newResults);
     },
     []

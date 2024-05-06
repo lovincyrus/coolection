@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import React, { useCallback, useState } from "react";
 import { toast } from "sonner";
 
-import { isTwitterUrl, isValidUrl } from "@/lib/url";
+import { isTwitterPostOrBookmarkUrl, isValidUrl } from "@/lib/url";
 
 import { useGlobals } from "./globals-provider";
 import { useResults } from "./results-provider";
@@ -44,7 +44,9 @@ function NewItemDialog() {
         return;
       }
 
-      const toastMessage = isTwitterUrl(inputText) ? "tweet" : "website";
+      const toastMessage = isTwitterPostOrBookmarkUrl(inputText)
+        ? "tweet"
+        : "website";
 
       const saveItem = async () => {
         const response = await fetch("/api/item/save-item", {
@@ -104,8 +106,7 @@ function NewItemDialog() {
         <DialogHeader>
           <DialogTitle>New item</DialogTitle>
           <DialogDescription>
-            Add a new item to your collection. You can add a website or a tweet
-            you want to keep track of.
+            Add a website or a tweet you want to keep track of.
           </DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit}>

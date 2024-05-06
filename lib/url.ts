@@ -9,10 +9,35 @@ export function isValidUrl(input: string) {
   }
 }
 
-export function isTwitterUrl(input: string) {
+// Bookmark: https://twitter.com/i/bookmarks?post_id=1784694622566187100
+// Post: https://twitter.com/rauchg/status/1784694622566187100
+// Profile: https://twitter.com/emilkowalski_
+export function isTwitterPostOrBookmarkUrl(input: string) {
   try {
     const url = new URL(input);
-    return url.hostname === "twitter.com";
+    const postUrlRegex = /^https:\/\/twitter\.com\/[A-Za-z0-9_]+\/status\/\d+/;
+    const bookmarkUrlRegex = /^https:\/\/twitter\.com\/i\/bookmarks\?post_id=/;
+
+    if (url.hostname === "twitter.com") {
+      const pathSegments = url.pathname
+        .split("/")
+        .filter((segment) => segment !== "");
+
+      if (
+        pathSegments.length >= 2 &&
+        pathSegments[1] === "status" &&
+        postUrlRegex.test(input)
+      ) {
+        // Check if it's a tweet URL
+        return true;
+      }
+
+      if (bookmarkUrlRegex.test(input)) {
+        // Check if it's a bookmark URL
+        return true;
+      }
+    }
+    return false;
   } catch {
     return false;
   }

@@ -19,25 +19,22 @@ This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-opti
 ```bash
 # Run the development server
 pnpm dev
-
-# Start the database
-pnpm db:up
-
-# Force push schema
-pnpm db:push
-
-# Seed the database
-pnpm db:seed
 ```
 
 ## Database
 
 ```bash
 # Start the database
-docker-compose up -d
+pnpm db:up
 
 # Stop the database
-docker-compose down -v
+pnpm db:down
+
+# Force push schema
+pnpm db:push
+
+# Seed the database
+pnpm db:seed
 
 # Connect to the database using psql
 psql -h localhost -U root -d coolection
