@@ -144,19 +144,21 @@ export function ResultItem({
           </a>
         </ContextMenuTrigger>
         <ContextMenuContent className="bg-white">
-          <ContextMenuSub>
-            <ContextMenuSubTrigger>Move...</ContextMenuSubTrigger>
-            <ContextMenuSubContent className="w-48 bg-white">
-              {lists.map((list) => (
-                <ContextMenuItem
-                  key={list.id}
-                  onClick={() => handleAddToList(list.id)}
-                >
-                  Add to {list.name}
-                </ContextMenuItem>
-              ))}
-            </ContextMenuSubContent>
-          </ContextMenuSub>
+          {lists.length > 0 && (
+            <ContextMenuSub>
+              <ContextMenuSubTrigger>Move...</ContextMenuSubTrigger>
+              <ContextMenuSubContent className="w-48 bg-white">
+                {lists.map((list) => (
+                  <ContextMenuItem
+                    key={list.id}
+                    onClick={() => handleAddToList(list.id)}
+                  >
+                    Add to {list.name}
+                  </ContextMenuItem>
+                ))}
+              </ContextMenuSubContent>
+            </ContextMenuSub>
+          )}
           <ContextMenuItem onClick={handleDeleteItem}>
             Delete Item
           </ContextMenuItem>

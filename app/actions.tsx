@@ -22,7 +22,9 @@ export async function searchCoolection(
         "title", "description", "url", "type", "content", "metadata", "isDeleted",
         1 as similarity
       FROM item
-      WHERE "title" ILIKE ${"%" + query + "%"} AND "userId" = ${userId}
+      WHERE ("title" || ' ' || "description" || ' ' || "url") ILIKE ${
+        "%" + query + "%"
+      } AND "userId" = ${userId}
       ORDER BY "title"
       LIMIT 8;
       `;
