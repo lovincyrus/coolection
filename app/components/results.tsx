@@ -1,5 +1,5 @@
 import { useAuth } from "@clerk/nextjs";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 
 import { searchCoolection } from "../actions";
 import { CoolectionItem } from "../types";
@@ -29,6 +29,13 @@ export function Results({ query }: { query: string }) {
     return searchResults.filter((item) => !item.isDeleted);
   }, [searchResults]);
 
+  const handleRemoveItem = useCallback(
+    (itemId) => {
+      setSearchResults(searchResults.filter((item) => item.id !== itemId));
+    },
+    [searchResults]
+  );
+
   return (
     <div className="w-full mx-auto">
       {query.length === 0 && filteredResults.length === 0 ? (
@@ -44,7 +51,7 @@ export function Results({ query }: { query: string }) {
       ) : null}
 
       {filteredResults.map((item) => (
-        <ResultItem key={item.id} item={item} />
+        <ResultItem key={item.id} item={item} onRemoveItem={handleRemoveItem} />
       ))}
     </div>
   );

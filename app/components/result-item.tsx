@@ -42,8 +42,10 @@ function extractDomain(url: string) {
 
 export function ResultItem({
   item,
+  onRemoveItem,
 }: {
   item: CoolectionItem & { similarity?: number };
+  onRemoveItem: (itemId: string) => void;
 }) {
   const { lists, loading, error } = useFetchLists();
 
@@ -109,7 +111,7 @@ export function ResultItem({
       error: `Failed to delete item ${item.title}`,
     });
 
-    // TODO: Bump searchResults after deletion
+    onRemoveItem(item.id);
   };
 
   function getDescription() {
