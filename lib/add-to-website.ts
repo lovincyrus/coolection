@@ -1,13 +1,12 @@
 import { ItemType } from "@/app/types/coolection";
 import { getMetatags } from "@/lib//get-metatags";
-import { generateEmbedding } from "@/lib/generate-embedding";
 import prisma from "@/lib/prisma";
 
 export async function addToWebsite(url: string, user_id: string) {
   const { title, description } = await getMetatags(url);
-  const generatedEmbedding = await generateEmbedding(
-    (title ?? "") + " " + (description ?? "")
-  );
+  // const generatedEmbedding = await generateEmbedding(
+  //   (title ?? "") + " " + (description ?? "")
+  // );
 
   console.log("adding to collection: ", {
     url,
@@ -28,11 +27,11 @@ export async function addToWebsite(url: string, user_id: string) {
     },
   });
 
-  await prisma.$executeRaw`
-    UPDATE item
-    SET embedding = ${JSON.stringify(generatedEmbedding)}::vector
-    WHERE id = ${newCoolection.id}
-  `;
+  // await prisma.$executeRaw`
+  //   UPDATE item
+  //   SET embedding = ${JSON.stringify(generatedEmbedding)}::vector
+  //   WHERE id = ${newCoolection.id}
+  // `;
 
   console.log(
     `Added new coolection with title: ${JSON.stringify(newCoolection, null, 2)}`

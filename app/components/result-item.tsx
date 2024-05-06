@@ -129,7 +129,7 @@ export function ResultItem({
             <div className="flex flex-col py-4 hover:bg-gray-50 hover:rounded-lg hover:shadow">
               <div className="flex flex-col gap-1 px-4">
                 <h3 className="text-sm">{item.title}</h3>
-                <code className="text-[12px]">{item.similarity}</code>
+                {/* <code className="text-[12px]">{item.similarity}</code> */}
                 <div className="flex flex-row items-center space-x-2">
                   <LinkIcon className="w-3 h-3 text-gray-400" />
                   <p className="text-sm text-gray-400 line-clamp-2">

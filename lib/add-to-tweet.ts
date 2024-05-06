@@ -1,5 +1,4 @@
 import { ItemType } from "@/app/types/coolection";
-import { generateEmbedding } from "@/lib/generate-embedding";
 import prisma from "@/lib/prisma";
 
 import { getTweet } from "./get-tweet";
@@ -46,9 +45,9 @@ export async function addToTweetTable(url: string, user_id: string) {
 
   const tweetContent = await getTweet(tweetID as string);
 
-  const generatedEmbedding = await generateEmbedding(
-    String(tweetContent?.text.replace(/\n/g, " "))
-  );
+  // const generatedEmbedding = await generateEmbedding(
+  //   String(tweetContent?.text.replace(/\n/g, " "))
+  // );
 
   // console.log("adding to tweet table: ", tweetContent);
 
@@ -81,11 +80,11 @@ export async function addToTweetTable(url: string, user_id: string) {
     },
   });
 
-  await prisma.$executeRaw`
-    UPDATE item
-    SET embedding = ${JSON.stringify(generatedEmbedding)}::vector
-    WHERE id = ${newTweet.id}
-  `;
+  // await prisma.$executeRaw`
+  //   UPDATE item
+  //   SET embedding = ${JSON.stringify(generatedEmbedding)}::vector
+  //   WHERE id = ${newTweet.id}
+  // `;
 
   console.log(`Added new tweet`);
 
