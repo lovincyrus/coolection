@@ -34,14 +34,17 @@ export async function POST(req: Request) {
   }
 
   try {
+    let newItem;
     if (isTwitterUrl(normalizedLink)) {
-      await addTweet(normalizedLink, userId);
+      const newTweet = await addTweet(normalizedLink, userId);
+      newItem = newTweet;
     } else {
-      await addWebsite(normalizedLink, userId);
+      const newWebsite = await addWebsite(normalizedLink, userId);
+      newItem = newWebsite
     }
 
     return NextResponse.json(
-      { message: "Item added successfully" },
+      { message: "Item added successfully", item: newItem },
       { status: 200 }
     );
   } catch (error) {

@@ -1,4 +1,4 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Coolection
 
 ## Getting Started
 
@@ -43,13 +43,6 @@ docker-compose down -v
 psql -h localhost -U root -d coolection
 
 DATABASE_URL="postgresql://root:password@localhost:5432/coolection"
-```
-
-### Install [pgvector](https://github.com/pgvector/pgvector) in your local machine if you're using local database
-
-```bash
-# Install pgvector (might not be needed after using `ankane/pgvector` docker image)
-brew install pgvector
 ```
 
 ## Data modeling

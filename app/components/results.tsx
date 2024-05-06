@@ -1,39 +1,51 @@
 import { useAuth } from "@clerk/nextjs";
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo } from "react";
 
 import { searchCoolection } from "../actions";
-import { CoolectionItem } from "../types";
 import { ResultItem } from "./result-item";
+import { useResults } from "./results-provider";
 
 export function Results({ query }: { query: string }) {
   const { userId } = useAuth();
-  const [searchResults, setSearchResults] = useState<
-    Array<CoolectionItem & { similarity?: number }>
-  >([]);
+  const { results, updateResults } = useResults();
+
+  useEffect(() => {
+    const fetchResults = async () => {
+      const response = await fetch(`/api/items`);
+      if (response.ok) {
+        const latestResults = await response.json();
+        updateResults(latestResults);
+      }
+    };
+
+    fetchResults();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     let current = true;
     if (query.trim().length > 0 && userId) {
       searchCoolection(query, userId).then((results) => {
         if (current) {
-          setSearchResults(results);
+          updateResults(results);
         }
       });
     }
+
     return () => {
       current = false;
     };
-  }, [query, userId]);
+  }, [query, userId, updateResults]);
 
   const filteredResults = useMemo(() => {
-    return searchResults.filter((item) => !item.isDeleted);
-  }, [searchResults]);
+    return results.filter((item) => !item.isDeleted);
+  }, [results]);
 
   const handleRemoveItem = useCallback(
     (itemId: string) => {
-      setSearchResults(searchResults.filter((item) => item.id !== itemId));
+      updateResults(results.filter((item) => item.id !== itemId));
     },
-    [searchResults]
+    [results, updateResults]
   );
 
   return (

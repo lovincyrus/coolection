@@ -8,6 +8,7 @@ export async function checkDuplicateItem(
     where: {
       url: url,
       userId: userId,
+      isDeleted: false, // Exclude deleted items; otherwise the user can't re-add them
     },
   });
 

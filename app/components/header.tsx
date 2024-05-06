@@ -8,7 +8,9 @@ import { toast } from "sonner";
 
 import { isTwitterUrl, isValidUrl } from "@/lib/url";
 
+import { CoolectionItemWithSimilarity } from "../types/coolection";
 import { useGlobals } from "./globals-provider";
+import { useResults } from "./results-provider";
 import { Button } from "./ui/button";
 import {
   Dialog,
@@ -24,6 +26,7 @@ import { Input } from "./ui/input";
 function NewItemDialog() {
   const [inputText, setInputText] = useState("");
   const [isOpen, setIsOpen] = useState(false);
+  const { updateResults } = useResults();
 
   const handleInputChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -68,8 +71,21 @@ function NewItemDialog() {
           toast.error(errorMessage);
           throw new Error(errorMessage);
         }
-        return response.json();
+
+        const newItem = await response.json();
+
+        updateResults((results: CoolectionItemWithSimilarity[]) => [
+          ...results,
+          newItem.item,
+        ]);
+
+        return newItem;
       };
+
+      // updateResults((results: CoolectionItemWithSimilarity[]) => [
+      //   ...results,
+      //   newItem,
+      // ]);
 
       toast.promise(saveItem(), {
         loading: `Adding ${toastMessage}...`,
