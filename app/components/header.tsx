@@ -9,22 +9,15 @@ import { NewItemDialog } from "./new-item-dialog";
 import { Button } from "./ui/button";
 
 export function Header() {
-  const { signOut, user } = useClerk();
+  const { signOut } = useClerk();
   const router = useRouter();
 
   return (
     <div className="max-w-2xl mx-auto w-full">
       <div className="flex flex-row justify-between items-center gap-2">
-        <div className="flex flex-row items-center space-x-1">
-          <div className="flex items-center justify-center w-8 h-8 text-xl">
-            🍵
-          </div>
-          <div className="text-gray-500 text-sm">
-            {user && user?.firstName?.endsWith("s")
-              ? `${user?.firstName}'`
-              : `${user?.firstName}'s`}{" "}
-            Coolection
-          </div>
+        <div className="flex flex-row items-center gap-2">
+          <div className="flex items-center justify-center w-5 h-5">🍵</div>
+          <div className="text-gray-500 text-sm">Coolection</div>
         </div>
 
         <div className="flex flex-row gap-1">
