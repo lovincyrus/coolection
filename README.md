@@ -4,7 +4,7 @@
 
 ## Motivation
 
-The internet is great, but internet resources can be short-lived. The Internet Archive created the Wayback Machine to archive the internet, while GitHub preserves codebases in the Arctic Code Vault. But what about the links you find useful? They are scattered across your browser bookmarks, notes, messages, and emails. Coolection is a tool designed to help you save and organize your favorite links.
+The internet is great, but internet resources can be short-lived. The Internet Archive created the Wayback Machine to archive the internet, while GitHub preserves codebases in the Arctic Code Vault. But what about the links you find useful? They are scattered across your browser bookmarks, notes, messages, and emails. All you need to do is _remember_ to save them.
 
 ## Getting Started
 
