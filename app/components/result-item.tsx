@@ -130,7 +130,7 @@ export function ResultItem({
           <a href={item.url} target="_blank" key={item.id}>
             <div className="flex flex-col py-4 hover:bg-gray-50 hover:rounded-lg hover:shadow">
               <div className="flex flex-col gap-1 px-4">
-                <h3 className="text-sm">{item.title}</h3>
+                <h3 className="text-sm font-medium">{item.title}</h3>
                 {/* <code className="text-[12px]">{item.similarity}</code> */}
                 <div className="flex flex-row items-center space-x-2">
                   <LinkIcon className="w-3 h-3 text-gray-400" />

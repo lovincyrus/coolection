@@ -9,7 +9,7 @@ export async function getLatestItems(userId: string): Promise<Array<any>> {
     orderBy: {
       createdAt: "desc",
     },
-    take: 8,
+    take: 10,
   });
 
   return latestResults;
