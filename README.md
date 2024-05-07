@@ -1,5 +1,7 @@
 # Coolection
 
+**Coolection** is an open-source bookmarking tool that allows you to save and organize your favorite links.
+
 ## Getting Started
 
 First, run the development server:
@@ -8,38 +10,60 @@ First, run the development server:
 pnpm dev
 ```
 
+## Development setup
+
+To run this application, you need to have `Docker`, `Node.js`, and `pnpm` installed on your machine.
+
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
-
-## Development
 
 ```bash
 # Run the development server
 pnpm dev
 ```
 
-## Database
+Next, spin up the local database, apply the schema, and seed the database:
 
 ```bash
 # Start the database
 pnpm db:up
-
-# Stop the database
-pnpm db:down
 
 # Force push schema
 pnpm db:push
 
 # Seed the database
 pnpm db:seed
+```
 
-# Connect to the database using psql
-psql -h localhost -U root -d coolection
+When this is complete, you have a local pg instance running on `localhost:5432` with the database `coolection`.
 
+While the local database is running, you can run the following commands:
+
+```bash
+# Stop the database
+pnpm db:down
+```
+
+## Configuration
+
+### Database
+
+This project uses Prisma as an ORM. To get started, you need to create a `.env` file in the root of the project and add the following:
+
+```bash
 DATABASE_URL="postgresql://root:password@localhost:5432/coolection"
+```
+
+If you want to self-host the database or use a different provider, you can update the `DATABASE_URL` to point to your database.
+
+### Clerk
+
+This project uses Clerk for authentication. To get started, you need to create a Clerk account and set up a new application. Once you have your application ID and API key, you can create a `.env.local` file in the root of the project and add the following:
+
+```bash
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=
+CLERK_SECRET_KEY=
+NEXT_PUBLIC_CLERK_SIGN_IN_URL=
+NEXT_PUBLIC_CLERK_SIGN_UP_URL=
 ```
 
 ## Data modeling
