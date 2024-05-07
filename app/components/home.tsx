@@ -2,6 +2,7 @@
 
 import { Search } from "lucide-react";
 import React, { useEffect, useRef, useState } from "react";
+import { useHotkeys } from "reakeys";
 import { useDebounce } from "use-debounce";
 
 import { Footer } from "./footer";
@@ -14,6 +15,17 @@ export function HomePage() {
   const [debouncedQuery] = useDebounce(query, 500);
   const inputRef = useRef<HTMLInputElement>(null);
   const { toggleSearch } = useGlobals();
+
+  useHotkeys([
+    {
+      name: "Focus search",
+      keys: "/",
+      callback: (event) => {
+        event?.preventDefault();
+        inputRef.current?.focus();
+      },
+    },
+  ]);
 
   useEffect(() => {
     if (toggleSearch) {
@@ -60,7 +72,7 @@ export function HomePage() {
               <Search className="absolute left-2 top-2.5 h-4 w-4 grayscale opacity-60 text-muted-foreground" />
               <input
                 ref={inputRef}
-                className="w-full pl-8 px-3 py-2 text-sm leading-tight text-gray-700 border border-gray-300 rounded appearance-none focus:outline-none focus:shadow-outline"
+                className="w-full pl-8 px-3 py-2 text-sm leading-tight text-gray-700 border border-gray-300 rounded appearance-none transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring focus:shadow-outline"
                 placeholder="Search websites, tweets"
                 value={query}
                 onChange={handleChange}
