@@ -112,11 +112,11 @@ export function ResultItem({
                 {/* <code className="text-[12px]">{item.similarity}</code> */}
                 <div className="flex flex-row items-center space-x-2">
                   <LinkIcon className="w-3 h-3 text-gray-400" />
-                  <p className="text-sm text-gray-400 line-clamp-2">
+                  <p className="text-sm text-gray-400">
                     {extractDomain(String(item.url))}
                   </p>
                 </div>
-                <p className="text-sm text-gray-600 line-clamp-2">
+                <p className="text-sm text-gray-600 line-clamp-1">
                   {getDescription()}
                 </p>
               </div>
