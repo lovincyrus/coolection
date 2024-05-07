@@ -15,9 +15,11 @@ export function Header() {
   return (
     <div className="max-w-2xl mx-auto w-full">
       <div className="flex flex-row justify-between items-center gap-2">
-        <div className="flex flex-row items-center gap-2">
-          <div className="flex items-center justify-center w-5 h-5">🍵</div>
-          <div className="text-gray-500 text-sm">Coolection</div>
+        <div className="flex flex-row items-center space-x-0">
+          <div className="flex items-center justify-center w-8 h-8 text-2xl">
+            🍵
+          </div>
+          {/* <div className="text-gray-500 text-sm">Coolection</div> */}
         </div>
 
         <div className="flex flex-row gap-1">
