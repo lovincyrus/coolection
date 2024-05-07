@@ -64,6 +64,7 @@ export function HomePage() {
                 placeholder="Search websites, tweets"
                 value={query}
                 onChange={handleChange}
+                autoFocus
               />
             </div>
           )}
