@@ -6,21 +6,16 @@
 
 The internet is great, but internet resources can be short-lived. The Internet Archive created the Wayback Machine to archive the internet, while GitHub preserves codebases in the Arctic Code Vault. But what about the links you find useful? They are scattered across your browser bookmarks, notes, messages, and emails. All you need to do is _remember_ to save them.
 
-## Getting Started
-
-First, run the development server:
-
-```bash
-pnpm dev
-```
-
 ## Development setup
 
 To run this application, you need to have `Docker`, `Node.js`, and `pnpm` installed on your machine.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+First, run the development server and open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
 ```bash
+# Install dependencies
+pnpm install
+
 # Run the development server
 pnpm dev
 ```
