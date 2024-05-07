@@ -35,7 +35,7 @@ pnpm db:seed
 
 When this is complete, you have a local pg instance running on `localhost:5432` with the database `coolection`.
 
-While the local database is running, you can run the following commands:
+If you want to stop the database, you can run the following command:
 
 ```bash
 # Stop the database
