@@ -1,6 +1,6 @@
 # Coolection
 
-**Coolection** is an open-source bookmarking tool that allows you to save and organize your favorite links.
+**Coolection** is an open-source bookmarking tool that allows you to save and organize your favorite links. Coolection is designed to be single purpose and focused on speed and simplicity. No ads. No tracking. No distractions. No fluff. Just bookmarks and find them when you need them.
 
 ## Getting Started
 

@@ -1,5 +1,5 @@
 import { LinkIcon } from "lucide-react";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { toast } from "sonner";
 
 import { CoolectionItem, CoolectionList, ItemType } from "../types";
@@ -13,28 +13,6 @@ import {
   ContextMenuTrigger,
 } from "./ui/context-menu";
 
-const useFetchLists = () => {
-  const [lists, setLists] = useState<CoolectionList[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
-
-  useEffect(() => {
-    setLoading(true);
-    fetch("/api/lists")
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error("Network response was not ok");
-        }
-        return response.json();
-      })
-      .then(setLists)
-      .catch(setError)
-      .finally(() => setLoading(false));
-  }, []);
-
-  return { lists, loading, error };
-};
-
 function extractDomain(url: string) {
   const domain = url.replace("http://", "").replace("https://", "");
   return domain.split("/")[0];
@@ -43,12 +21,12 @@ function extractDomain(url: string) {
 export function ResultItem({
   item,
   onRemoveItem,
+  lists,
 }: {
   item: CoolectionItem & { similarity?: number };
-  onRemoveItem: (itemId: string) => void;
+  onRemoveItem: (_itemId: string) => void;
+  lists: CoolectionList[];
 }) {
-  const { lists, loading, error } = useFetchLists();
-
   const handleRightClick = (event: React.MouseEvent) => {
     event.preventDefault();
     // eslint-disable-next-line no-console

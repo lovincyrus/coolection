@@ -2,12 +2,16 @@ import { useAuth } from "@clerk/nextjs";
 import React, { useCallback, useEffect, useMemo } from "react";
 
 import { searchCoolection } from "../actions";
+import { useFetchItems } from "../hooks/use-fetch-items";
+import { useFetchLists } from "../hooks/use-fetch-lists";
 import { ResultItem } from "./result-item";
 import { useResults } from "./results-provider";
 
 export function Results({ query }: { query: string }) {
   const { userId } = useAuth();
   const { results, updateResults } = useResults();
+  const { items, loading: itemLoading, error: itemError } = useFetchItems();
+  const { lists, loading: listsLoading, error: listsError } = useFetchLists();
 
   useEffect(() => {
     const fetchResults = async () => {
@@ -21,6 +25,12 @@ export function Results({ query }: { query: string }) {
     fetchResults();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useEffect(() => {
+    if (query === "") {
+      updateResults(items);
+    }
+  }, [query, updateResults, items]);
 
   useEffect(() => {
     let current = true;
@@ -56,14 +66,19 @@ export function Results({ query }: { query: string }) {
         </p>
       ) : null}
 
-      {filteredResults.length === 0 && query.trim().length > 0 ? (
+      {query.length > 0 && filteredResults.length === 0 ? (
         <p className="text-sm text-gray-700 mt-4 text-center">
           Sip, sip, sippity, sip...
         </p>
       ) : null}
 
       {filteredResults.map((item) => (
-        <ResultItem key={item.id} item={item} onRemoveItem={handleRemoveItem} />
+        <ResultItem
+          key={item.id}
+          item={item}
+          onRemoveItem={handleRemoveItem}
+          lists={lists}
+        />
       ))}
     </div>
   );

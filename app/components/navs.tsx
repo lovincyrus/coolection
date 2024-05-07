@@ -1,34 +1,12 @@
 "use client";
 
 import { usePathname, useRouter } from "next/navigation";
-import React, { useEffect, useState } from "react";
+import React from "react";
 
 import { cn } from "@/lib/utils";
 
-import { CoolectionList } from "../types/coolection";
+import { useFetchLists } from "../hooks/use-fetch-lists";
 import { ScrollArea, ScrollBar } from "./ui/scroll-area";
-
-const useFetchLists = () => {
-  const [lists, setLists] = useState<CoolectionList[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
-
-  useEffect(() => {
-    setLoading(true);
-    fetch("/api/lists")
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error("Network response was not ok");
-        }
-        return response.json();
-      })
-      .then(setLists)
-      .catch(setError)
-      .finally(() => setLoading(false));
-  }, []);
-
-  return { lists, loading, error };
-};
 
 interface ExamplesNavProps extends React.HTMLAttributes<HTMLDivElement> {}
 
