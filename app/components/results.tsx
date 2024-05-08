@@ -59,7 +59,7 @@ export function Results({ query }: { query: string }) {
   );
 
   return (
-    <div className="mx-auto w-full">
+    <div className="relative mx-auto w-full">
       {query.length === 0 && filteredResults.length === 0 ? (
         <p className="mt-4 text-center text-sm text-gray-700">
           Search for websites or tweets

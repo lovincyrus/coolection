@@ -13,7 +13,7 @@ import { Results } from "./results";
 // After user stops typing for 300ms, update the URL with the new search query
 const DEBOUNCE_TIME = 300;
 
-export function HomePage() {
+export function HomeHome() {
   const inputRef = useRef<HTMLInputElement>(null);
   const searchParams = useSearchParams();
   const pathname = usePathname();
