@@ -13,8 +13,25 @@ export default async function Home() {
           <p className="mt-2">
             The internet is <span className="font-medium">great</span>, but
             internet resources can be short-lived. The Internet Archive created
-            the Wayback Machine to archive the internet, while GitHub preserves
-            codebases in the Arctic Code Vault.
+            the{" "}
+            <a
+              href="https://web.archive.org"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-gray-700 no-underline hover:underline"
+            >
+              Wayback Machine
+            </a>{" "}
+            to archive the internet, while GitHub preserves codebases in the{" "}
+            <a
+              href="https://archiveprogram.github.com/arctic-vault"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-gray-700 no-underline hover:underline"
+            >
+              Arctic Code Vault
+            </a>
+            .
           </p>
           <p className="mt-2">
             But what about the links you find useful? They are scattered across
