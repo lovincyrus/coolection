@@ -3,7 +3,7 @@
 import { auth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 
-import { getLatestItems } from "@/lib/get-latest-items";
+import { getLatestItems } from "@/lib/data/get-latest-items";
 
 export async function GET() {
   const { userId } = auth();

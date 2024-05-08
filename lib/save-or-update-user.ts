@@ -13,6 +13,7 @@ interface UserData {
 export async function saveOrUpdateUser(userData: UserData) {
   const { userId, email, firstName, lastName, imageUrl, createdAt, updatedAt } =
     userData;
+
   try {
     const user = await prisma.user.upsert({
       where: { id: userId },

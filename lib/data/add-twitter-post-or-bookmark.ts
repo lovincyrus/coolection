@@ -1,7 +1,7 @@
 import { ItemType } from "@/app/types/coolection";
 import prisma from "@/lib/prisma";
 
-import { getTweet } from "./get-tweet";
+import { getTweet } from "../get-tweet";
 
 // https://twitter.com/i/bookmarks?post_id=1784694622566187100
 // https://twitter.com/rauchg/status/1784694622566187100
@@ -40,7 +40,7 @@ function isTwitterBookmarkUrl(url: string): boolean {
   }
 }
 
-export async function addTweet(url: string, userId: string) {
+export async function addTwitterPostOrBookmark(url: string, userId: string) {
   const tweetID = getTweetIdFromUrl(url);
 
   const tweetContent = await getTweet(tweetID as string);
@@ -86,7 +86,7 @@ export async function addTweet(url: string, userId: string) {
   //   WHERE id = ${newTweet.id}
   // `;
 
-  console.log(`Added new tweet`);
+  console.log(`Added new tweet: ${JSON.stringify(newTweet, null, 2)}`);
 
   return newTweet;
 }
