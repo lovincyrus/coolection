@@ -4,9 +4,40 @@ import React from "react";
 
 export default async function Home() {
   return (
-    <main className="flex min-h-dvh w-full flex-col items-center justify-between px-4 md:px-0">
-      <div className="mx-auto mt-4 flex min-h-screen w-full max-w-xl flex-col justify-start md:mt-[-2.5rem] md:justify-center">
-        <div className="rounded-lg bg-gray-100/90 p-6 shadow-inner backdrop-blur md:p-12">
+    <main className="relative flex min-h-dvh w-full flex-col items-center justify-between px-4 md:px-0">
+      <div
+        aria-hidden="true"
+        className="background-gradient-pattern pointer-events-none absolute left-1/2 top-0 z-10 h-[100px] w-[1000px] -translate-x-1/2 -translate-y-1/2 opacity-[0.15]"
+      />
+
+      {/* Vector from https://vaul.emilkowal.ski/ */}
+      <svg
+        className="pointer-events-none absolute inset-0 h-full w-full stroke-gray-200 opacity-50 [mask-image:radial-gradient(100%_100%_at_top_center,white,transparent)]"
+        aria-hidden="true"
+      >
+        <defs>
+          <pattern
+            id="fcfcfd"
+            width="200"
+            height="200"
+            x="50%"
+            y="-1"
+            patternUnits="userSpaceOnUse"
+          >
+            <path d="M100 200V.5M.5 .5H200" fill="none" />
+          </pattern>
+        </defs>
+        <svg x="50%" y="-1" className="overflow-visible fill-gray-50">
+          <path
+            d="M-100.5 0h201v201h-201Z M699.5 0h201v201h-201Z M499.5 400h201v201h-201Z M-300.5 600h201v201h-201Z"
+            stroke-width="0"
+          />
+        </svg>
+        <rect width="100%" height="100%" stroke-width="0" fill="url(#fcfcfd)" />
+      </svg>
+
+      <div className="mx-auto flex min-h-screen w-full max-w-2xl flex-col justify-center">
+        <div className="rounded-lg border border-gray-100 bg-[#fcfcfd] p-6 shadow-sm backdrop-blur-md md:p-12">
           <h1 className="font-serif text-2xl text-gray-900">
             Coolection <span className="h-8 w-8 text-2xl">🍵</span>
           </h1>

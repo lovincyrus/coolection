@@ -41,3 +41,7 @@ body {
     @apply hover:bg-gray-50;
   }
 }
+
+.background-gradient-pattern {
+  background-image: radial-gradient(#a4a4a3, transparent 50%);
+}
