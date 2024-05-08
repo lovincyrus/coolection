@@ -40,7 +40,7 @@ function isTwitterBookmarkUrl(url: string): boolean {
   }
 }
 
-export async function addTweet(url: string, user_id: string) {
+export async function addTweet(url: string, userId: string) {
   const tweetID = getTweetIdFromUrl(url);
 
   const tweetContent = await getTweet(tweetID as string);
@@ -76,7 +76,7 @@ export async function addTweet(url: string, user_id: string) {
         tweet_id: tweetID,
         name: tweetContent?.user.name ?? "",
       },
-      userId: user_id,
+      userId: userId,
     },
   });
 

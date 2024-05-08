@@ -2,7 +2,7 @@ import { ItemType } from "@/app/types/coolection";
 import { getMetatags } from "@/lib//get-metatags";
 import prisma from "@/lib/prisma";
 
-export async function addWebsite(url: string, user_id: string) {
+export async function addWebsite(url: string, userId: string) {
   const { title, description } = await getMetatags(url);
   // const generatedEmbedding = await generateEmbedding(
   //   (title ?? "") + " " + (description ?? "")
@@ -18,12 +18,12 @@ export async function addWebsite(url: string, user_id: string) {
   const newCoolection = await prisma.item.create({
     data: {
       url,
-      title: title || "",
-      description: description || "",
+      title: title ?? "Untitled",
+      description: description,
       type: ItemType._WEBSITE,
       // See: https://github.com/prisma/prisma/discussions/18220#discussioncomment-5266901
       // embedding: JSON.stringify(embedding),
-      userId: user_id,
+      userId: userId,
     },
   });
 
