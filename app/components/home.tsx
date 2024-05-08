@@ -1,9 +1,9 @@
 "use client";
 
-import { Search } from "lucide-react";
-import React, { useEffect, useRef, useState } from "react";
+import { SearchIcon } from "lucide-react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import React, { useCallback, useEffect, useRef } from "react";
 import { useHotkeys } from "reakeys";
-import { useDebounce } from "use-debounce";
 
 import { Footer } from "./footer";
 import { useGlobals } from "./globals-provider";
@@ -11,10 +11,11 @@ import { Header } from "./header";
 import { Results } from "./results";
 
 export function HomePage() {
-  const [query, setQuery] = useState("");
-  const [debouncedQuery] = useDebounce(query, 500);
   const inputRef = useRef<HTMLInputElement>(null);
   const { toggleSearch } = useGlobals();
+  const searchParams = useSearchParams();
+  const pathname = usePathname();
+  const { replace } = useRouter();
 
   useHotkeys([
     {
@@ -33,33 +34,18 @@ export function HomePage() {
     }
   }, [toggleSearch]);
 
-  useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    const searchQuery = params.get("search");
-    if (searchQuery) {
-      setQuery(searchQuery);
-    }
-    inputRef.current?.focus();
-  }, []);
-
-  useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    if (debouncedQuery) {
-      params.set("q", debouncedQuery);
-    } else {
-      params.delete("q");
-    }
-    const newRelativePathQuery = `${
-      window.location.pathname
-    }?${params.toString()}`;
-    history.pushState(null, "", newRelativePathQuery);
-
-    setQuery(debouncedQuery);
-  }, [debouncedQuery]);
-
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setQuery(event.target.value);
-  };
+  const handleSearch = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      const params = new URLSearchParams(searchParams);
+      if (event.target.value) {
+        params.set("q", event.target.value);
+      } else {
+        params.delete("q");
+      }
+      replace(`${pathname}?${params.toString()}`);
+    },
+    [pathname, replace, searchParams]
+  );
 
   return (
     <main className="flex min-h-dvh flex-col items-center justify-between w-full">
@@ -69,24 +55,20 @@ export function HomePage() {
         <div className="flex flex-col mt-20">
           {toggleSearch && (
             <div className="relative">
-              <Search className="absolute left-2 top-2.5 h-4 w-4 grayscale opacity-60 text-muted-foreground" />
+              <SearchIcon className="absolute left-2 top-2.5 h-4 w-4 grayscale opacity-60 text-muted-foreground" />
               <input
                 ref={inputRef}
-                className="w-full pl-8 px-3 py-2 text-sm leading-tight text-gray-700 border border-gray-300 rounded appearance-none transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring focus:shadow-outline"
-                placeholder="Search websites, tweets"
-                value={query}
-                onChange={handleChange}
+                className="w-full pl-8 px-3 py-2 text-sm leading-tight text-gray-700 border border-gray-300 rounded appearance-none transition-colors focus-visible:outline-none focus-visible:ring-1 focus:shadow-outline"
+                placeholder="Search..."
+                defaultValue={searchParams.get("q")?.toString()}
+                onChange={handleSearch}
                 autoFocus
               />
             </div>
           )}
 
           <div className="my-8">
-            {/* <h2 className="font-serif text-lg flex justify-between gap-1 px-4">
-              Results
-            </h2> */}
-
-            <Results query={debouncedQuery} />
+            <Results query={searchParams.get("q")?.toString() ?? ""} />
           </div>
         </div>
       </div>
