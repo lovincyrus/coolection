@@ -43,6 +43,16 @@ export function isTwitterPostOrBookmarkUrl(input: string) {
   }
 }
 
+export function isTwitterAccountUrl(href: string) {
+  const twitterProfileRegex =
+    /^(https?:\/\/)?(www\.)?twitter\.com\/[a-zA-Z0-9_]{1,15}\/?$/;
+
+  // Excluding bookmarks and status posts
+  const excludeRegex = /(\/i\/bookmarks\?post_id=)|(\/status\/)/;
+
+  return twitterProfileRegex.test(href) && !excludeRegex.test(href);
+}
+
 export function normalizeLink(input: string) {
   return normalizeUrl(input, {
     removeTrailingSlash: true,
