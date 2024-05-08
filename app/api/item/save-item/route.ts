@@ -29,7 +29,7 @@ export async function POST(req: Request) {
   if (isDuplicate) {
     return NextResponse.json(
       { message: "Item already exists" },
-      { status: 409 }
+      { status: 409 },
     );
   }
 
@@ -45,7 +45,7 @@ export async function POST(req: Request) {
 
     return NextResponse.json(
       { message: "Item added successfully", item: newItem },
-      { status: 200 }
+      { status: 200 },
     );
   } catch (error) {
     if (error instanceof Error) {
@@ -54,7 +54,7 @@ export async function POST(req: Request) {
           message: "Failed to add the link",
           error: error instanceof Error ? error.message : "Unknown error",
         },
-        { status: 500 }
+        { status: 500 },
       );
     }
   }

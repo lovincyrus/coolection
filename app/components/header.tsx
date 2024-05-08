@@ -13,10 +13,10 @@ export function Header() {
   const router = useRouter();
 
   return (
-    <div className="max-w-2xl mx-auto w-full">
-      <div className="flex flex-row justify-between items-center gap-2">
+    <div className="mx-auto w-full max-w-2xl">
+      <div className="flex flex-row items-center justify-between gap-2">
         <div className="flex flex-row items-center space-x-0">
-          <div className="flex items-center justify-center w-8 h-8 text-2xl">
+          <div className="flex h-8 w-8 items-center justify-center text-2xl">
             🍵
           </div>
           {/* <div className="text-gray-500 text-sm">Coolection</div> */}
@@ -31,7 +31,7 @@ export function Header() {
           </Button> */}
           <NewItemDialog />
           <Button
-            className="items-center bg-white justify-center whitespace-nowrap font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground rounded-lg px-3 text-xs ml-auto h-[30px]"
+            className="focus-visible:ring-ring border-input bg-background hover:bg-accent hover:text-accent-foreground ml-auto h-[30px] items-center justify-center whitespace-nowrap rounded-lg border bg-white px-3 text-xs font-medium shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 disabled:pointer-events-none disabled:opacity-50"
             onClick={() => {
               signOut(() => {
                 router.push("/");

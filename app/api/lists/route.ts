@@ -16,8 +16,8 @@ export async function GET() {
     const lists = await prisma.list.findMany({
       where: {
         userId: userId,
-        isDeleted: false
-      }
+        isDeleted: false,
+      },
     });
     return NextResponse.json(lists);
   } catch (error) {
@@ -27,7 +27,7 @@ export async function GET() {
           message: "Failed to fetch lists",
           error: error instanceof Error ? error.message : "Unknown error",
         },
-        { status: 500 }
+        { status: 500 },
       );
     }
   }

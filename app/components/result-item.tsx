@@ -106,17 +106,17 @@ export function ResultItem({
       <ContextMenu>
         <ContextMenuTrigger>
           <a href={item.url} target="_blank" key={item.id}>
-            <div className="flex flex-col py-4 hover:bg-gray-50 hover:rounded-lg hover:shadow">
+            <div className="flex flex-col py-4 hover:rounded-lg hover:bg-gray-50 hover:shadow">
               <div className="flex flex-col gap-1 px-4">
                 <h3 className="text-sm font-medium">{item.title}</h3>
                 {/* <code className="text-[12px]">{item.similarity}</code> */}
                 <div className="flex flex-row items-center space-x-2">
-                  <LinkIcon className="w-3 h-3 text-gray-400" />
+                  <LinkIcon className="h-3 w-3 text-gray-400" />
                   <p className="text-sm text-gray-400">
                     {extractDomain(String(item.url))}
                   </p>
                 </div>
-                <p className="text-sm text-gray-600 line-clamp-1">
+                <p className="line-clamp-1 text-sm text-gray-600">
                   {getDescription()}
                 </p>
               </div>

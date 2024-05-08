@@ -13,7 +13,7 @@ export const ResultsProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
   const [results, setResults] = useState<Array<CoolectionItemWithSimilarity>>(
-    []
+    [],
   );
 
   const updateResults = useCallback(
@@ -26,7 +26,7 @@ export const ResultsProvider: React.FC<{ children: React.ReactNode }> = ({
 
       setResults(newResults);
     },
-    []
+    [],
   );
 
   return (

@@ -35,7 +35,7 @@ export function NewItemDialog() {
     (event: React.ChangeEvent<HTMLInputElement>) => {
       setInputText(event.target.value);
     },
-    []
+    [],
   );
 
   const handleSubmit = useCallback(
@@ -95,18 +95,18 @@ export function NewItemDialog() {
       setInputText("");
       setOpenNewItemDialog(false);
     },
-    [inputText, updateResults, results, setOpenNewItemDialog]
+    [inputText, updateResults, results, setOpenNewItemDialog],
   );
 
   return (
     <Dialog open={openNewItemDialog} onOpenChange={setOpenNewItemDialog}>
       <DialogTrigger asChild>
-        <Button className="items-center bg-white justify-center whitespace-nowrap font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground rounded-lg px-3 text-xs ml-auto h-[30px]">
+        <Button className="focus-visible:ring-ring border-input bg-background hover:bg-accent hover:text-accent-foreground ml-auto h-[30px] items-center justify-center whitespace-nowrap rounded-lg border bg-white px-3 text-xs font-medium shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 disabled:pointer-events-none disabled:opacity-50">
           <PlusIcon className="mr-1 h-4 w-4" />
           New item
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px] bg-white">
+      <DialogContent className="bg-white sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>New item</DialogTitle>
           <DialogDescription>
@@ -124,7 +124,7 @@ export function NewItemDialog() {
           </div>
           <DialogFooter>
             <Button
-              className="items-center bg-white/80 justify-center whitespace-nowrap font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground rounded-md px-3 text-sm ml-auto w-fit"
+              className="focus-visible:ring-ring border-input bg-background hover:bg-accent hover:text-accent-foreground ml-auto w-fit items-center justify-center whitespace-nowrap rounded-md border bg-white/80 px-3 text-sm font-medium shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 disabled:pointer-events-none disabled:opacity-50"
               type="submit"
               disabled={!inputText.trim() || !isValidUrl(inputText)}
             >

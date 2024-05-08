@@ -3,8 +3,8 @@ import React from "react";
 export function Intro() {
   return (
     <>
-      <h1 className="text-2xl font-serif text-gray-900">Coolection</h1>
-      <div className="text-sm mt-4 text-gray-900">
+      <h1 className="font-serif text-2xl text-gray-900">Coolection</h1>
+      <div className="mt-4 text-sm text-gray-900">
         <p className="mt-2">
           Lorem Ipsum is simply dummy text of the printing and typesetting
           industry.

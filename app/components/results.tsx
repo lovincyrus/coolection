@@ -55,19 +55,19 @@ export function Results({ query }: { query: string }) {
     (itemId: string) => {
       updateResults(results.filter((item) => item.id !== itemId));
     },
-    [results, updateResults]
+    [results, updateResults],
   );
 
   return (
-    <div className="w-full mx-auto">
+    <div className="mx-auto w-full">
       {query.length === 0 && filteredResults.length === 0 ? (
-        <p className="text-sm text-gray-700 mt-4 text-center">
+        <p className="mt-4 text-center text-sm text-gray-700">
           Search for websites or tweets
         </p>
       ) : null}
 
       {query.length > 0 && filteredResults.length === 0 ? (
-        <p className="text-sm text-gray-700 mt-4 text-center">
+        <p className="mt-4 text-center text-sm text-gray-700">
           Sip, sip, sippity, sip...
         </p>
       ) : null}

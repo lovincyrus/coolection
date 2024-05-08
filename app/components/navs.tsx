@@ -28,10 +28,10 @@ export function ExamplesNav({ className, ...props }: ExamplesNavProps) {
               onClick={() => handleListClick(list.id)}
               key={list.name}
               className={cn(
-                "flex h-7 items-center justify-center rounded-full px-4 text-center text-sm transition-colors hover:text-primary",
+                "hover:text-primary flex h-7 items-center justify-center rounded-full px-4 text-center text-sm transition-colors",
                 pathname.includes(list.name.toLowerCase().replace(/\s+/g, "-"))
-                  ? "bg-muted font-medium text-primary"
-                  : "text-muted-foreground"
+                  ? "bg-muted text-primary font-medium"
+                  : "text-muted-foreground",
               )}
             >
               {list.name}

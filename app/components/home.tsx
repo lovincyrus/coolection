@@ -44,21 +44,21 @@ export function HomePage() {
       }
       replace(`${pathname}?${params.toString()}`);
     },
-    [pathname, replace, searchParams]
+    [pathname, replace, searchParams],
   );
 
   return (
-    <main className="flex min-h-dvh flex-col items-center justify-between w-full">
-      <div className="max-w-2xl px-4 md:px-0 mx-auto w-full mt-4">
+    <main className="flex min-h-dvh w-full flex-col items-center justify-between">
+      <div className="mx-auto mt-4 w-full max-w-2xl px-4 md:px-0">
         <Header />
 
-        <div className="flex flex-col mt-20">
+        <div className="mt-20 flex flex-col">
           {toggleSearch && (
             <div className="relative">
-              <SearchIcon className="absolute left-2 top-2.5 h-4 w-4 grayscale opacity-60 text-muted-foreground" />
+              <SearchIcon className="text-muted-foreground absolute left-2 top-2.5 h-4 w-4 opacity-60 grayscale" />
               <input
                 ref={inputRef}
-                className="w-full pl-8 px-3 py-2 text-sm leading-tight text-gray-700 border border-gray-300 rounded appearance-none transition-colors focus-visible:outline-none focus-visible:ring-1 focus:shadow-outline"
+                className="focus:shadow-outline w-full appearance-none rounded border border-gray-300 px-3 py-2 pl-8 text-sm leading-tight text-gray-700 transition-colors focus-visible:outline-none focus-visible:ring-1"
                 placeholder="Search..."
                 defaultValue={searchParams.get("q")?.toString()}
                 onChange={handleSearch}

@@ -6,7 +6,7 @@ import { CoolectionItem } from "./types";
 
 export async function searchCoolection(
   query: string,
-  userId: string
+  userId: string,
 ): Promise<Array<CoolectionItem & { similarity: number }>> {
   try {
     if (query.trim().length === 0) return [];

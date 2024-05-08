@@ -14,7 +14,7 @@ export async function PUT(req: Request) {
   if (!item_id) {
     return NextResponse.json(
       { message: "Item ID is required" },
-      { status: 400 }
+      { status: 400 },
     );
   }
 
@@ -34,7 +34,7 @@ export async function PUT(req: Request) {
     if (item.userId !== userId) {
       return NextResponse.json(
         { message: "Unauthorized to delete this item" },
-        { status: 403 }
+        { status: 403 },
       );
     }
 
@@ -48,7 +48,7 @@ export async function PUT(req: Request) {
 
     return NextResponse.json(
       { message: `Item ${item_id} marked as deleted successfully` },
-      { status: 200 }
+      { status: 200 },
     );
   } catch (error) {
     return NextResponse.json(
@@ -56,7 +56,7 @@ export async function PUT(req: Request) {
         message: `Failed to mark item ${item_id} as deleted`,
         error: error instanceof Error ? error.message : "Unknown error",
       },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

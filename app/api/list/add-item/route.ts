@@ -26,7 +26,7 @@ export async function POST(req: Request) {
     if (list.userId !== userId) {
       return NextResponse.json(
         { message: "Unauthorized to update this list" },
-        { status: 403 }
+        { status: 403 },
       );
     }
 
@@ -37,7 +37,7 @@ export async function POST(req: Request) {
 
     return NextResponse.json(
       { message: `List ${listId} updated successfully` },
-      { status: 200 }
+      { status: 200 },
     );
   } catch (error) {
     return NextResponse.json(
@@ -45,7 +45,7 @@ export async function POST(req: Request) {
         message: `Failed to add ${itemId} to list`,
         error: error instanceof Error ? error.message : "Unknown error",
       },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
