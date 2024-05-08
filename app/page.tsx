@@ -7,7 +7,7 @@ export default async function Home() {
     <main className="relative flex min-h-dvh w-full flex-col items-center justify-between px-4 md:px-0">
       <div
         aria-hidden="true"
-        className="background-gradient-pattern pointer-events-none absolute left-1/2 top-0 z-10 h-[100px] w-[1000px] -translate-x-1/2 -translate-y-1/2 opacity-[0.15]"
+        className="background-gradient-pattern pointer-events-none absolute left-1/2 top-0 z-10 h-[200px] w-full -translate-x-1/2 -translate-y-1/2 opacity-[0.15]"
       />
 
       {/* Vector from https://vaul.emilkowal.ski/ */}
@@ -36,7 +36,7 @@ export default async function Home() {
         <rect width="100%" height="100%" stroke-width="0" fill="url(#fcfcfd)" />
       </svg>
 
-      <div className="mx-auto flex min-h-screen w-full max-w-2xl flex-col justify-center">
+      <div className="mx-auto mt-4 flex min-h-screen w-full max-w-2xl flex-col justify-start md:mt-[-3.5rem] md:justify-center">
         <div className="rounded-lg border border-gray-100 bg-[#fcfcfd] p-6 shadow-sm backdrop-blur-md md:p-12">
           <h1 className="font-serif text-2xl text-gray-900">
             Coolection <span className="h-8 w-8 text-2xl">🍵</span>
