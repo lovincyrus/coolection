@@ -37,12 +37,6 @@ body {
 }
 
 @layer utilities {
-  .text-balance {
-    text-wrap: balance;
-  }
-}
-
-@layer utilities {
   button {
     @apply hover:bg-gray-50;
   }

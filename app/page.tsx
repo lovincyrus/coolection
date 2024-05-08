@@ -49,7 +49,7 @@ export default async function Home() {
               href="/sign-in"
               className="group rounded-full bg-black/80 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-black/90"
             >
-              Try it out{""}
+              Sign in{""}
               <ArrowRightCircleIcon className="ml-1.5 mt-[-2px] inline-block h-4 w-4 transition-transform group-hover:translate-x-1 group-hover:transition-transform" />
             </Link>
           </div>
