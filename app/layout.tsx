@@ -16,16 +16,14 @@ export const metadata: Metadata = {
     url: "https://coolection.co",
     title: "Coolection",
     description: "An open-source bookmarking tool.",
-    // images: [
-    //   {
-    //     url: "https://coolection.vercel.app/og.png",
-    //     width: 800,
-    //     height: 600,
-    //     alt: "Coolection",
-    //   },
-    // ],
-    // siteName: "Coolection",
-    // locale: "en_US",
+    images: [
+      {
+        url: "https://coolection.co/og-image.jpg",
+        alt: "Coolection",
+      },
+    ],
+    siteName: "Coolection",
+    locale: "en_US",
   },
 };
 
