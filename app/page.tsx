@@ -49,7 +49,8 @@ export default async function Home() {
               href="/sign-in"
               className="rounded-full bg-black/80 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-black/90"
             >
-              Sign in <ArrowRightIcon className="inline-block h-4 w-4" />
+              Sign in{" "}
+              <ArrowRightIcon className="ml-1 mt-[-2px] inline-block h-4 w-4" />
             </Link>
           </div>
         </div>
