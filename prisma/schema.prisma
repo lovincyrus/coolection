@@ -40,10 +40,10 @@ model Item {
   type        String                       @default("website") // "website", "tweet"
   metadata    Json?
   embedding   Unsupported("vector(1536)")? // Store the vector embedding of the content
-  userId      String
-  user        User                         @relation(fields: [userId], references: [id])
 
-  lists List[] @relation("ItemsOnList")
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
+  lists  List[] @relation("itemsInList")
 
   @@map("item")
 }
@@ -56,9 +56,10 @@ model List {
   updatedAt   DateTime  @updatedAt
   deletedAt   DateTime?
   isDeleted   Boolean   @default(false)
-  items       Item[]    @relation("ItemsOnList")
-  userId      String
-  user        User      @relation(fields: [userId], references: [id])
+
+  items  Item[] @relation("itemsInList")
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
 
   @@map("list")
 }
