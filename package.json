@@ -9,6 +9,7 @@
     "lint": "next lint",
     "db:seed": "prisma generate && prisma db seed",
     "db:push": "prisma db push --accept-data-loss",
+    "db:pull": "prisma db pull",
     "db:up": "docker-compose up -d",
     "db:down": "docker-compose down -v"
   },

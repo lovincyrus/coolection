@@ -26,8 +26,8 @@ Next, spin up the local database, apply the schema, and seed the database:
 # Start the database
 pnpm db:up
 
-# Force push schema
-pnpm db:push
+# Pull to sync the schema
+pnpm db:pull
 
 # Seed the database
 pnpm db:seed
@@ -68,3 +68,5 @@ NEXT_PUBLIC_CLERK_SIGN_UP_URL=
 ## Data modeling
 
 Run `prisma migrate dev` to create and apply a migration or run `prisma db push` to apply the changes directly (in both cases Prisma Client is automatically generated)
+
+See: https://www.prisma.io/docs/orm/prisma-migrate/getting-started
