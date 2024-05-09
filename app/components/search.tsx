@@ -59,7 +59,7 @@ export function Search() {
         <SearchIcon className="text-muted-foreground absolute left-2 top-[0.6rem] h-4 w-4 opacity-60 grayscale" />
         <input
           ref={inputRef}
-          className="focus:shadow-outline w-full appearance-none rounded border bg-black/5 px-3 py-2 pl-8 text-sm leading-tight text-gray-700 transition-colors focus-visible:outline-none focus-visible:ring-1"
+          className="focus:shadow-outline w-full appearance-none rounded border bg-black/5 px-3 py-2 pl-8 text-sm leading-tight text-gray-700 shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1"
           placeholder="Search..."
           defaultValue={querySearchParam}
           onChange={handleSearch}
