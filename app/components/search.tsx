@@ -8,7 +8,7 @@ import { useDebouncedCallback } from "use-debounce";
 
 import { useResults } from "../components/provider/results-provider";
 import { Results } from "../components/results";
-import { useFetchItems } from "../hooks/use-fetch-items";
+import { useItems } from "../hooks/use-items";
 
 // After user stops typing for 300ms, update the URL with the new search query
 const DEBOUNCE_TIME = 300;
@@ -19,7 +19,7 @@ export function Search() {
   const pathname = usePathname();
   const { replace } = useRouter();
   const { updateResults } = useResults();
-  const { items, loading: _itemsLoading, error: _itemsError } = useFetchItems();
+  const { items } = useItems();
 
   useHotkeys([
     {

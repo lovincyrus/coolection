@@ -27,7 +27,7 @@ export function Results({ query }: { query: string }) {
   }, [query, userId, updateResults]);
 
   const filteredResults = useMemo(() => {
-    return results.filter((item) => !item.isDeleted);
+    return results?.filter((item) => !item.isDeleted);
   }, [results]);
 
   const handleRemoveItem = useCallback(
@@ -39,19 +39,19 @@ export function Results({ query }: { query: string }) {
 
   return (
     <div className="relative mx-auto w-full">
-      {query.length === 0 && filteredResults.length === 0 ? (
+      {query.length === 0 && filteredResults?.length === 0 ? (
         <p className="mt-4 text-center text-sm text-gray-700">
           Search for websites or tweets
         </p>
       ) : null}
 
-      {query.length > 0 && filteredResults.length === 0 ? (
+      {query.length > 0 && filteredResults?.length === 0 ? (
         <p className="mt-4 text-center text-sm text-gray-700">
           Sip, sip, sippity, sip...
         </p>
       ) : null}
 
-      {filteredResults.map((item) => (
+      {filteredResults?.map((item) => (
         <ResultItem
           key={item.id}
           item={item}

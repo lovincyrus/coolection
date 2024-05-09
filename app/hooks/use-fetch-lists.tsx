@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 
 import { CoolectionList } from "../types/coolection";
 
+// TODO: refactor
 export const useFetchLists = () => {
   const [lists, setLists] = useState<CoolectionList[]>([]);
   const [loading, setLoading] = useState(false);

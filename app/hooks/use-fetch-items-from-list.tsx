@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 
+// TODO: refactor
 export function useFetchItemsFromList(listId: string) {
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);

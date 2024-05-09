@@ -6,7 +6,7 @@ import React, {
   useState,
 } from "react";
 
-import { useFetchItems } from "@/app/hooks/use-fetch-items";
+import { useItems } from "@/app/hooks/use-items";
 
 import { CoolectionItemWithSimilarity } from "../../types";
 
@@ -23,8 +23,7 @@ export const ResultsProvider: React.FC<{ children: React.ReactNode }> = ({
   const [results, setResults] = useState<Array<CoolectionItemWithSimilarity>>(
     [],
   );
-
-  const { items, loading: _itemsLoading, error: _itemsError } = useFetchItems();
+  const { items } = useItems();
 
   useEffect(() => {
     setResults(items);
