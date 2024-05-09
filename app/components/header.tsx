@@ -23,12 +23,6 @@ export function Header() {
         </div>
 
         <div className="flex flex-row gap-1">
-          {/* <Button
-            className="items-center bg-white justify-center whitespace-nowrap font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground rounded-lg px-3 text-xs ml-auto h-[30px]"
-            onClick={() => setToggleSearch(!toggleSearch)}
-          >
-            <SearchIcon className="h-4 w-4" />
-          </Button> */}
           <NewItemDialog />
           <Button
             className="focus-visible:ring-ring border-input bg-background hover:bg-accent hover:text-accent-foreground ml-auto h-[30px] items-center justify-center whitespace-nowrap rounded-lg border bg-white px-3 text-xs font-medium shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 disabled:pointer-events-none disabled:opacity-50"

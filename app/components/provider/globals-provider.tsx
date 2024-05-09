@@ -2,8 +2,6 @@ import React, { createContext, useContext, useState } from "react";
 import { useHotkeys } from "reakeys";
 
 interface GlobalsContextType {
-  toggleSearch: boolean;
-  setToggleSearch: (_toggleSearch: boolean) => void;
   openNewItemDialog: boolean;
   setOpenNewItemDialog: (_openNewItemDialog: boolean) => void;
 }
@@ -13,7 +11,6 @@ const GlobalsContext = createContext<GlobalsContextType | undefined>(undefined);
 export const GlobalsProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  const [toggleSearch, setToggleSearch] = useState<boolean>(true);
   const [openNewItemDialog, setOpenNewItemDialog] = useState<boolean>(false);
 
   useHotkeys([
@@ -30,8 +27,6 @@ export const GlobalsProvider: React.FC<{ children: React.ReactNode }> = ({
   return (
     <GlobalsContext.Provider
       value={{
-        toggleSearch,
-        setToggleSearch,
         openNewItemDialog,
         setOpenNewItemDialog,
       }}

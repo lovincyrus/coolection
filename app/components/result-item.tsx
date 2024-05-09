@@ -116,7 +116,7 @@ export function ResultItem({
                     {extractDomain(String(item.url))}
                   </p>
                 </div>
-                <p className="line-clamp-1 text-sm text-gray-600">
+                <p className="line-clamp-3 text-sm text-gray-600">
                   {getDescription()}
                 </p>
               </div>

@@ -2,35 +2,14 @@ import { useAuth } from "@clerk/nextjs";
 import React, { useCallback, useEffect, useMemo } from "react";
 
 import { searchCoolection } from "../actions";
-import { useFetchItems } from "../hooks/use-fetch-items";
 import { useFetchLists } from "../hooks/use-fetch-lists";
+import { useResults } from "./provider/results-provider";
 import { ResultItem } from "./result-item";
-import { useResults } from "./results-provider";
 
 export function Results({ query }: { query: string }) {
   const { userId } = useAuth();
   const { results, updateResults } = useResults();
-  const { items, loading: itemLoading, error: itemError } = useFetchItems();
-  const { lists, loading: listsLoading, error: listsError } = useFetchLists();
-
-  useEffect(() => {
-    const fetchResults = async () => {
-      const response = await fetch(`/api/items`);
-      if (response.ok) {
-        const latestResults = await response.json();
-        updateResults(latestResults);
-      }
-    };
-
-    fetchResults();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  useEffect(() => {
-    if (query === "") {
-      updateResults(items);
-    }
-  }, [query, updateResults, items]);
+  const { lists, loading: _listsLoading, error: _listsError } = useFetchLists();
 
   useEffect(() => {
     let current = true;

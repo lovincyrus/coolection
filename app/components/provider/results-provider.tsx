@@ -1,6 +1,14 @@
-import React, { createContext, useCallback, useContext, useState } from "react";
+import React, {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 
-import { CoolectionItemWithSimilarity } from "../types";
+import { useFetchItems } from "@/app/hooks/use-fetch-items";
+
+import { CoolectionItemWithSimilarity } from "../../types";
 
 interface ResultsContextType {
   results: Array<CoolectionItemWithSimilarity>;
@@ -16,14 +24,14 @@ export const ResultsProvider: React.FC<{ children: React.ReactNode }> = ({
     [],
   );
 
+  const { items, loading: _itemsLoading, error: _itemsError } = useFetchItems();
+
+  useEffect(() => {
+    setResults(items);
+  }, [items]);
+
   const updateResults = useCallback(
     (newResults: Array<CoolectionItemWithSimilarity>) => {
-      newResults.sort((a, b) => {
-        return (
-          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-        );
-      });
-
       setResults(newResults);
     },
     [],

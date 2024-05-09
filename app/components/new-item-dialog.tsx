@@ -6,8 +6,8 @@ import { toast } from "sonner";
 
 import { isTwitterPostOrBookmarkUrl, isValidUrl } from "@/lib/url";
 
-import { useGlobals } from "./globals-provider";
-import { useResults } from "./results-provider";
+import { useGlobals } from "./provider/globals-provider";
+import { useResults } from "./provider/results-provider";
 import { Button } from "./ui/button";
 import {
   Dialog,
@@ -79,7 +79,7 @@ export function NewItemDialog() {
 
         const newItem = await response.json();
 
-        updateResults([...results, newItem.item]);
+        updateResults([newItem.item, ...results]);
 
         return newItem;
       };
