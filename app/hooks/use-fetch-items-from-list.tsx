@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-export function useFetchItemsFromList(listId) {
+export function useFetchItemsFromList(listId: string) {
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
