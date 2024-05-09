@@ -37,7 +37,7 @@ export default async function Home() {
       </svg>
 
       <div className="mx-auto mt-4 flex min-h-screen w-full max-w-2xl flex-col justify-start md:mt-[-3.5rem] md:justify-center">
-        <div className="home-banner rounded-lg border border-gray-100 bg-[#fcfcfd] p-4 shadow-sm backdrop-blur-md md:p-8">
+        <div className="home-banner rounded-lg border border-gray-100 bg-[#fcfcfd] p-6 shadow-sm backdrop-blur-md md:p-8">
           <h1 className="font-serif text-2xl text-gray-900">
             Coolection <span className="h-8 w-8 text-2xl">🍵</span>
           </h1>
