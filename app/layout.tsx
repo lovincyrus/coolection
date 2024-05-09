@@ -6,6 +6,7 @@ import { Toaster } from "sonner";
 
 import { fontSans } from "@/lib/fonts";
 
+import { TailwindIndicator } from "./components/tailwind-indicator";
 import { Providers } from "./providers";
 
 export const metadata: Metadata = {
@@ -47,6 +48,7 @@ export default function RootLayout({
           <Toaster />
           <Analytics />
           {children}
+          <TailwindIndicator />
         </Providers>
       </body>
     </html>
