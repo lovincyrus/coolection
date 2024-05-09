@@ -2,14 +2,14 @@ import { useAuth } from "@clerk/nextjs";
 import React, { useCallback, useEffect, useMemo } from "react";
 
 import { searchCoolection } from "../actions";
-import { useFetchLists } from "../hooks/use-fetch-lists";
+import { useLists } from "../hooks/use-lists";
 import { useResults } from "./provider/results-provider";
 import { ResultItem } from "./result-item";
 
 export function Results({ query }: { query: string }) {
   const { userId } = useAuth();
   const { results, updateResults } = useResults();
-  const { lists, loading: _listsLoading, error: _listsError } = useFetchLists();
+  const { lists } = useLists();
 
   useEffect(() => {
     let current = true;

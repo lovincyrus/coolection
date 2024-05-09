@@ -1,6 +1,7 @@
 import { LinkIcon } from "lucide-react";
 import React from "react";
 import { toast } from "sonner";
+import { mutate } from "swr";
 
 import { CoolectionItem, CoolectionList, ItemType } from "../types";
 import {
@@ -89,6 +90,7 @@ export function ResultItem({
       error: `Failed to delete item ${item.title}`,
     });
 
+    mutate("/api/items"); // Trigger revalidation after deletion
     onRemoveItem(item.id);
   };
 
@@ -124,7 +126,7 @@ export function ResultItem({
           </a>
         </ContextMenuTrigger>
         <ContextMenuContent className="bg-white">
-          {lists.length > 0 && (
+          {lists?.length > 0 && (
             <ContextMenuSub>
               <ContextMenuSubTrigger>Move...</ContextMenuSubTrigger>
               <ContextMenuSubContent className="w-48 bg-white">

@@ -1,24 +1,18 @@
-import { useEffect, useState } from "react";
+"use client";
 
-// TODO: refactor
-export function useFetchItemsFromList(listId: string) {
-  const [items, setItems] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+import useSWR from "swr";
 
-  useEffect(() => {
-    setLoading(true);
-    fetch(`/api/lists/${listId}/items`)
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error("Network response was not ok");
-        }
-        return response.json();
-      })
-      .then(setItems)
-      .catch(setError)
-      .finally(() => setLoading(false));
-  }, [listId]);
+import { fetcher } from "@/lib/fetcher";
 
-  return { items, loading, error };
+export function useItemsFromLIst(listId: string) {
+  const { data, isLoading, error } = useSWR(
+    `/api/lists/${listId}/items`,
+    fetcher,
+  );
+
+  return {
+    itemsFromList: data,
+    loading: isLoading,
+    error,
+  };
 }

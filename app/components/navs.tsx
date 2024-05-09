@@ -5,14 +5,14 @@ import React from "react";
 
 import { cn } from "@/lib/utils";
 
-import { useFetchLists } from "../hooks/use-fetch-lists";
+import { useLists } from "../hooks/use-lists";
 import { ScrollArea, ScrollBar } from "./ui/scroll-area";
 
 interface ExamplesNavProps extends React.HTMLAttributes<HTMLDivElement> {}
 
 export function ExamplesNav({ className, ...props }: ExamplesNavProps) {
   const pathname = usePathname();
-  const { lists, loading, error } = useFetchLists();
+  const { lists } = useLists();
   const router = useRouter();
 
   const handleListClick = (listId: string) => {
