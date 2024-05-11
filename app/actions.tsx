@@ -1,13 +1,17 @@
 "use server";
 
+import { auth } from "@clerk/nextjs/server";
+
 import prisma from "@/lib/prisma";
 
-import { CoolectionItem } from "./types";
+import { CoolectionItemWithSimilarity } from "./types";
 
+// TODO: moved to /api/search; clean up
 export async function searchCoolection(
   query: string,
-  userId: string,
-): Promise<Array<CoolectionItem & { similarity: number }>> {
+): Promise<Array<CoolectionItemWithSimilarity>> {
+  const { userId } = auth();
+
   try {
     if (query.trim().length === 0) return [];
 
@@ -19,11 +23,11 @@ export async function searchCoolection(
       FROM item
       WHERE ("title" || ' ' || "description" || ' ' || "url") ILIKE ${
         "%" + query + "%"
-      } AND "userId" = ${userId}
+      } AND "userId" = ${userId} AND "isDeleted" = false
       ORDER BY "title"
       LIMIT 8;
       `;
-    return results as Array<CoolectionItem & { similarity: number }>;
+    return results as Array<CoolectionItemWithSimilarity>;
 
     // UNCOMMENT TO RE-ENABLE VECTOR SEARCH
     // NOTE: Otherwise we'd be burning through openai credits

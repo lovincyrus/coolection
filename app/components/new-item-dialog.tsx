@@ -6,8 +6,8 @@ import { toast } from "sonner";
 
 import { isTwitterPostOrBookmarkUrl, isValidUrl } from "@/lib/url";
 
+import { useItems } from "../hooks/use-items";
 import { useGlobals } from "./provider/globals-provider";
-import { useResults } from "./provider/results-provider";
 import { Button } from "./ui/button";
 import {
   Dialog,
@@ -23,7 +23,7 @@ import { Input } from "./ui/input";
 export function NewItemDialog() {
   const [inputText, setInputText] = useState("");
   const { openNewItemDialog, setOpenNewItemDialog } = useGlobals();
-  const { results, updateResults } = useResults();
+  const { items, mutate } = useItems();
 
   useEffect(() => {
     if (!openNewItemDialog) {
@@ -40,7 +40,7 @@ export function NewItemDialog() {
 
   const handleSubmit = useCallback(
     async (event: React.FormEvent) => {
-      event.preventDefault(); // Prevent the default form submission behavior
+      event.preventDefault();
       if (!inputText.trim()) {
         return;
       }
@@ -79,7 +79,7 @@ export function NewItemDialog() {
 
         const newItem = await response.json();
 
-        updateResults([newItem.item, ...results]);
+        mutate([newItem.item, ...items]);
 
         return newItem;
       };
@@ -95,7 +95,7 @@ export function NewItemDialog() {
       setInputText("");
       setOpenNewItemDialog(false);
     },
-    [inputText, updateResults, results, setOpenNewItemDialog],
+    [inputText, mutate, items, setOpenNewItemDialog],
   );
 
   return (

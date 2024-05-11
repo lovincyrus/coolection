@@ -2,13 +2,11 @@
 
 import { SearchIcon } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import React, { useEffect, useRef } from "react";
+import React, { useRef } from "react";
 import { useHotkeys } from "reakeys";
 import { useDebouncedCallback } from "use-debounce";
 
-import { useResults } from "../components/provider/results-provider";
 import { Results } from "../components/results";
-import { useItems } from "../hooks/use-items";
 
 // After user stops typing for 300ms, update the URL with the new search query
 const DEBOUNCE_TIME = 300;
@@ -18,8 +16,6 @@ export function Search() {
   const searchParams = useSearchParams();
   const pathname = usePathname();
   const { replace } = useRouter();
-  const { updateResults } = useResults();
-  const { items } = useItems();
 
   useHotkeys([
     {
@@ -33,12 +29,6 @@ export function Search() {
   ]);
 
   const querySearchParam = searchParams.get("q")?.toString() ?? "";
-
-  useEffect(() => {
-    if (querySearchParam === "") {
-      updateResults(items);
-    }
-  }, [querySearchParam, updateResults, items]);
 
   const handleSearch = useDebouncedCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {

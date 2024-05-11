@@ -51,7 +51,6 @@ export async function addTwitterPostOrBookmark(url: string, userId: string) {
 
   // console.log("adding to tweet table: ", tweetContent);
 
-  // TODO: normalize https://twitter.com/i/bookmarks?post_id=1764083298840768800 to https://twitter.com/omarwasm/status/1764083298840768800
   console.log("adding to tweet table: ", {
     metadata: {
       tweet_id: tweetID,
