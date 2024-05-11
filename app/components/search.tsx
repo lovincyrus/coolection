@@ -4,17 +4,12 @@ import { SearchIcon } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import React, { useRef } from "react";
 import { useHotkeys } from "reakeys";
-import { preload } from "swr";
 import { useDebouncedCallback } from "use-debounce";
-
-import { fetcher } from "@/lib/fetcher";
 
 import { Results } from "../components/results";
 
 // After user stops typing for 300ms, update the URL with the new search query
 const DEBOUNCE_TIME = 300;
-
-preload("/api/items", fetcher);
 
 export function Search() {
   const inputRef = useRef<HTMLInputElement>(null);
