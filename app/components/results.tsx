@@ -10,12 +10,16 @@ import { ResultItem } from "./result-item";
 
 export function Results({ query }: { query: string }) {
   const { items, mutate } = useItems();
-  const { lists } = useLists();
+  const { lists = [] } = useLists();
 
   // See: https://swr.vercel.app/docs/advanced/understanding#return-previous-data-for-better-ux
-  const { data: searchResults } = useSWR(`/api/search?q=${query}`, fetcher, {
-    keepPreviousData: true,
-  });
+  const { data: searchResults } = useSWR(
+    query ? `/api/search?q=${query}` : null,
+    fetcher,
+    {
+      keepPreviousData: true,
+    },
+  );
 
   const handleRemoveItem = useCallback(
     (itemId: string) => {
@@ -30,13 +34,13 @@ export function Results({ query }: { query: string }) {
 
   return (
     <div className="relative mx-auto w-full">
-      {query.length === 0 && items?.length === 0 ? (
+      {query.length === 0 && Array.isArray(items) && items.length === 0 ? (
         <p className="mt-4 text-center text-sm text-gray-700">
           Search for a website or paste a URL.
         </p>
       ) : null}
 
-      {query.length > 0 && results?.length === 0 ? (
+      {query.length > 0 && Array.isArray(results) && results.length === 0 ? (
         <p className="mt-4 text-center text-sm text-gray-700">
           Sip, sip, sippity, sip...
         </p>
