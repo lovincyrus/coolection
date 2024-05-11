@@ -13,7 +13,7 @@ export function useItems() {
   );
 
   return {
-    items: data,
+    items: data ?? [],
     loading: isLoading,
     error,
     mutate,

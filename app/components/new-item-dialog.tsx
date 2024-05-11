@@ -23,7 +23,7 @@ import { Input } from "./ui/input";
 export function NewItemDialog() {
   const [inputText, setInputText] = useState("");
   const { openNewItemDialog, setOpenNewItemDialog } = useGlobals();
-  const { items = [], mutate } = useItems();
+  const { items, mutate } = useItems();
 
   useEffect(() => {
     if (!openNewItemDialog) {

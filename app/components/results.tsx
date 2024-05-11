@@ -10,7 +10,7 @@ import { ResultItem } from "./result-item";
 
 export function Results({ query }: { query: string }) {
   const { items, mutate } = useItems();
-  const { lists = [] } = useLists();
+  const { lists } = useLists();
 
   // See: https://swr.vercel.app/docs/advanced/understanding#return-previous-data-for-better-ux
   const { data: searchResults } = useSWR(

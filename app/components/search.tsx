@@ -50,7 +50,7 @@ export function Search() {
         <input
           ref={inputRef}
           className="focus:shadow-outline w-full appearance-none rounded border bg-black/5 px-3 py-2 pl-8 text-sm leading-tight text-gray-700 shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1"
-          placeholder="Search..."
+          placeholder="Search websites..."
           defaultValue={querySearchParam}
           onChange={handleSearch}
           autoFocus

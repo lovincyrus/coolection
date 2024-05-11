@@ -71,7 +71,7 @@ export default async function Home() {
               across your browser bookmarks, notes, messages, and emails.
             </p>
             <p className="mt-2">
-              Now all you need to do is <i>remember</i> to save them.
+              Now, all you need to do is <i>remember</i> to save them.
             </p>
           </div>
 

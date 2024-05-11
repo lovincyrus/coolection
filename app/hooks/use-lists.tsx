@@ -13,7 +13,7 @@ export function useLists() {
   );
 
   return {
-    lists: data,
+    lists: data ?? [],
     loading: isLoading,
     error,
   };
