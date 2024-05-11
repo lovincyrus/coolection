@@ -20,17 +20,17 @@ export async function GET(req: NextRequest) {
 
   try {
     const results: Array<CoolectionItemWithSimilarity> = await prisma.$queryRaw`
-          SELECT
-            id,
-            "title", "description", "url", "type", "content", "metadata", "isDeleted",
-            1 as similarity
-          FROM item
-          WHERE ("title" || ' ' || "description" || ' ' || "url") ILIKE ${
-            "%" + query + "%"
-          } AND "userId" = ${userId} AND "isDeleted" = false
-          ORDER BY "title"
-          LIMIT 8;
-          `;
+      SELECT
+        id,
+        "title", "description", "url", "type", "content", "metadata", "isDeleted",
+        1 as similarity
+      FROM item
+      WHERE ("title" || ' ' || "description" || ' ' || "url") ILIKE ${
+        "%" + query + "%"
+      } AND "userId" = ${userId} AND "isDeleted" = false
+      ORDER BY "title"
+      LIMIT 8;
+    `;
 
     return NextResponse.json(results);
   } catch (error) {

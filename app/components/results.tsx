@@ -42,14 +42,15 @@ export function Results({ query }: { query: string }) {
         </p>
       ) : null}
 
-      {results?.map((item: CoolectionItem) => (
-        <ResultItem
-          key={item.id}
-          item={item}
-          onRemoveItem={handleRemoveItem}
-          lists={lists}
-        />
-      ))}
+      {Array.isArray(results) &&
+        results.map((item: CoolectionItem) => (
+          <ResultItem
+            key={item.id}
+            item={item}
+            onRemoveItem={handleRemoveItem}
+            lists={lists}
+          />
+        ))}
     </div>
   );
 }

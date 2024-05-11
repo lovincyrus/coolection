@@ -90,7 +90,7 @@ export function ResultItem({
       error: `Failed to delete item ${item.title}`,
     });
 
-    mutate("/api/items"); // Trigger revalidation after deletion
+    mutate("/api/items");
     onRemoveItem(item.id);
   };
 
