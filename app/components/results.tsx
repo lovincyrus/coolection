@@ -23,6 +23,7 @@ export function Results({ query }: { query: string }) {
   );
 
   const isSearchingResultsWithTimeout = useLoadingWithTimeout(isLoading);
+  const showEmptyItemsCopy = useLoadingWithTimeout(!items, 500);
 
   const handleRemoveItem = useCallback(
     (itemId: string) => {
@@ -37,7 +38,7 @@ export function Results({ query }: { query: string }) {
 
   return (
     <div className="relative mx-auto w-full">
-      {query.length === 0 && Array.isArray(items) && items.length === 0 ? (
+      {showEmptyItemsCopy ? (
         <p className="mt-4 text-center text-sm text-gray-700">
           Search for a website or paste a URL.
         </p>

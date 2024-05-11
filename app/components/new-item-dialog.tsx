@@ -110,7 +110,7 @@ export function NewItemDialog() {
         <DialogHeader>
           <DialogTitle>New item</DialogTitle>
           <DialogDescription>
-            Add a website or a tweet you want to keep track of
+            Type or paste a website you want to remember.
           </DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit}>
