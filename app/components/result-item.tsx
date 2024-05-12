@@ -141,6 +141,14 @@ export function ResultItem({
               </ContextMenuSubContent>
             </ContextMenuSub>
           )}
+          <ContextMenuItem
+            onClick={() => {
+              navigator.clipboard.writeText(item.url);
+              // TODO: toast
+            }}
+          >
+            Copy Item
+          </ContextMenuItem>
           <ContextMenuItem onClick={handleDeleteItem}>
             Archive Item
           </ContextMenuItem>
