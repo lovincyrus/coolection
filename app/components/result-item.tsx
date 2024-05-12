@@ -143,7 +143,7 @@ export function ResultItem({
           )}
           <ContextMenuItem
             onClick={() => {
-              navigator.clipboard.writeText(item.url);
+              navigator.clipboard.writeText(item.url ?? "");
               // TODO: toast
             }}
           >
