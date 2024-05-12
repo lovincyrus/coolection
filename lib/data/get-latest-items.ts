@@ -1,3 +1,4 @@
+import { INITIAL_ITEMS_COUNT } from "@/lib/constants";
 import prisma from "@/lib/prisma";
 
 export async function getLatestItems(userId: string): Promise<Array<any>> {
@@ -9,7 +10,7 @@ export async function getLatestItems(userId: string): Promise<Array<any>> {
     orderBy: {
       createdAt: "desc",
     },
-    take: 10,
+    take: INITIAL_ITEMS_COUNT,
   });
 
   return latestResults;

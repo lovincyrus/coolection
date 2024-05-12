@@ -45,7 +45,7 @@ export function Search() {
 
   return (
     <div className="mt-20 flex flex-col">
-      <div className="relative">
+      <div className="relative mb-8">
         <SearchIcon className="text-muted-foreground absolute left-2 top-[0.6rem] h-4 w-4 opacity-60 grayscale" />
         <input
           ref={inputRef}
@@ -57,7 +57,7 @@ export function Search() {
         />
       </div>
 
-      <div className="my-8">
+      <div className="mb-8">
         <Results query={querySearchParam} />
       </div>
     </div>

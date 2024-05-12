@@ -2,6 +2,7 @@ import { auth } from "@clerk/nextjs/server";
 import { NextRequest, NextResponse } from "next/server";
 
 import { CoolectionItemWithSimilarity } from "@/app/types/coolection";
+import { INITIAL_ITEMS_COUNT } from "@/lib/constants";
 import prisma from "@/lib/prisma";
 
 export async function GET(req: NextRequest) {
@@ -23,7 +24,7 @@ export async function GET(req: NextRequest) {
     const results: Array<CoolectionItemWithSimilarity> = await prisma.$queryRaw`
       SELECT
         id,
-        "title", "description", "url", "type", "content", "metadata", "isDeleted",
+        "title", "description", "url", "type", "content", "metadata",
         1 as similarity
       FROM item
       WHERE 
@@ -32,7 +33,7 @@ export async function GET(req: NextRequest) {
         OR LOWER("url") ILIKE ${"%" + query.toLowerCase() + "%"})
         AND "userId" = ${userId} AND "isDeleted" = false
       ORDER BY "title"
-      LIMIT 8;
+      LIMIT ${INITIAL_ITEMS_COUNT};
     `;
 
     // Approach 2: Full-text search
