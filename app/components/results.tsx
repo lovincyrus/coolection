@@ -25,7 +25,6 @@ export function Results({ query }: { query: string }) {
   const isSearchingResultsWithTimeout = useLoadingWithTimeout(isLoading);
   const showEmptyItemsCopy = useLoadingWithTimeout(
     query.length === 0 && Array.isArray(items) && items.length === 0,
-    500,
   );
 
   const handleRemoveItem = useCallback(
