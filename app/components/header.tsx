@@ -29,7 +29,7 @@ export function Header() {
             onClick={() => {
               signOut(() => {
                 router.push("/");
-                window.location.reload();
+                router.refresh();
               });
             }}
           >
