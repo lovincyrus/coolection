@@ -2,6 +2,7 @@ import { AnimatePresence } from "framer-motion";
 import React, { useCallback } from "react";
 import useSWR from "swr";
 
+import { INITIAL_ITEMS_COUNT } from "@/lib/constants";
 import { fetcher } from "@/lib/fetcher";
 
 import { useItems } from "../hooks/use-items";
@@ -10,13 +11,32 @@ import { useLoadingWithTimeout } from "../hooks/use-loading-with-timeout";
 import { CoolectionItem } from "../types";
 import { AnimatedListItem } from "./animated-list-item";
 import { ResultItem } from "./result-item";
+import { Skeleton } from "./ui/skeleton";
+
+function ResultItemSkeletons({ count }: { count: number }) {
+  return (
+    <>
+      {Array.from({ length: count }, (_, idx) => (
+        <div className="flex flex-col rounded-lg py-4" key={idx}>
+          <div className="flex flex-col gap-1 px-4">
+            <Skeleton className="h-4 w-[320px]" />
+            <div className="flex flex-row items-center space-x-2">
+              <Skeleton className="h-4 w-[160px]" />
+            </div>
+            <Skeleton className="h-4 w-[400px]" />
+          </div>
+        </div>
+      ))}
+    </>
+  );
+}
 
 export function Results({ query }: { query: string }) {
-  const { items, mutate, loading } = useItems();
+  const { items, mutate, loading: loadingItems } = useItems();
   const { lists } = useLists();
 
   // See: https://swr.vercel.app/docs/advanced/understanding#return-previous-data-for-better-ux
-  const { data: searchResults, isLoading } = useSWR(
+  const { data: searchResults, isLoading: searchingResults } = useSWR(
     query ? `/api/search?q=${query}` : null,
     fetcher,
     {
@@ -24,12 +44,13 @@ export function Results({ query }: { query: string }) {
     },
   );
 
-  const isSearchingResultsWithTimeout = useLoadingWithTimeout(isLoading);
+  const isSearchingResultsWithTimeout = useLoadingWithTimeout(searchingResults);
   const showEmptyItemsCopy = useLoadingWithTimeout(
     query.length === 0 &&
       Array.isArray(items) &&
       items.length === 0 &&
-      !loading,
+      !loadingItems,
+    300,
   );
   const showNoResults =
     query.length > 0 &&
@@ -50,41 +71,35 @@ export function Results({ query }: { query: string }) {
   return (
     <div className="relative mx-auto w-full">
       <AnimatePresence initial={false}>
-        {isSearchingResultsWithTimeout ? (
-          <AnimatedListItem>
-            <p className="mt-4 text-center text-sm font-medium text-gray-700">
-              Sip, sip, sippity, sip...
-            </p>
-          </AnimatedListItem>
-        ) : null}
-
         {showEmptyItemsCopy ? (
-          <AnimatedListItem>
-            <p className="mt-4 text-center text-sm font-medium text-gray-700">
-              You have no items in your coolection. Start by adding some!
-            </p>
-          </AnimatedListItem>
+          <p className="mt-4 text-center text-sm font-medium text-gray-700">
+            You have no items in your coolection. Start by adding some!
+          </p>
         ) : null}
 
         {showNoResults ? (
-          <AnimatedListItem>
-            <p className="mt-4 text-center text-sm font-medium text-gray-700">
-              No results for <q className="truncate">{query}</q>
-            </p>
-          </AnimatedListItem>
+          <p className="mt-4 text-center text-sm font-medium text-gray-700">
+            No results for <q className="truncate">{query}</q>
+          </p>
         ) : null}
 
-        {Array.isArray(results) &&
-          results.map((item: CoolectionItem) => (
-            <AnimatedListItem key={item.id}>
-              <ResultItem
-                key={item.id}
-                item={item}
-                onRemoveItem={handleRemoveItem}
-                lists={lists}
-              />
-            </AnimatedListItem>
-          ))}
+        {loadingItems || isSearchingResultsWithTimeout ? (
+          <ResultItemSkeletons count={INITIAL_ITEMS_COUNT} />
+        ) : (
+          <>
+            {Array.isArray(results) &&
+              results.map((item: CoolectionItem) => (
+                <AnimatedListItem key={item.id}>
+                  <ResultItem
+                    key={item.id}
+                    item={item}
+                    onRemoveItem={handleRemoveItem}
+                    lists={lists}
+                  />
+                </AnimatedListItem>
+              ))}
+          </>
+        )}
       </AnimatePresence>
     </div>
   );
