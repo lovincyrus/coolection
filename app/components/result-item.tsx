@@ -85,9 +85,9 @@ export function ResultItem({
     };
 
     toast.promise(deleteItem(), {
-      loading: `Deleting item ${item.title}...`,
-      success: `${item.title} has been deleted successfully`,
-      error: `Failed to delete item ${item.title}`,
+      loading: `Archiving item ${item.title}...`,
+      success: `${item.title} has been archived successfully`,
+      error: `Failed to archive item ${item.title}`,
     });
 
     mutate("/api/items");
@@ -108,7 +108,7 @@ export function ResultItem({
       <ContextMenu>
         <ContextMenuTrigger>
           <a href={item.url} target="_blank" key={item.id}>
-            <div className="flex flex-col py-4 hover:rounded-lg hover:bg-gray-50 hover:shadow">
+            <div className="flex flex-col py-4 transition-all duration-200 hover:rounded-lg hover:bg-gray-50 hover:shadow">
               <div className="flex flex-col gap-1 px-4">
                 <h3 className="text-sm font-medium">{item.title}</h3>
                 {/* <code className="text-[12px]">{item.similarity}</code> */}
@@ -142,7 +142,7 @@ export function ResultItem({
             </ContextMenuSub>
           )}
           <ContextMenuItem onClick={handleDeleteItem}>
-            Delete Item
+            Archive Item
           </ContextMenuItem>
         </ContextMenuContent>
       </ContextMenu>
