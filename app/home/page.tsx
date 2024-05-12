@@ -7,6 +7,12 @@ import { Footer } from "../components/footer";
 import { Header } from "../components/header";
 import { Search } from "../components/search";
 
+export async function generateMetadata() {
+  return {
+    title: "Home",
+  };
+}
+
 export default async function HomePage() {
   const { userId } = auth().protect();
 

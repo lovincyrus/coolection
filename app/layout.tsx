@@ -10,13 +10,13 @@ import { TailwindIndicator } from "./components/tailwind-indicator";
 import { Providers } from "./providers";
 
 export const metadata: Metadata = {
-  title: "Coolection",
-  description: "An open-source bookmarking tool.",
+  title: "Coolection · A better way to organize your favorite links.",
+  description: "A better way to organize your favorite links.",
   openGraph: {
     type: "website",
     url: "https://coolection.co",
-    title: "Coolection",
-    description: "An open-source bookmarking tool.",
+    title: "Coolection · A better way to organize your favorite links.",
+    description: "A better way to organize your favorite links.",
     images: [
       {
         url: "https://coolection.co/og-image.jpg",
