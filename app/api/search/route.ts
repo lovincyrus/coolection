@@ -19,18 +19,52 @@ export async function GET(req: NextRequest) {
   }
 
   try {
+    // Approach 1: Simple ILIKE search
     const results: Array<CoolectionItemWithSimilarity> = await prisma.$queryRaw`
       SELECT
         id,
         "title", "description", "url", "type", "content", "metadata", "isDeleted",
         1 as similarity
       FROM item
-      WHERE ("title" || ' ' || "description" || ' ' || "url") ILIKE ${
-        "%" + query + "%"
-      } AND "userId" = ${userId} AND "isDeleted" = false
+      WHERE 
+        (LOWER("title") ILIKE ${"%" + query.toLowerCase() + "%"}
+        OR LOWER("description") ILIKE ${"%" + query.toLowerCase() + "%"}
+        OR LOWER("url") ILIKE ${"%" + query.toLowerCase() + "%"})
+        AND "userId" = ${userId} AND "isDeleted" = false
       ORDER BY "title"
       LIMIT 8;
     `;
+
+    // Approach 2: Full-text search
+    // TODO: Add `fullTextSearch` to schema.prisma
+    // See: https://www.prisma.io/docs/orm/prisma-client/queries/full-text-search#full-text-search-with-raw-sql
+    // const results: Array<CoolectionItemWithSimilarity> = await prisma.$queryRaw`
+    //   SELECT
+    //     id,
+    //     "title", "description", "url", "type", "content", "metadata", "isDeleted",
+    //     1 as similarity
+    //   FROM item
+    //   WHERE to_tsvector('english', "title" || ' ' || "description" || ' ' || "url") @@ to_tsquery('english', ${query}) AND "userId" = ${userId} AND "isDeleted" = false
+    //   ORDER BY "title"
+    //   LIMIT 8;
+    // `;
+
+    // Approach 3: Vector search using OpenAI Embeddings
+    // See: https://platform.openai.com/docs/guides/embeddings/what-are-embeddings
+    // See: https://github.com/ollama/ollama/issues/2416
+    // const embedding = await generateEmbedding(query);
+    // const vectorQuery = `[${embedding.join(",")}]`;
+
+    // SELECT
+    //   id,
+    //   "title", "description", "url", "type", "content", "metadata", "isDeleted",
+    //   1 - (embedding <=> ${vectorQuery}::vector) as similarity
+    // FROM item
+    // WHERE 1 - (embedding <=> ${vectorQuery}::vector) > .7 AND "userId" = ${userId}
+    // ORDER BY similarity DESC
+    // LIMIT 8;
+    // `;
+    // return results as Array<CoolectionItem & { similarity: number }>;
 
     return NextResponse.json(results);
   } catch (error) {
