@@ -66,6 +66,25 @@ export async function GET(req: NextRequest) {
     // `;
     // return results as Array<CoolectionItem & { similarity: number }>;
 
+    // Approach 4: Hybrid search using OpenAI Embeddings and ILIKE
+    // const embedding = await generateEmbedding(query);
+    // const vectorQuery = `[${embedding.join(",")}]`;
+
+    // SELECT
+    //   id,
+    //   "title", "description", "url", "type", "content", "metadata", "isDeleted",
+    //   1 - (embedding <=> ${vectorQuery}::vector) as similarity
+    // FROM item
+    // WHERE
+    //   (1 - (embedding <=> ${vectorQuery}::vector) > .7
+    //   OR LOWER("title") ILIKE ${"%" + query.toLowerCase() + "%"}
+    //   OR LOWER("description") ILIKE ${"%" + query.toLowerCase() + "%"}
+    //   OR LOWER("url") ILIKE ${"%" + query.toLowerCase() + "%"})
+    //   AND "userId" = ${userId} AND "isDeleted" = false
+    // ORDER BY similarity DESC
+    // LIMIT 8;
+    // `;
+
     return NextResponse.json(results);
   } catch (error) {
     if (error instanceof Error) {
