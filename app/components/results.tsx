@@ -12,7 +12,7 @@ import { AnimatedListItem } from "./animated-list-item";
 import { ResultItem } from "./result-item";
 
 export function Results({ query }: { query: string }) {
-  const { items, mutate } = useItems();
+  const { items, mutate, loading } = useItems();
   const { lists } = useLists();
 
   // See: https://swr.vercel.app/docs/advanced/understanding#return-previous-data-for-better-ux
@@ -26,7 +26,10 @@ export function Results({ query }: { query: string }) {
 
   const isSearchingResultsWithTimeout = useLoadingWithTimeout(isLoading);
   const showEmptyItemsCopy = useLoadingWithTimeout(
-    query.length === 0 && Array.isArray(items) && items.length === 0,
+    query.length === 0 &&
+      Array.isArray(items) &&
+      items.length === 0 &&
+      !loading,
   );
   const showNoResults =
     query.length > 0 &&
