@@ -20,11 +20,11 @@ function ResultItemSkeletons({ count }: { count: number }) {
       {Array.from({ length: count }, (_, idx) => (
         <div className="flex flex-col rounded-lg py-4" key={idx}>
           <div className="flex flex-col gap-1 px-4">
-            <Skeleton className="h-4 w-[320px]" />
+            <Skeleton className="h-4 w-60" />
             <div className="flex flex-row items-center space-x-2">
-              <Skeleton className="h-4 w-[160px]" />
+              <Skeleton className="h-4 w-40" />
             </div>
-            <Skeleton className="h-4 w-[400px]" />
+            <Skeleton className="h-4 w-full" />
           </div>
         </div>
       ))}
