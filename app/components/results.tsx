@@ -10,6 +10,7 @@ import { useLists } from "../hooks/use-lists";
 import { useLoadingWithTimeout } from "../hooks/use-loading-with-timeout";
 import { CoolectionItem } from "../types";
 import { AnimatedListItem } from "./animated-list-item";
+import { useGlobals } from "./provider/globals-provider";
 import { ResultItem } from "./result-item";
 import { Skeleton } from "./ui/skeleton";
 
@@ -34,6 +35,7 @@ function ResultItemSkeletons({ count }: { count: number }) {
 export function Results({ query }: { query: string }) {
   const { items, mutate, loading: loadingItems } = useItems();
   const { lists } = useLists();
+  const { setOpenNewItemDialog } = useGlobals();
 
   // See: https://swr.vercel.app/docs/advanced/understanding#return-previous-data-for-better-ux
   const { data: searchResults, isLoading: searchingResults } = useSWR(
@@ -73,7 +75,14 @@ export function Results({ query }: { query: string }) {
       <AnimatePresence initial={false}>
         {showEmptyItemsCopy ? (
           <p className="mt-4 text-center text-sm font-medium text-gray-700">
-            You have no items in your coolection. Start by adding some!
+            You have no items in your coolection. Start by{" "}
+            <span
+              className="cursor-pointer text-sky-400 hover:underline"
+              onClick={() => setOpenNewItemDialog(true)}
+            >
+              adding some
+            </span>
+            !
           </p>
         ) : null}
 
