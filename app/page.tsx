@@ -54,34 +54,19 @@ export default async function Home() {
 
           <div className="mt-3 text-pretty text-sm leading-relaxed text-gray-800">
             <p className="mt-2">
-              The internet is <span className="font-medium">great</span>, but
-              internet resources can be short-lived. The Internet Archive
-              created the{" "}
-              <a
-                href="https://web.archive.org"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-gray-700 no-underline hover:underline"
-              >
-                Wayback Machine
-              </a>{" "}
-              to archive the internet, while GitHub preserves codebases in the{" "}
-              <a
-                href="https://archiveprogram.github.com/arctic-vault"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-gray-700 no-underline hover:underline"
-              >
-                Arctic Code Vault
-              </a>
-              .
+              <span className="font-medium">Coolection</span> makes organizing
+              your favorite links easy. It&apos;s designed to be single-purpose
+              and focused on simplicity.
             </p>
             <p className="mt-2">
-              But what about the links you find useful? They are scattered
-              across your browser bookmarks, notes, messages, and emails.
+              Our goal is to help you find the links you want to revisit later.
+              Think of it as having a designated spot for your car keys but for
+              websites.
             </p>
+
             <p className="mt-2">
-              Now, all you need to do is <i>remember</i> to save them.
+              Now, all you need to do is{" "}
+              <span className="italic">remember</span> to save them.
             </p>
           </div>
 
