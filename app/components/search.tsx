@@ -57,9 +57,7 @@ export function Search() {
         />
       </div>
 
-      <div className="mb-8">
-        <Results query={querySearchParam} />
-      </div>
+      <Results query={querySearchParam} />
     </div>
   );
 }

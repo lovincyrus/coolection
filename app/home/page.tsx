@@ -32,7 +32,7 @@ export default async function HomePage() {
   await saveOrUpdateUser(userData);
 
   return (
-    <main className="flex h-full min-h-screen w-full flex-col items-center justify-between">
+    <main className="grid min-h-dvh w-full grid-rows-[1fr,49px] content-center">
       <div className="mx-auto h-full w-full max-w-2xl px-4 pt-4 md:border-l md:border-r md:border-dashed">
         <Header />
         <Search />
