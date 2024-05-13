@@ -11,12 +11,12 @@ import { Providers } from "./providers";
 
 export const metadata: Metadata = {
   title: "Coolection · A better way to organize your favorite links",
-  description: "A better way to organize your favorite links.",
+  description: "Coolection makes organizing your favorite links easy.",
   openGraph: {
     type: "website",
     url: "https://coolection.co",
     title: "Coolection · A better way to organize your favorite links",
-    description: "A better way to organize your favorite links.",
+    description: "Coolection makes organizing your favorite links easy.",
     images: [
       {
         url: "https://coolection.co/og-image.jpg",
