@@ -71,7 +71,7 @@ export function Results({ query }: { query: string }) {
   const results = query.length > 0 ? searchResults : items;
 
   return (
-    <div className="relative mx-auto mb-8 w-full">
+    <div className="mb-8 w-full">
       <AnimatePresence initial={false}>
         {showEmptyItemsCopy ? (
           <p className="mt-4 text-center text-sm font-medium text-gray-700">
