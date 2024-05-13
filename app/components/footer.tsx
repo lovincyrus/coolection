@@ -2,7 +2,7 @@ import React from "react";
 
 import { cn } from "@/lib/utils";
 
-export function Footer({ type = "root" }: { type: "home" | "root" }) {
+export function Footer({ type = "root" }: { type?: "home" | "root" }) {
   return (
     <div className="h-[49px] w-full border-t bg-gray-100/60 p-4 text-xs">
       <div
