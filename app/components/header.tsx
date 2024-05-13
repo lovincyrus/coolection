@@ -13,7 +13,7 @@ export function Header() {
   const router = useRouter();
 
   return (
-    <div className="mx-auto w-full max-w-2xl">
+    <div className="mx-auto w-full max-w-2xl xl:max-w-4xl 2xl:max-w-6xl">
       <div className="flex flex-row items-center justify-between gap-2">
         <div className="flex flex-row items-center space-x-0">
           <div className="flex h-8 w-8 items-center justify-center text-2xl">
