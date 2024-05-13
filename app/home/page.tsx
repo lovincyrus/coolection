@@ -38,7 +38,7 @@ export default async function HomePage() {
         <Search />
       </div>
 
-      <Footer />
+      <Footer type="home" />
     </main>
   );
 }
