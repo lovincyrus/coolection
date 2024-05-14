@@ -52,7 +52,7 @@ This project uses Prisma as an ORM. To get started, you need to create a `.env` 
 DATABASE_URL="postgresql://root:password@localhost:5432/coolection"
 ```
 
-If you want to self-host the database or use a different provider (e.g., [Supabase](https://supabase.com/database), [Neon](https://neon.tech), [Vercel Postgres](https://vercel.com/docs/storage/vercel-postgres)), you can update the `DATABASE_URL` to point to your database.
+If you want to self-host the database or use a different provider (e.g., [Supabase](https://supabase.com/database), [Neon](https://neon.tech), [Vercel Postgres](https://vercel.com/docs/storage/vercel-postgres), [Heroku](https://elements.heroku.com/addons/heroku-postgresql)), you can update the `DATABASE_URL` to point to your database.
 
 ### Clerk
 
