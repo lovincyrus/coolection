@@ -21,17 +21,8 @@ body {
   background: #ffffff;
 }
 
-.home-banner {
+.simple-bg {
   background: linear-gradient(to bottom, transparent, #fcfcfd) white;
-}
-
-.dots {
-  background-image: radial-gradient(
-    circle,
-    currentColor 0.5px,
-    transparent 0.5px
-  );
-  background-size: 0.75rem 0.75rem;
 }
 
 @layer utilities {

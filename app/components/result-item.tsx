@@ -144,9 +144,7 @@ export function ResultItem({
           <ContextMenuItem
             onClick={() => {
               navigator.clipboard.writeText(item.url ?? "");
-              toast.success("URL copied to clipboard", {
-                position: "bottom-center",
-              });
+              toast.success("URL copied to clipboard");
             }}
           >
             Copy Item
