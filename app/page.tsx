@@ -46,7 +46,7 @@ export default async function RootPage() {
         <rect width="100%" height="100%" strokeWidth="0" fill="url(#FCFCFD)" />
       </svg>
 
-      <div className="mx-auto mt-4 flex min-h-full w-full max-w-2xl flex-col justify-start px-4 md:mt-[-3.5rem] md:min-h-screen  md:justify-center md:px-0">
+      <div className="mx-auto flex min-h-screen w-full max-w-2xl flex-1 flex-col justify-center px-4 md:mt-[-3.5rem] md:px-0">
         <div className="home-banner rounded-lg border border-gray-100 bg-[#FCFCFD] p-6 shadow-sm backdrop-blur-md md:p-8">
           <h1 className="font-serif text-2xl text-gray-900">
             Coolection <span className="h-8 w-8 text-2xl">🍵</span>
