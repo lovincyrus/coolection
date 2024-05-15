@@ -46,7 +46,7 @@ pnpm db:down
 
 ### Database
 
-This project uses Prisma as an ORM. To get started, you need to create a `.env` file in the root of the project and add the following:
+This project uses Prisma as an ORM. To get started, you need to create a `.env.local` file in the root of the project and add the following:
 
 ```bash
 DATABASE_URL="postgresql://root:password@localhost:5432/coolection"
@@ -61,8 +61,8 @@ This project uses Clerk for authentication. To get started, you need to create a
 ```bash
 NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=
 CLERK_SECRET_KEY=
-NEXT_PUBLIC_CLERK_SIGN_IN_URL=
-NEXT_PUBLIC_CLERK_SIGN_UP_URL=
+NEXT_PUBLIC_CLERK_SIGN_IN_URL="/sign-in"
+NEXT_PUBLIC_CLERK_SIGN_UP_URL="/sign-up"
 ```
 
 ## Data modeling
