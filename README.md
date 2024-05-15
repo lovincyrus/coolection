@@ -65,12 +65,6 @@ NEXT_PUBLIC_CLERK_SIGN_IN_URL="/sign-in"
 NEXT_PUBLIC_CLERK_SIGN_UP_URL="/sign-up"
 ```
 
-## Data modeling
-
-Run `prisma migrate dev` to create and apply a migration or run `prisma db push` to apply the changes directly (in both cases Prisma Client is automatically generated)
-
-See: https://www.prisma.io/docs/orm/prisma-migrate/getting-started
-
 <br>
 
 <sup>
