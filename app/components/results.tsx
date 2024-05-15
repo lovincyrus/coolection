@@ -38,7 +38,11 @@ export function Results({ query }: { query: string }) {
   const { setOpenNewItemDialog } = useGlobals();
 
   // See: https://swr.vercel.app/docs/advanced/understanding#return-previous-data-for-better-ux
-  const { data: searchResults, isLoading: searchingResults } = useSWR(
+  const {
+    data: searchResults,
+    isLoading: searchingResults,
+    mutate: mutateSearchResults,
+  } = useSWR<CoolectionItem[]>(
     query ? `/api/search?q=${query}` : null,
     fetcher,
     {
@@ -64,8 +68,14 @@ export function Results({ query }: { query: string }) {
       if (Array.isArray(items)) {
         mutate(items.filter((item) => item.id !== itemId));
       }
+      if (Array.isArray(searchResults)) {
+        mutateSearchResults(
+          searchResults.filter((item) => item.id !== itemId),
+          false,
+        );
+      }
     },
-    [items, mutate],
+    [items, mutate, mutateSearchResults, searchResults],
   );
 
   const results = query.length > 0 ? searchResults : items;
