@@ -12,6 +12,17 @@ export function Footer({ type = "root" }: { type?: "home" | "root" }) {
         )}
       >
         <div>&#169; {new Date().getFullYear()} Coolection</div>
+        <div>
+          Available on{" "}
+          <a
+            href="https://github.com/lovincyrus/coolection"
+            target="_blank"
+            rel="noreferrer noopener"
+            className="font-medium no-underline hover:underline"
+          >
+            GitHub
+          </a>
+        </div>
       </div>
     </div>
   );
