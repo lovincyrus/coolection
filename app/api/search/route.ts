@@ -31,6 +31,7 @@ export async function GET(req: NextRequest) {
         (LOWER("title") ILIKE ${"%" + query.toLowerCase() + "%"}
         OR LOWER("description") ILIKE ${"%" + query.toLowerCase() + "%"}
         OR LOWER("url") ILIKE ${"%" + query.toLowerCase() + "%"})
+        OR ("type" = 'tweet' AND LOWER("content") ILIKE ${"%" + query.toLowerCase() + "%"})
         AND "userId" = ${userId} AND "isDeleted" = false
       ORDER BY "title"
       LIMIT ${INITIAL_ITEMS_COUNT};
