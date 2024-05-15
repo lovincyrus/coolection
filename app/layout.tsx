@@ -1,6 +1,7 @@
 import "./globals.css";
 
 import { Analytics } from "@vercel/analytics/react";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import type { Metadata, Viewport } from "next";
 import { Toaster } from "sonner";
 
@@ -49,6 +50,7 @@ export default function RootLayout({
           <Analytics />
           {children}
           <TailwindIndicator />
+          <SpeedInsights />
         </Providers>
       </body>
     </html>
