@@ -31,7 +31,7 @@ export function ResultItem({
   const handleRightClick = (event: React.MouseEvent) => {
     event.preventDefault();
     // eslint-disable-next-line no-console
-    console.log("Right-clicked on item:", item.title);
+    // console.log("Right-clicked on item:", item.title);
   };
 
   const handleAddToList = async (listId: string) => {
