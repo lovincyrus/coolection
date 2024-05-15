@@ -65,7 +65,7 @@ export async function addTwitterPostOrBookmark(url: string, userId: string) {
 
   const newTweet = await prisma.item.create({
     data: {
-      title: `Tweet by ${tweetContent?.user.name}`,
+      title: `${tweetContent?.user.name}`,
       type: ItemType._TWEET,
       content: tweetContent?.text.replace(/\n/g, " ") ?? "",
       url: isTwitterBookmarkUrl(url)
