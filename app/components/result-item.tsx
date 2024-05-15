@@ -103,11 +103,20 @@ export function ResultItem({
     return "No description";
   }
 
+  function getUrl() {
+    if (item.type === ItemType._WEBSITE) {
+      return item.url;
+    } else if (item.type === ItemType._TWEET) {
+      return item.metadata?.tweet_url;
+    }
+    return item.url;
+  }
+
   return (
     <div onContextMenu={handleRightClick}>
       <ContextMenu>
         <ContextMenuTrigger>
-          <a href={item.url} target="_blank" key={item.id}>
+          <a href={getUrl()} target="_blank" key={item.id}>
             <div className="flex flex-col py-4 transition-all duration-200 hover:rounded-lg hover:bg-gray-50 hover:shadow">
               <div className="flex flex-col gap-1 px-4">
                 <h3 className="text-sm font-medium">{item.title}</h3>

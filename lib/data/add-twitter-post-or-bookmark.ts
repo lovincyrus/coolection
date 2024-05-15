@@ -52,15 +52,16 @@ export async function addTwitterPostOrBookmark(url: string, userId: string) {
   // console.log("adding to tweet table: ", tweetContent);
 
   console.log("adding to tweet table: ", {
+    content: tweetContent?.text.replace(/\n/g, " "),
+    url: url,
+    type: ItemType._TWEET,
     metadata: {
       tweet_id: tweetID,
+      tweet_url: isTwitterBookmarkUrl(url)
+        ? `https://twitter.com/${tweetContent?.user.screen_name}/status/${tweetID}`
+        : url,
       name: tweetContent?.user.name ?? "",
     },
-    content: tweetContent?.text.replace(/\n/g, " "),
-    url: isTwitterBookmarkUrl(url)
-      ? `https://twitter.com/${tweetContent?.user.screen_name}/status/${tweetID}`
-      : url,
-    type: ItemType._TWEET,
   });
 
   const newTweet = await prisma.item.create({
@@ -68,11 +69,12 @@ export async function addTwitterPostOrBookmark(url: string, userId: string) {
       title: `${tweetContent?.user.name}`,
       type: ItemType._TWEET,
       content: tweetContent?.text.replace(/\n/g, " ") ?? "",
-      url: isTwitterBookmarkUrl(url)
-        ? `https://twitter.com/${tweetContent?.user.screen_name}/status/${tweetID}`
-        : url,
+      url: url,
       metadata: {
         tweet_id: tweetID,
+        tweet_url: isTwitterBookmarkUrl(url)
+          ? `https://twitter.com/${tweetContent?.user.screen_name}/status/${tweetID}`
+          : url,
         name: tweetContent?.user.name ?? "",
       },
       userId: userId,
