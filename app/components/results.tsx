@@ -12,27 +12,9 @@ import { CoolectionItem } from "../types";
 import { AnimatedListItem } from "./animated-list-item";
 import { useGlobals } from "./provider/globals-provider";
 import { ResultItem } from "./result-item";
-import { Skeleton } from "./ui/skeleton";
+import { ResultItemSkeletons } from "./result-item-skeletons";
 
-function ResultItemSkeletons({ count }: { count: number }) {
-  return (
-    <>
-      {Array.from({ length: count }, (_, idx) => (
-        <div className="flex flex-col rounded-lg py-4" key={idx}>
-          <div className="flex flex-col gap-1 px-4">
-            <Skeleton className="h-4 w-60" />
-            <div className="flex flex-row items-center space-x-2">
-              <Skeleton className="h-4 w-40" />
-            </div>
-            <Skeleton className="h-4 w-full" />
-          </div>
-        </div>
-      ))}
-    </>
-  );
-}
-
-export function Results({ query }: { query: string }) {
+export default function Results({ query }: { query: string }) {
   const { items, mutate, loading: loadingItems } = useItems();
   const { lists } = useLists();
   const { setOpenNewItemDialog } = useGlobals();
@@ -110,7 +92,6 @@ export function Results({ query }: { query: string }) {
               results.map((item: CoolectionItem) => (
                 <AnimatedListItem key={item.id}>
                   <ResultItem
-                    key={item.id}
                     item={item}
                     onRemoveItem={handleRemoveItem}
                     lists={lists}

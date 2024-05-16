@@ -2,11 +2,13 @@
 
 import { SearchIcon } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import React, { useRef } from "react";
+import React, { lazy, Suspense, useRef } from "react";
 import { useHotkeys } from "reakeys";
 import { useDebouncedCallback } from "use-debounce";
 
-import { Results } from "../components/results";
+import { ResultItemSkeletons } from "./result-item-skeletons";
+
+const Results = lazy(() => import("./results"));
 
 // After user stops typing for 300ms, update the URL with the new search query
 const DEBOUNCE_TIME = 300;
@@ -44,20 +46,25 @@ export function Search() {
   );
 
   return (
-    <div className="mt-20 flex flex-col">
+    <>
       <div className="relative mb-8">
         <SearchIcon className="text-muted-foreground absolute left-2 top-[0.6rem] h-4 w-4 opacity-60 grayscale" />
         <input
           ref={inputRef}
+          type="text"
           className="focus:shadow-outline w-full appearance-none rounded border bg-black/5 px-3 py-2 pl-8 text-sm leading-tight text-gray-700 shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1"
           placeholder="What are you looking for?"
           defaultValue={querySearchParam}
           onChange={handleSearch}
+          autoCorrect="off"
+          spellCheck={false}
           autoFocus
         />
       </div>
 
-      <Results query={querySearchParam} />
-    </div>
+      <Suspense fallback={<ResultItemSkeletons />}>
+        <Results query={querySearchParam} />
+      </Suspense>
+    </>
   );
 }
