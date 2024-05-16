@@ -59,11 +59,13 @@ export function Search() {
           autoCorrect="off"
           spellCheck={false}
           autoFocus
-          onKeyDown={(event) => {
-            if (event.key === "Escape") {
-              inputRef.current.value = "";
-              replace(pathname);
-              inputRef.current.focus();
+          onKeyDown={(event: React.KeyboardEvent<HTMLInputElement>) => {
+            if (inputRef.current) {
+              if (event.key === "Escape") {
+                inputRef.current.value = "";
+                replace(pathname);
+                inputRef.current.focus();
+              }
             }
           }}
         />
@@ -71,9 +73,11 @@ export function Search() {
           <XCircleIcon
             className="text-muted-foreground absolute right-2 top-[0.6rem] h-4 w-4 transform cursor-pointer opacity-60 grayscale"
             onClick={() => {
-              inputRef.current.value = "";
-              replace(pathname);
-              inputRef.current.focus();
+              if (inputRef.current) {
+                inputRef.current.value = "";
+                replace(pathname);
+                inputRef.current.focus();
+              }
             }}
           />
         )}
