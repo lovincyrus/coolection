@@ -41,6 +41,7 @@ export default function Results({ query }: { query: string }) {
     300,
   );
   const showNoResults =
+    !searchingResults &&
     query.length > 0 &&
     Array.isArray(searchResults) &&
     searchResults.length === 0;
