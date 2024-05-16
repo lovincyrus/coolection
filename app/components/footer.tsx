@@ -21,8 +21,7 @@ export function Footer({ type = "root" }: { type?: "home" | "root" }) {
             className="font-medium no-underline hover:underline"
           >
             GitHub
-          </a>{" "}
-          sooooon
+          </a>
         </div>
       </div>
     </div>

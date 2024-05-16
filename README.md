@@ -4,7 +4,7 @@
 
 <p align="center">
   <a href="https://coolection.co">
-    <img src="https://github.com/lovincyrus/coolection/assets/1021101/55bfc6d3-0f44-4a07-91c8-9b4d01bfc5c6" width="800">
+    <img src="https://i.imgur.com/VS46bD0.png" alt="Coolection makes organizing your favorite links easy." width="800">
     <br>
     <strong>coolection.co</strong>
   </a>
