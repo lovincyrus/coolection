@@ -64,7 +64,7 @@ export default function Results({ query }: { query: string }) {
   const results = query.length > 0 ? searchResults : items;
 
   return (
-    <div className="mb-8 w-full">
+    <div className="mb-8">
       <AnimatePresence initial={false}>
         {showEmptyItemsCopy ? (
           <p className="mt-4 text-center text-sm font-medium text-gray-700">
@@ -80,9 +80,11 @@ export default function Results({ query }: { query: string }) {
         ) : null}
 
         {showNoResults ? (
-          <p className="mt-4 text-center text-sm font-medium text-gray-700">
-            No results for <q className="truncate">{query}</q>
-          </p>
+          <div className="mt-4 flex w-full justify-center">
+            <p className="max-w-[80%] truncate text-center text-sm font-medium text-gray-700">
+              No results for <q>{query}</q>
+            </p>
+          </div>
         ) : null}
 
         {loadingItems || isSearchingResultsWithTimeout ? (
