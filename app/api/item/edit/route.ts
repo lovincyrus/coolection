@@ -18,6 +18,10 @@ export async function PATCH(req: Request) {
     );
   }
 
+  if (!title || title.trim() === "") {
+    return NextResponse.json({ message: "Title is required" }, { status: 400 });
+  }
+
   if (!userId) {
     return new NextResponse("Unauthorized", { status: 401 });
   }
