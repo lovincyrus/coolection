@@ -11,9 +11,7 @@
     "db:push": "prisma db push --accept-data-loss",
     "db:pull": "prisma db pull",
     "db:up": "docker-compose up -d",
-    "db:down": "docker-compose down -v",
-    "db:migrate:dev": "prisma migrate dev",
-    "db:migrate:deploy": "prisma migrate deploy"
+    "db:down": "docker-compose down -v"
   },
   "prisma": {
     "seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} prisma/seed.ts"
