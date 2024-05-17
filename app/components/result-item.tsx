@@ -4,6 +4,7 @@ import { toast } from "sonner";
 import { mutate } from "swr";
 
 import { CoolectionItem, CoolectionList, ItemType } from "../types";
+import { useGlobals } from "./provider/globals-provider";
 import {
   ContextMenu,
   ContextMenuContent,
@@ -28,6 +29,8 @@ export function ResultItem({
   onRemoveItem: (_itemId: string) => void;
   lists: CoolectionList[];
 }) {
+  const { setOpenEditItemDialog, setCurrentItem } = useGlobals();
+
   const handleRightClick = (event: React.MouseEvent) => {
     event.preventDefault();
     // eslint-disable-next-line no-console
@@ -66,9 +69,13 @@ export function ResultItem({
     });
   };
 
+  const handleEditItem = () => {
+    setOpenEditItemDialog(true);
+  };
+
   const handleDeleteItem = async () => {
     const deleteItem = async () => {
-      const response = await fetch(`/api/item/delete-item`, {
+      const response = await fetch("/api/item/delete-item", {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -116,7 +123,15 @@ export function ResultItem({
     <div onContextMenu={handleRightClick}>
       <ContextMenu>
         <ContextMenuTrigger>
-          <a href={getUrl()} target="_blank" key={item.id}>
+          <a
+            href={getUrl()}
+            target="_blank"
+            rel="noreferrer noopener"
+            key={item.id}
+            onPointerOver={() => {
+              setCurrentItem(item);
+            }}
+          >
             <div className="flex select-none flex-col py-4 transition-all duration-200 hover:rounded-lg hover:bg-gray-50 hover:shadow">
               <div className="flex flex-col gap-1 px-4">
                 <h3 className="text-sm font-medium">{item.title}</h3>
@@ -156,11 +171,10 @@ export function ResultItem({
               toast.success("URL copied to clipboard");
             }}
           >
-            Copy Item
+            Copy URL
           </ContextMenuItem>
-          <ContextMenuItem onClick={handleDeleteItem}>
-            Archive Item
-          </ContextMenuItem>
+          <ContextMenuItem onClick={handleEditItem}>Edit</ContextMenuItem>
+          <ContextMenuItem onClick={handleDeleteItem}>Archive</ContextMenuItem>
         </ContextMenuContent>
       </ContextMenu>
     </div>

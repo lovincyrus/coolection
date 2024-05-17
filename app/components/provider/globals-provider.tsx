@@ -4,6 +4,10 @@ import { useHotkeys } from "reakeys";
 interface GlobalsContextType {
   openNewItemDialog: boolean;
   setOpenNewItemDialog: (_openNewItemDialog: boolean) => void;
+  openEditItemDialog: boolean;
+  setOpenEditItemDialog: (_openEditItemDialog: boolean) => void;
+  currentItem: CoolectionItem | null;
+  setCurrentItem: (_currentItem: CoolectionItem | null) => void;
 }
 
 const GlobalsContext = createContext<GlobalsContextType | undefined>(undefined);
@@ -12,6 +16,8 @@ export const GlobalsProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
   const [openNewItemDialog, setOpenNewItemDialog] = useState<boolean>(false);
+  const [openEditItemDialog, setOpenEditItemDialog] = useState<boolean>(false);
+  const [currentItem, setCurrentItem] = useState<CoolectionItem | null>(null);
 
   useHotkeys([
     {
@@ -29,6 +35,10 @@ export const GlobalsProvider: React.FC<{ children: React.ReactNode }> = ({
       value={{
         openNewItemDialog,
         setOpenNewItemDialog,
+        openEditItemDialog,
+        setOpenEditItemDialog,
+        currentItem,
+        setCurrentItem,
       }}
     >
       {children}

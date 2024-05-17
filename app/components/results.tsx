@@ -10,6 +10,7 @@ import { useLists } from "../hooks/use-lists";
 import { useLoadingWithTimeout } from "../hooks/use-loading-with-timeout";
 import { CoolectionItem } from "../types";
 import { AnimatedListItem } from "./animated-list-item";
+import { EditItemDialog } from "./edit-item-dialog";
 import { useGlobals } from "./provider/globals-provider";
 import { ResultItem } from "./result-item";
 import { ResultItemSkeletons } from "./result-item-skeletons";
@@ -104,6 +105,8 @@ export default function Results({ query }: { query: string }) {
           </>
         )}
       </AnimatePresence>
+
+      <EditItemDialog />
     </div>
   );
 }
