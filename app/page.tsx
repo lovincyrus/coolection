@@ -1,18 +1,10 @@
-import { auth } from "@clerk/nextjs/server";
 import { ArrowRightCircleIcon } from "lucide-react";
 import Link from "next/link";
-import { redirect } from "next/navigation";
 import React from "react";
 
 import { Footer } from "./components/footer";
 
 export default async function RootPage() {
-  const { sessionId } = auth();
-
-  if (sessionId) {
-    redirect("/home");
-  }
-
   return (
     <main className="relative flex min-h-dvh w-full flex-col items-center justify-between">
       <div
