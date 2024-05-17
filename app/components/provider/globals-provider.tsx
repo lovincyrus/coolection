@@ -1,6 +1,8 @@
 import React, { createContext, useContext, useState } from "react";
 import { useHotkeys } from "reakeys";
 
+import { CoolectionItem } from "../../types";
+
 interface GlobalsContextType {
   openNewItemDialog: boolean;
   setOpenNewItemDialog: (_openNewItemDialog: boolean) => void;

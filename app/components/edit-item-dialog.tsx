@@ -35,8 +35,8 @@ export function EditItemDialog() {
 
   useEffect(() => {
     if (currentItem && !openEditItemDialog) {
-      setTitle(currentItem.title);
-      setDescription(currentItem.description);
+      setTitle(currentItem.title ?? "");
+      setDescription(currentItem.description ?? "");
     }
   }, [openEditItemDialog, currentItem]);
 
@@ -48,7 +48,7 @@ export function EditItemDialog() {
   );
 
   const handleDescriptionChange = useCallback(
-    (event: React.ChangeEvent<HTMLInputElement>) => {
+    (event: React.ChangeEvent<HTMLTextAreaElement>) => {
       setDescription(event.target.value);
     },
     [],
@@ -69,7 +69,7 @@ export function EditItemDialog() {
         return;
       }
 
-      const response = await fetch("/api/item/edit-item", {
+      const response = await fetch("/api/item/edit", {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
@@ -126,7 +126,6 @@ export function EditItemDialog() {
               <Label htmlFor="description">Description</Label>
               <Textarea
                 id="description"
-                type="text"
                 className="resize-none"
                 placeholder="Description"
                 value={description}

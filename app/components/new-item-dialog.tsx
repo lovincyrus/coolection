@@ -53,7 +53,7 @@ export function NewItemDialog() {
         : "website";
 
       const saveItem = async () => {
-        const response = await fetch("/api/item/save-item", {
+        const response = await fetch("/api/item/create", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",

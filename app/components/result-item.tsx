@@ -73,9 +73,9 @@ export function ResultItem({
     setOpenEditItemDialog(true);
   };
 
-  const handleDeleteItem = async () => {
-    const deleteItem = async () => {
-      const response = await fetch("/api/item/delete-item", {
+  const handleArchiveItem = async () => {
+    const archiveItem = async () => {
+      const response = await fetch("/api/item/archive", {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -86,12 +86,12 @@ export function ResultItem({
       });
 
       if (!response.ok) {
-        toast.error(`Failed to delete the item from the list`);
+        toast.error(`Failed to archive the item from the list`);
         throw new Error("Network response was not ok");
       }
     };
 
-    toast.promise(deleteItem(), {
+    toast.promise(archiveItem(), {
       loading: `Archiving item ${item.title}...`,
       success: `${item.title} has been archived successfully`,
       error: `Failed to archive item ${item.title}`,
@@ -174,7 +174,7 @@ export function ResultItem({
             Copy URL
           </ContextMenuItem>
           <ContextMenuItem onClick={handleEditItem}>Edit</ContextMenuItem>
-          <ContextMenuItem onClick={handleDeleteItem}>Archive</ContextMenuItem>
+          <ContextMenuItem onClick={handleArchiveItem}>Archive</ContextMenuItem>
         </ContextMenuContent>
       </ContextMenu>
     </div>
