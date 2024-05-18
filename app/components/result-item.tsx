@@ -1,8 +1,10 @@
 import { LinkIcon } from "lucide-react";
+import { useSearchParams } from "next/navigation";
 import React from "react";
 import { toast } from "sonner";
 
 import { CoolectionItem, CoolectionList, ItemType } from "../types";
+import { HighlightChars } from "./highlight-chars";
 import { useGlobals } from "./provider/globals-provider";
 import {
   ContextMenu,
@@ -28,6 +30,8 @@ export function ResultItem({
   onArchive: (_itemId: string) => void;
   lists: CoolectionList[];
 }) {
+  const searchParams = useSearchParams();
+  const querySearchParam = searchParams.get("q")?.toString() ?? "";
   const { setOpenEditItemDialog, setCurrentItem } = useGlobals();
 
   const handleRightClick = (event: React.MouseEvent) => {
@@ -132,16 +136,27 @@ export function ResultItem({
           >
             <div className="flex select-none flex-col py-4 hover:rounded-lg hover:bg-gray-50 hover:shadow">
               <div className="flex flex-col gap-1 px-4">
-                <h3 className="text-sm font-medium">{item.title}</h3>
+                <h3 className="text-sm font-medium">
+                  <HighlightChars
+                    text={item.title}
+                    searchTerm={querySearchParam}
+                  />
+                </h3>
                 {/* <code className="text-[12px]">{item.similarity}</code> */}
                 <div className="flex flex-row items-center space-x-2">
                   <LinkIcon className="h-3 w-3 text-gray-400" />
                   <p className="text-sm text-gray-400">
-                    {extractDomain(String(item.url))}
+                    <HighlightChars
+                      text={extractDomain(String(item.url))}
+                      searchTerm={querySearchParam}
+                    />
                   </p>
                 </div>
                 <p className="line-clamp-3 text-sm text-gray-600">
-                  {getDescription()}
+                  <HighlightChars
+                    text={getDescription() ?? ""}
+                    searchTerm={querySearchParam}
+                  />
                 </p>
               </div>
             </div>
