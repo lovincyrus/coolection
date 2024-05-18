@@ -57,5 +57,8 @@ export function normalizeLink(input: string) {
   return normalizeUrl(input, {
     removeTrailingSlash: true,
     stripWWW: false,
+    keepQueryParameters: ["ref"],
+    removeQueryParameters: true,
+    forceHttps: true,
   });
 }
