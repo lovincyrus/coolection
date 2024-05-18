@@ -130,7 +130,7 @@ export function ResultItem({
               setCurrentItem(item);
             }}
           >
-            <div className="flex select-none flex-col py-4 transition-all duration-200 hover:rounded-lg hover:bg-gray-50 hover:shadow">
+            <div className="flex select-none flex-col py-4 hover:rounded-lg hover:bg-gray-50 hover:shadow">
               <div className="flex flex-col gap-1 px-4">
                 <h3 className="text-sm font-medium">{item.title}</h3>
                 {/* <code className="text-[12px]">{item.similarity}</code> */}
