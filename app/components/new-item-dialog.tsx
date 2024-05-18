@@ -23,7 +23,7 @@ import { Input } from "./ui/input";
 export function NewItemDialog() {
   const [inputText, setInputText] = useState("");
   const { openNewItemDialog, setOpenNewItemDialog } = useGlobals();
-  const { items, mutate } = useItems();
+  const { data: items, mutate: mutateItems } = useItems();
 
   useEffect(() => {
     if (!openNewItemDialog) {
@@ -79,7 +79,7 @@ export function NewItemDialog() {
 
         const newItem = await response.json();
 
-        mutate([newItem.item, ...items]);
+        mutateItems([newItem.item, ...items], false);
 
         return newItem;
       };
@@ -95,7 +95,7 @@ export function NewItemDialog() {
       setInputText("");
       setOpenNewItemDialog(false);
     },
-    [inputText, mutate, items, setOpenNewItemDialog],
+    [inputText, mutateItems, items, setOpenNewItemDialog],
   );
 
   return (

@@ -1,7 +1,6 @@
 import { LinkIcon } from "lucide-react";
 import React from "react";
 import { toast } from "sonner";
-import { mutate } from "swr";
 
 import { CoolectionItem, CoolectionList, ItemType } from "../types";
 import { useGlobals } from "./provider/globals-provider";
@@ -22,11 +21,11 @@ function extractDomain(url: string) {
 
 export function ResultItem({
   item,
-  onRemoveItem,
+  onArchive,
   lists,
 }: {
   item: CoolectionItem & { similarity?: number };
-  onRemoveItem: (_itemId: string) => void;
+  onArchive: (_itemId: string) => void;
   lists: CoolectionList[];
 }) {
   const { setOpenEditItemDialog, setCurrentItem } = useGlobals();
@@ -37,7 +36,7 @@ export function ResultItem({
     // console.log("Right-clicked on item:", item.title);
   };
 
-  const handleAddToList = async (listId: string) => {
+  const handleAddToList = (listId: string) => {
     function getListName() {
       const list = lists.find((l) => l.id === listId);
       return list ? list.name : "list";
@@ -73,7 +72,7 @@ export function ResultItem({
     setOpenEditItemDialog(true);
   };
 
-  const handleArchiveItem = async () => {
+  const handleArchiveItem = () => {
     const archiveItem = async () => {
       const response = await fetch("/api/item/archive", {
         method: "PUT",
@@ -97,8 +96,7 @@ export function ResultItem({
       error: `Failed to archive item ${item.title}`,
     });
 
-    mutate("/api/items");
-    onRemoveItem(item.id);
+    onArchive(item.id);
   };
 
   function getDescription() {

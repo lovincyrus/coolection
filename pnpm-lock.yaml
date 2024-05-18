@@ -11,6 +11,9 @@ dependencies:
   '@clerk/nextjs':
     specifier: ^5.0.6
     version: 5.0.6(eslint@8.57.0)(next@14.2.3)(react-dom@18.3.1)(react@18.3.1)(typescript@5.4.5)
+  '@piotr-cz/swr-idb-cache':
+    specifier: ^1.0.3
+    version: 1.0.3(react@18.3.1)(swr@2.2.5)
   '@prisma/client':
     specifier: ^5.13.0
     version: 5.13.0(prisma@5.13.0)
@@ -480,6 +483,17 @@ packages:
     dependencies:
       '@nodelib/fs.scandir': 2.1.5
       fastq: 1.17.1
+
+  /@piotr-cz/swr-idb-cache@1.0.3(react@18.3.1)(swr@2.2.5):
+    resolution: {integrity: sha512-176v8LvxeBctd4BB23Ybol49thwNnxxHXNWgqwscmoykTCoHayjiP+oeXU1pPYYrrFf7v1owNG2Et3SD68RWuQ==}
+    peerDependencies:
+      react: ^16.11.0 || ^17.0.0 || ^18.0.0
+      swr: ^2.0.0-beta.3
+    dependencies:
+      idb: 7.1.1
+      react: 18.3.1
+      swr: 2.2.5(react@18.3.1)
+    dev: false
 
   /@pkgjs/parseargs@0.11.0:
     resolution: {integrity: sha512-+1VkjdD0QBLPodGrJUeqarH8VAIvQODIbwh9XpP5Syisf7YoQgsJKPNFoqqLQlu+VQ/tVSshMR6loPMn8U+dPg==}
@@ -2826,6 +2840,10 @@ packages:
     resolution: {integrity: sha512-Fl70vYtsAFb/C06PTS9dZBo7ihau+Tu/DNCk/OyHhea07S+aeMWpFFkUaXRa8fI+ScZbEI8dfSxwY7gxZ9SAVQ==}
     dependencies:
       ms: 2.1.3
+    dev: false
+
+  /idb@7.1.1:
+    resolution: {integrity: sha512-gchesWBzyvGHRO9W8tzUWFDycow5gwjvFKfyV9FF32Y7F50yZMp7mP+T2mJIWFx49zicqyC4uefHM17o6xKIVQ==}
     dev: false
 
   /ignore@5.3.1:

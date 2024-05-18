@@ -3,9 +3,9 @@
 import { useSearchParams } from "next/navigation";
 import React, { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
-import { mutate } from "swr";
+import { useSWRConfig } from "swr";
 
-import { useItems } from "../hooks/use-items";
+import { getSearchSwrKey } from "../hooks/use-search-results";
 import { useGlobals } from "./provider/globals-provider";
 import { Button } from "./ui/button";
 import {
@@ -23,7 +23,7 @@ import { Textarea } from "./ui/textarea";
 export function EditItemDialog() {
   const { openEditItemDialog, setOpenEditItemDialog, currentItem } =
     useGlobals();
-  const { mutate: mutateItems } = useItems();
+  const { mutate } = useSWRConfig();
 
   const [title, setTitle] = useState(currentItem?.title ?? "");
   const [description, setDescription] = useState(
@@ -58,7 +58,7 @@ export function EditItemDialog() {
     currentItem &&
     (title !== currentItem.title || description !== currentItem.description);
 
-  const searchSwrKey = `/api/search?q=${querySearchParam}`;
+  const searchSwrKey = getSearchSwrKey(querySearchParam);
 
   const handleSubmit = useCallback(
     async (event: React.FormEvent) => {
@@ -84,7 +84,7 @@ export function EditItemDialog() {
       if (response.ok) {
         setOpenEditItemDialog(false);
         mutate(searchSwrKey);
-        mutateItems();
+        mutate("/api/items");
         toast.success("Item updated successfully");
       } else {
         toast.error("Failed to update item");
@@ -92,7 +92,7 @@ export function EditItemDialog() {
     },
     [
       searchSwrKey,
-      mutateItems,
+      mutate,
       setOpenEditItemDialog,
       title,
       description,
