@@ -11,9 +11,9 @@ import { GlobalsProvider } from "./components/provider/globals-provider";
 
 const storageHandler = {
   ...simpleStorageHandler,
-  // Do not store search results in the cache
   replace: (key: any, value: any) =>
-    !key.startsWith("/api/search")
+    // Only cache the first page of items
+    key === "/api/items?page=1&limit=10"
       ? simpleStorageHandler.replace(key, value)
       : undefined,
 };
