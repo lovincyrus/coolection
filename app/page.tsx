@@ -1,10 +1,28 @@
-import { SignInButton } from "@clerk/nextjs";
 import { ArrowRightCircleIcon } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 import React from "react";
 
 import { Footer } from "./components/footer";
-import { Button } from "./components/ui/button";
+
+const shimmer = (w: number, h: number) => `
+<svg width="${w}" height="${h}" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <defs>
+    <linearGradient id="g">
+      <stop stop-color="#333" offset="20%" />
+      <stop stop-color="#222" offset="50%" />
+      <stop stop-color="#333" offset="70%" />
+    </linearGradient>
+  </defs>
+  <rect width="${w}" height="${h}" fill="#333" />
+  <rect id="r" width="${w}" height="${h}" fill="url(#g)" />
+  <animate xlink:href="#r" attributeName="x" from="-${w}" to="${w}" dur="1s" repeatCount="indefinite"  />
+</svg>`;
+
+const toBase64 = (str: string) =>
+  typeof window === "undefined"
+    ? Buffer.from(str).toString("base64")
+    : window.btoa(str);
 
 export default async function RootPage() {
   return (
@@ -55,20 +73,25 @@ export default async function RootPage() {
           </div>
 
           <div className="mt-4 text-start">
-            <SignInButton>
-              <Button className="group h-[32px] select-none rounded-full bg-black/80 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-black/90">
-                Sign in{""}
-                <ArrowRightCircleIcon className="ml-1.5 mt-[-2px] inline-block h-4 w-4 transition-transform group-hover:translate-x-1 group-hover:transition-transform" />
-              </Button>
-            </SignInButton>
+            <Link
+              href="/sign-in"
+              className="group rounded-full bg-black/80 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-black/90"
+            >
+              Sign in{""}
+              <ArrowRightCircleIcon className="ml-1.5 mt-[-2px] inline-block h-4 w-4 transition-transform group-hover:translate-x-1 group-hover:transition-transform" />
+            </Link>
           </div>
 
-          <figure className="mt-6 flex flex-col items-center justify-center gap-6">
+          <figure className="mt-6 flex h-full w-full flex-col items-center justify-center gap-6">
             <Image
               src="/demo.png"
               width={580}
               height={500}
-              priority
+              placeholder={`data:image/svg+xml;base64,${toBase64(shimmer(580, 500))}`}
+              style={{
+                maxWidth: "100%",
+                height: "auto",
+              }}
               alt="Screenshot of Coolection"
               className="mt-6 rounded-lg shadow-[0_8px_30px_rgb(0,0,0,0.12)]"
             />
