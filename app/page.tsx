@@ -1,8 +1,10 @@
+import { SignInButton } from "@clerk/nextjs";
 import { ArrowRightCircleIcon } from "lucide-react";
-import Link from "next/link";
+import Image from "next/image";
 import React from "react";
 
 import { Footer } from "./components/footer";
+import { Button } from "./components/ui/button";
 
 export default async function RootPage() {
   return (
@@ -44,33 +46,37 @@ export default async function RootPage() {
             Coolection <span className="h-8 w-8 text-2xl">🍵</span>
           </h1>
 
-          <div className="mt-3 text-pretty text-sm leading-relaxed text-gray-800">
-            <p className="mt-2">
+          <div className="mt-3 grid gap-4 text-pretty leading-relaxed text-gray-800">
+            <p className="text-sm">
               <span className="font-medium">Coolection</span> makes organizing
               your favorite links easy. It&apos;s designed to be single-purpose
               and focused on simplicity.
             </p>
-            <p className="mt-2">
-              Our goal is to help you find the links you want to revisit later.
-              Think of it as having a designated spot for your car keys but for
-              websites.
-            </p>
-
-            <p className="mt-2">
-              Now, all you need to do is{" "}
-              <span className="italic">remember</span> to save them.
-            </p>
           </div>
 
-          <div className="mt-6 text-end">
-            <Link
-              href="/sign-in"
-              className="group rounded-full bg-black/80 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-black/90"
-            >
-              Sign in{""}
-              <ArrowRightCircleIcon className="ml-1.5 mt-[-2px] inline-block h-4 w-4 transition-transform group-hover:translate-x-1 group-hover:transition-transform" />
-            </Link>
+          <div className="mt-4 text-start">
+            <SignInButton>
+              <Button className="group h-[32px] select-none rounded-full bg-black/80 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-black/90">
+                Sign in{""}
+                <ArrowRightCircleIcon className="ml-1.5 mt-[-2px] inline-block h-4 w-4 transition-transform group-hover:translate-x-1 group-hover:transition-transform" />
+              </Button>
+            </SignInButton>
           </div>
+
+          <figure className="mt-6 flex flex-col items-center justify-center gap-6">
+            <Image
+              src="/demo.png"
+              width={580}
+              height={500}
+              priority
+              alt="Screenshot of Coolection"
+              className="mt-6 rounded-lg shadow-[0_8px_30px_rgb(0,0,0,0.12)]"
+            />
+
+            <figcaption className="font-serif text-sm">
+              <q>Superhuman for bookmarking</q>
+            </figcaption>
+          </figure>
         </div>
       </div>
 
