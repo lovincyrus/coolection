@@ -1,21 +1,39 @@
 "use client";
 
-import useSWR from "swr";
+import useSWRInfinite from "swr/infinite";
 
+import { INITIAL_ITEMS_COUNT } from "@/lib/constants";
 import { fetcher } from "@/lib/fetcher";
 
-import { CoolectionItem } from "../types";
+// Get the SWR key of each page
+export const getKey = (
+  pageIndex: number,
+  previousPageData: CoolectionItem[],
+) => {
+  if (previousPageData && !previousPageData.length) return null;
+  return `/api/items?page=${pageIndex + 1}&limit=${INITIAL_ITEMS_COUNT}`;
+};
 
 export function useItems() {
-  const { data, isLoading, error, mutate } = useSWR<CoolectionItem[]>(
-    "/api/items",
-    fetcher,
-  );
+  const {
+    data: items,
+    mutate: mutateItems,
+    size,
+    setSize,
+    isValidating,
+    isLoading: loadingItems,
+  } = useSWRInfinite(getKey, fetcher, {
+    // See: https://swr.vercel.app/docs/pagination#parameters
+    initialSize: 1,
+    revalidateAll: true,
+  });
 
   return {
-    data: data ?? [],
-    loading: isLoading,
-    error,
-    mutate,
+    data: items ?? [],
+    loading: loadingItems,
+    mutate: mutateItems,
+    size,
+    setSize,
+    isValidating,
   };
 }

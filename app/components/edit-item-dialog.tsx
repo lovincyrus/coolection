@@ -4,7 +4,9 @@ import { useSearchParams } from "next/navigation";
 import React, { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
 import { useSWRConfig } from "swr";
+import { unstable_serialize } from "swr/infinite";
 
+import { getKey } from "../hooks/use-items";
 import { getSearchSwrKey } from "../hooks/use-search-results";
 import { useGlobals } from "./provider/globals-provider";
 import { Button } from "./ui/button";
@@ -84,7 +86,7 @@ export function EditItemDialog() {
       if (response.ok) {
         setOpenEditItemDialog(false);
         mutate(searchSwrKey);
-        mutate("/api/items");
+        mutate(unstable_serialize(getKey));
         toast.success("Item updated successfully");
       } else {
         toast.error("Failed to update item");

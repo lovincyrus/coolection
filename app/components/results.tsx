@@ -1,9 +1,10 @@
 import { AnimatePresence } from "framer-motion";
-import React, { useCallback } from "react";
+import React, { useCallback, useEffect, useMemo } from "react";
+import { unstable_serialize, useSWRConfig } from "swr";
 
 import { INITIAL_ITEMS_COUNT } from "@/lib/constants";
 
-import { useItems } from "../hooks/use-items";
+import { getKey, useItems } from "../hooks/use-items";
 import { useLists } from "../hooks/use-lists";
 import { useLoadingWithTimeout } from "../hooks/use-loading-with-timeout";
 import { useSearchResults } from "../hooks/use-search-results";
@@ -13,13 +14,19 @@ import { EditItemDialog } from "./edit-item-dialog";
 import { useGlobals } from "./provider/globals-provider";
 import { ResultItem } from "./result-item";
 import { ResultItemSkeletons } from "./result-item-skeletons";
+import { Button } from "./ui/button";
 
 export default function Results({ query }: { query: string }) {
   const {
-    data: items,
-    loading: loadingItems,
+    data,
     mutate: mutateItems,
+    size,
+    setSize,
+    isValidating,
+    loading: loadingItems,
   } = useItems();
+
+  const { mutate } = useSWRConfig();
   const { data: lists } = useLists();
   const { setOpenNewItemDialog } = useGlobals();
 
@@ -28,6 +35,16 @@ export default function Results({ query }: { query: string }) {
     loading: searchingResults,
     mutate: mutateSearchResults,
   } = useSearchResults(query);
+
+  const items = useMemo(() => (data ? [].concat(...data) : []), [data]);
+
+  const itemsOrSearchResults = query.length > 0 ? searchResults : items;
+
+  useEffect(() => {
+    if (Array.isArray(itemsOrSearchResults)) {
+      document.title = `Home · Coolection (${itemsOrSearchResults.length})`;
+    }
+  }, [itemsOrSearchResults]);
 
   const isSearchingResultsWithTimeout = useLoadingWithTimeout(searchingResults);
   const showEmptyItemsCopy = useLoadingWithTimeout(
@@ -53,15 +70,23 @@ export default function Results({ query }: { query: string }) {
       }
       if (Array.isArray(items)) {
         mutateItems(
-          items.filter((item) => item.id !== itemId),
+          (items as CoolectionItem[]).filter((item) => item?.id !== itemId),
           false,
         );
       }
+
+      mutate(unstable_serialize(getKey));
     },
-    [searchResults, mutateSearchResults, items, mutateItems],
+    [searchResults, mutateSearchResults, mutateItems, mutate, items],
   );
 
-  const results = query.length > 0 ? searchResults : items;
+  const isLoadingMore =
+    searchingResults ||
+    (size > 0 && data && typeof data[size - 1] === "undefined");
+  const isEmpty = data?.[0]?.length === 0;
+  const isReachingEnd =
+    isEmpty || (data && data[data.length - 1]?.length < INITIAL_ITEMS_COUNT);
+  const _isRefreshing = isValidating && data && data.length === size;
 
   return (
     <>
@@ -91,8 +116,8 @@ export default function Results({ query }: { query: string }) {
           <ResultItemSkeletons count={INITIAL_ITEMS_COUNT} />
         ) : (
           <>
-            {Array.isArray(results) &&
-              results.map((item: CoolectionItem) => (
+            {Array.isArray(itemsOrSearchResults) &&
+              itemsOrSearchResults.map((item: CoolectionItem) => (
                 <AnimatedListItem key={item.id}>
                   <ResultItem
                     item={item}
@@ -104,6 +129,16 @@ export default function Results({ query }: { query: string }) {
           </>
         )}
       </AnimatePresence>
+
+      {!isReachingEnd && !query && !showNoResults && (
+        <Button
+          disabled={isLoadingMore || isReachingEnd}
+          onClick={() => setSize(size + 1)}
+          className="mt-4 w-full border"
+        >
+          {isLoadingMore ? "Loading..." : "Load more"}
+        </Button>
+      )}
 
       <EditItemDialog />
     </>

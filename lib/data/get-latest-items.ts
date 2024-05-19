@@ -1,7 +1,13 @@
-import { INITIAL_ITEMS_COUNT } from "@/lib/constants";
 import prisma from "@/lib/prisma";
 
-export async function getLatestItems(userId: string): Promise<Array<any>> {
+// See: https://www.prisma.io/docs/orm/prisma-client/queries/pagination#offset-pagination
+export async function getLatestItems(
+  userId: string,
+  limit: number,
+  page: number,
+): Promise<Array<any>> {
+  const skip = (page - 1) * limit;
+
   const latestResults = await prisma.item.findMany({
     where: {
       userId,
@@ -10,7 +16,8 @@ export async function getLatestItems(userId: string): Promise<Array<any>> {
     orderBy: {
       createdAt: "desc",
     },
-    take: INITIAL_ITEMS_COUNT,
+    take: limit,
+    skip: skip,
   });
 
   return latestResults;
