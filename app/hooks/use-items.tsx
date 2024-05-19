@@ -2,7 +2,7 @@
 
 import useSWRInfinite from "swr/infinite";
 
-import { INITIAL_ITEMS_COUNT } from "@/lib/constants";
+import { DEAFULT_PAGE_SIZE } from "@/lib/constants";
 import { fetcher } from "@/lib/fetcher";
 
 // Get the SWR key of each page
@@ -11,7 +11,7 @@ export const getKey = (
   previousPageData: CoolectionItem[],
 ) => {
   if (previousPageData && !previousPageData.length) return null;
-  return `/api/items?page=${pageIndex + 1}&limit=${INITIAL_ITEMS_COUNT}`;
+  return `/api/items?page=${pageIndex + 1}&limit=${DEAFULT_PAGE_SIZE}`;
 };
 
 export function useItems() {

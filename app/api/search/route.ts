@@ -2,7 +2,7 @@ import { auth } from "@clerk/nextjs/server";
 import { NextRequest, NextResponse } from "next/server";
 
 import { CoolectionItemWithSimilarity } from "@/app/types/coolection";
-import { INITIAL_ITEMS_COUNT } from "@/lib/constants";
+import { DEAFULT_PAGE_SIZE } from "@/lib/constants";
 import prisma from "@/lib/prisma";
 
 export async function GET(req: NextRequest) {
@@ -36,7 +36,7 @@ export async function GET(req: NextRequest) {
         )
         AND "userId" = ${userId} AND "isDeleted" = false
       ORDER BY "title"
-      LIMIT ${INITIAL_ITEMS_COUNT};
+      LIMIT ${DEAFULT_PAGE_SIZE};
     `;
 
     // Approach 2: Full-text search

@@ -1,11 +1,11 @@
 import React from "react";
 
-import { INITIAL_ITEMS_COUNT } from "@/lib/constants";
+import { DEAFULT_PAGE_SIZE } from "@/lib/constants";
 
 import { Skeleton } from "./ui/skeleton";
 
 export function ResultItemSkeletons({
-  count = INITIAL_ITEMS_COUNT,
+  count = DEAFULT_PAGE_SIZE,
 }: {
   count?: number;
 }) {

@@ -1,1 +1,1 @@
-export const INITIAL_ITEMS_COUNT = 10;
+export const DEAFULT_PAGE_SIZE = 10;

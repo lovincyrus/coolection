@@ -2,7 +2,7 @@ import { AnimatePresence } from "framer-motion";
 import React, { useCallback, useEffect, useMemo } from "react";
 import { unstable_serialize, useSWRConfig } from "swr";
 
-import { INITIAL_ITEMS_COUNT } from "@/lib/constants";
+import { DEAFULT_PAGE_SIZE } from "@/lib/constants";
 
 import { getKey, useItems } from "../hooks/use-items";
 import { useLists } from "../hooks/use-lists";
@@ -85,7 +85,7 @@ export default function Results({ query }: { query: string }) {
     (size > 0 && data && typeof data[size - 1] === "undefined");
   const isEmpty = data?.[0]?.length === 0;
   const isReachingEnd =
-    isEmpty || (data && data[data.length - 1]?.length < INITIAL_ITEMS_COUNT);
+    isEmpty || (data && data[data.length - 1]?.length < DEAFULT_PAGE_SIZE);
   const _isRefreshing = isValidating && data && data.length === size;
 
   return (
@@ -113,7 +113,7 @@ export default function Results({ query }: { query: string }) {
         ) : null}
 
         {loadingItems || isSearchingResultsWithTimeout ? (
-          <ResultItemSkeletons count={INITIAL_ITEMS_COUNT} />
+          <ResultItemSkeletons count={DEAFULT_PAGE_SIZE} />
         ) : (
           <>
             {Array.isArray(itemsOrSearchResults) &&
