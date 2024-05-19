@@ -135,7 +135,7 @@ export default function Results({ query }: { query: string }) {
           onClick={() => {
             setSize(size + 1);
           }}
-          className="mt-4 w-full border"
+          className="mt-4 w-full"
         >
           {isLoadingMore ? "Loading..." : "Load More"}
         </Button>
