@@ -15,9 +15,12 @@ export function HighlightChars({
 
   return (
     <span>
-      {parts.map((part, i) =>
+      {parts.map((part, idx) =>
         part.toLowerCase() === searchTerm.toLowerCase() ? (
-          <span key={i} className="rounded-sm bg-slate-200">
+          <span
+            key={idx}
+            className="rounded-sm bg-slate-200 box-decoration-clone"
+          >
             {part}
           </span>
         ) : (
