@@ -16,6 +16,37 @@ async function main() {
   });
 
   console.log(`Unarchived ${updatedItems.count} items`);
+
+  const duplicateUrls = await prisma.item.groupBy({
+    by: ['url'],
+    _count: {
+      url: true,
+    },
+    having: {
+      url: {
+        _count: {
+          gt: 1,
+        },
+      },
+    },
+  });
+  
+  console.log("Duplicate URLs:", duplicateUrls);
+  
+  for (const { url } of duplicateUrls) {
+    console.log(`Setting isDeleted to true for URL: ${url}`);
+    await prisma.item.updateMany({
+      where: {
+        url,
+      },
+      data: {
+        isDeleted: true,
+      },
+    });
+  }
+  
+  console.log("All duplicate URLs have been marked as deleted.");
+  
 }
 
 main()

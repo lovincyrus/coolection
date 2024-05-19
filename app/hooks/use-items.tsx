@@ -2,8 +2,10 @@
 
 import useSWRInfinite from "swr/infinite";
 
-import { DEAFULT_PAGE_SIZE } from "@/lib/constants";
+import { DEFAULT_PAGE_SIZE } from "@/lib/constants";
 import { fetcher } from "@/lib/fetcher";
+
+import { CoolectionItem } from "../types";
 
 // Get the SWR key of each page
 export const getKey = (
@@ -11,7 +13,7 @@ export const getKey = (
   previousPageData: CoolectionItem[],
 ) => {
   if (previousPageData && !previousPageData.length) return null;
-  return `/api/items?page=${pageIndex + 1}&limit=${DEAFULT_PAGE_SIZE}`;
+  return `/api/items?page=${pageIndex + 1}&limit=${DEFAULT_PAGE_SIZE}`;
 };
 
 export function useItems() {
@@ -25,7 +27,7 @@ export function useItems() {
   } = useSWRInfinite(getKey, fetcher, {
     // See: https://swr.vercel.app/docs/pagination#parameters
     initialSize: 1,
-    revalidateAll: true,
+    revalidateFirstPage: true,
   });
 
   return {

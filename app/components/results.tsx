@@ -2,7 +2,7 @@ import { AnimatePresence } from "framer-motion";
 import React, { useCallback, useEffect, useMemo } from "react";
 import { unstable_serialize, useSWRConfig } from "swr";
 
-import { DEAFULT_PAGE_SIZE } from "@/lib/constants";
+import { DEFAULT_PAGE_SIZE } from "@/lib/constants";
 
 import { getKey, useItems } from "../hooks/use-items";
 import { useLists } from "../hooks/use-lists";
@@ -63,30 +63,29 @@ export default function Results({ query }: { query: string }) {
   const handleArchiveItem = useCallback(
     (itemId: string) => {
       if (Array.isArray(searchResults)) {
-        mutateSearchResults(
-          searchResults.filter((item) => item.id !== itemId),
-          false,
+        const updatedSearchResults = searchResults.filter(
+          (item) => item.id !== itemId,
         );
+        mutateSearchResults(updatedSearchResults, false);
       }
-      if (Array.isArray(items)) {
-        mutateItems(
-          (items as CoolectionItem[]).filter((item) => item?.id !== itemId),
-          false,
+      if (Array.isArray(data)) {
+        const updatedData = (data as Array<Array<CoolectionItem>>).map((page) =>
+          page.filter((item) => item?.id !== itemId),
         );
+        mutateItems(updatedData, false);
       }
 
       mutate(unstable_serialize(getKey));
     },
-    [searchResults, mutateSearchResults, mutateItems, mutate, items],
+    [searchResults, mutateSearchResults, mutate, data, mutateItems],
   );
 
   const isLoadingMore =
-    searchingResults ||
-    (size > 0 && data && typeof data[size - 1] === "undefined");
+    loadingItems || (size > 0 && data && typeof data[size - 1] === "undefined");
   const isEmpty = data?.[0]?.length === 0;
   const isReachingEnd =
-    isEmpty || (data && data[data.length - 1]?.length < DEAFULT_PAGE_SIZE);
-  const _isRefreshing = isValidating && data && data.length === size;
+    isEmpty || (data && data[data.length - 1]?.length < DEFAULT_PAGE_SIZE);
+  const isRefreshing = isValidating && data && data.length === size;
 
   return (
     <>
@@ -113,7 +112,7 @@ export default function Results({ query }: { query: string }) {
         ) : null}
 
         {loadingItems || isSearchingResultsWithTimeout ? (
-          <ResultItemSkeletons count={DEAFULT_PAGE_SIZE} />
+          <ResultItemSkeletons count={DEFAULT_PAGE_SIZE} />
         ) : (
           <>
             {Array.isArray(itemsOrSearchResults) &&
@@ -130,13 +129,15 @@ export default function Results({ query }: { query: string }) {
         )}
       </AnimatePresence>
 
-      {!isReachingEnd && !query && !showNoResults && (
+      {!isReachingEnd && !query && (
         <Button
           disabled={isLoadingMore || isReachingEnd}
-          onClick={() => setSize(size + 1)}
+          onClick={() => {
+            setSize(size + 1);
+          }}
           className="mt-4 w-full border"
         >
-          {isLoadingMore ? "Loading..." : "Load more"}
+          {isLoadingMore ? "Loading..." : "Load More"}
         </Button>
       )}
 
