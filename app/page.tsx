@@ -9,12 +9,12 @@ const shimmer = (w: number, h: number) => `
 <svg width="${w}" height="${h}" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
   <defs>
     <linearGradient id="g">
-      <stop stop-color="#333" offset="20%" />
-      <stop stop-color="#222" offset="50%" />
-      <stop stop-color="#333" offset="70%" />
+      <stop stop-color="#999" offset="20%" />
+      <stop stop-color="#777" offset="50%" />
+      <stop stop-color="#999" offset="70%" />
     </linearGradient>
   </defs>
-  <rect width="${w}" height="${h}" fill="#333" />
+  <rect width="${w}" height="${h}" fill="#999" />
   <rect id="r" width="${w}" height="${h}" fill="url(#g)" />
   <animate xlink:href="#r" attributeName="x" from="-${w}" to="${w}" dur="1s" repeatCount="indefinite"  />
 </svg>`;
@@ -85,9 +85,9 @@ export default async function RootPage() {
           <figure className="mt-6 flex h-full w-full flex-col items-center justify-center gap-6">
             <Image
               src="/demo.png"
-              width={580}
-              height={500}
-              placeholder={`data:image/svg+xml;base64,${toBase64(shimmer(580, 500))}`}
+              width={1200}
+              height={690}
+              placeholder={`data:image/svg+xml;base64,${toBase64(shimmer(1200, 690))}`}
               style={{
                 maxWidth: "100%",
                 height: "auto",
