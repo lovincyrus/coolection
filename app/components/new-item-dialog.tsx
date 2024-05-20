@@ -41,10 +41,13 @@ export function NewItemDialog() {
   const handleSubmit = useCallback(
     async (event: React.FormEvent) => {
       event.preventDefault();
+
       if (!inputText.trim()) {
+        toast.error("Please enter a URL");
         return;
       }
       if (!isValidUrl(inputText)) {
+        toast.error("Please enter a valid URL");
         return;
       }
 
@@ -127,6 +130,7 @@ export function NewItemDialog() {
             <Button
               className="focus-visible:ring-ring border-input bg-background hover:bg-accent hover:text-accent-foreground ml-auto w-fit items-center justify-center whitespace-nowrap rounded-md border bg-white/80 px-3 text-sm font-medium shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 disabled:pointer-events-none disabled:opacity-50"
               type="submit"
+              disabled={!inputText.trim()}
             >
               Submit
             </Button>
