@@ -12,9 +12,13 @@ import { GlobalsProvider } from "./components/provider/globals-provider";
 // Max age of 7 days
 const maxAge = 7 * 24 * 60 * 60 * 1e3;
 
+// https://github.com/piotr-cz/swr-idb-cache
 const storageHandler = {
   ...timestampStorageHandler,
-  // https://github.com/piotr-cz/swr-idb-cache?tab=readme-ov-file#implement-garbage-collector
+  replace: (key: string, value: any) =>
+    !key.startsWith("/api/search")
+      ? timestampStorageHandler.replace(key, value)
+      : undefined,
   revive: (key: string, storeObject: any) =>
     storeObject.ts > Date.now() - maxAge
       ? timestampStorageHandler.revive(key, storeObject)
