@@ -23,10 +23,6 @@ function getTweetIdFromUrl(url: string) {
   return "";
 }
 
-function _replaceNewlinesWithSpaces(text: string) {
-  return text.replace(/\n/g, " ");
-}
-
 function isTwitterBookmarkUrl(url: string): boolean {
   try {
     const urlObj = new URL(url);

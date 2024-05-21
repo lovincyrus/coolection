@@ -27,7 +27,7 @@ export function useItems() {
   } = useSWRInfinite(getKey, fetcher, {
     // See: https://swr.vercel.app/docs/pagination#parameters
     initialSize: 1,
-    revalidateFirstPage: true,
+    revalidateAll: true,
   });
 
   return {
