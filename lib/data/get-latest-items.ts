@@ -3,14 +3,14 @@ import prisma from "@/lib/prisma";
 // See: https://www.prisma.io/docs/orm/prisma-client/queries/pagination#offset-pagination
 export async function getLatestItems(
   userId: string,
-  limit: number,
   page: number,
+  limit: number,
 ): Promise<Array<any>> {
-  const skip = (page - 1) * limit;
+  const skip = page * limit;
 
   const latestResults = await prisma.item.findMany({
     where: {
-      userId,
+      userId: userId,
       isDeleted: false,
     },
     orderBy: {

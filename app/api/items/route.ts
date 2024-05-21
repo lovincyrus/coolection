@@ -9,8 +9,8 @@ export async function GET(req: NextRequest) {
   const { userId } = auth();
 
   const searchParams = new URL(req.url).searchParams;
-  const limit = searchParams.get("limit");
   const page = searchParams.get("page");
+  const limit = searchParams.get("limit");
 
   if (!userId) {
     return new NextResponse("Unauthorized", { status: 401 });
@@ -19,8 +19,8 @@ export async function GET(req: NextRequest) {
   try {
     const latestItems = await getLatestItems(
       userId.toString(),
-      Number(limit),
       Number(page),
+      Number(limit),
     );
     return NextResponse.json(latestItems);
   } catch (error) {

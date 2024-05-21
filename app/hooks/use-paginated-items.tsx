@@ -1,25 +1,20 @@
 "use client";
 
-import useSWRInfinite from "swr/infinite";
+import useSWRInfinite, { SWRInfiniteKeyLoader } from "swr/infinite";
 
 import { DEFAULT_PAGE_SIZE } from "@/lib/constants";
 import { fetcher } from "@/lib/fetcher";
 
-import { CoolectionItem } from "../types";
-
-// Get the SWR key of each page
-export const getKey = (
+// Related: https://github.com/vercel/swr/blob/fedf233a48d40d1cd96517941b5f9e15ff2fc3ab/src/infinite/serialize.ts#L8
+export const getKey: SWRInfiniteKeyLoader = (
   pageIndex: number,
-  previousPageData: CoolectionItem[],
+  previousPageData: any | null,
 ) => {
-  // If there is no previous page data, then this is the first page
-  if (previousPageData && !previousPageData.length) {
-    return null;
-  }
+  if (previousPageData && !previousPageData.length) return null; // reached the end
   return `/api/items?page=${pageIndex + 1}&limit=${DEFAULT_PAGE_SIZE}`;
 };
 
-export function useItems() {
+export function usePaginatedItems() {
   const {
     data: items,
     mutate: mutateItems,
@@ -30,7 +25,6 @@ export function useItems() {
   } = useSWRInfinite(getKey, fetcher, {
     // See: https://swr.vercel.app/docs/pagination#parameters
     initialSize: 1,
-    revalidateAll: true,
   });
 
   const isLoadingMore =

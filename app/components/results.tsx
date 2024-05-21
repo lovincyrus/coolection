@@ -4,9 +4,9 @@ import { unstable_serialize, useSWRConfig } from "swr";
 
 import { DEFAULT_PAGE_SIZE } from "@/lib/constants";
 
-import { getKey, useItems } from "../hooks/use-items";
 import { useLists } from "../hooks/use-lists";
 import { useLoadingWithTimeout } from "../hooks/use-loading-with-timeout";
+import { getKey, usePaginatedItems } from "../hooks/use-paginated-items";
 import { useSearchResults } from "../hooks/use-search-results";
 import { CoolectionItem } from "../types";
 import { AnimatedListItem } from "./animated-list-item";
@@ -25,9 +25,10 @@ export default function Results({ query }: { query: string }) {
     isLoadingMore,
     isReachingEnd,
     loading: loadingItems,
-  } = useItems();
+  } = usePaginatedItems();
 
   const { mutate } = useSWRConfig();
+
   const { data: lists } = useLists();
   const { setOpenNewItemDialog } = useGlobals();
 
@@ -125,11 +126,11 @@ export default function Results({ query }: { query: string }) {
 
       {!isReachingEnd && !query && (
         <Button
+          className="mt-4 h-[30px] w-full items-center justify-center whitespace-nowrap rounded-lg border bg-white px-3 text-xs font-medium shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 disabled:pointer-events-none disabled:opacity-50"
           disabled={isLoadingMore || isReachingEnd}
           onClick={() => {
             setSize(size + 1);
           }}
-          className="mt-4 h-[30px] w-full items-center justify-center whitespace-nowrap rounded-lg border bg-white px-3 text-xs font-medium shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 disabled:pointer-events-none disabled:opacity-50"
         >
           {isLoadingMore ? "Loading..." : "Load More"}
         </Button>

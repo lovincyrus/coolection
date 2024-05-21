@@ -4,9 +4,8 @@ import { useSearchParams } from "next/navigation";
 import React, { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
 import { useSWRConfig } from "swr";
-import { unstable_serialize } from "swr/infinite";
 
-import { getKey } from "../hooks/use-items";
+import { usePaginatedItems } from "../hooks/use-paginated-items";
 import { getSearchSwrKey } from "../hooks/use-search-results";
 import { useGlobals } from "./provider/globals-provider";
 import { Button } from "./ui/button";
@@ -26,6 +25,7 @@ export function EditItemDialog() {
   const { openEditItemDialog, setOpenEditItemDialog, currentItem } =
     useGlobals();
   const { mutate } = useSWRConfig();
+  const { mutate: mutateItems } = usePaginatedItems();
 
   const [title, setTitle] = useState(currentItem?.title ?? "");
   const [description, setDescription] = useState(
@@ -86,7 +86,7 @@ export function EditItemDialog() {
       if (response.ok) {
         setOpenEditItemDialog(false);
         mutate(searchSwrKey);
-        mutate(unstable_serialize(getKey));
+        mutateItems();
         toast.success("Item updated successfully");
       } else {
         toast.error("Failed to update item");
@@ -100,6 +100,7 @@ export function EditItemDialog() {
       description,
       currentItem,
       haveChanges,
+      mutateItems,
     ],
   );
 

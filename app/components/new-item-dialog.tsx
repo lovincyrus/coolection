@@ -6,7 +6,7 @@ import { toast } from "sonner";
 
 import { isTwitterPostOrBookmarkUrl, isValidUrl } from "@/lib/url";
 
-import { useItems } from "../hooks/use-items";
+import { usePaginatedItems } from "../hooks/use-paginated-items";
 import { useGlobals } from "./provider/globals-provider";
 import { Button } from "./ui/button";
 import {
@@ -23,7 +23,7 @@ import { Input } from "./ui/input";
 export function NewItemDialog() {
   const [inputText, setInputText] = useState("");
   const { openNewItemDialog, setOpenNewItemDialog } = useGlobals();
-  const { data: items, mutate: mutateItems } = useItems();
+  const { data: items, mutate: mutateItems } = usePaginatedItems();
 
   useEffect(() => {
     if (!openNewItemDialog) {
