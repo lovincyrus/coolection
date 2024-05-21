@@ -1,38 +1,17 @@
 import { ArrowRightCircleIcon } from "lucide-react";
-import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 
 import { Footer } from "./components/footer";
-
-const shimmer = (w: number, h: number) => `
-<svg width="${w}" height="${h}" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-  <defs>
-    <linearGradient id="g">
-      <stop stop-color="#999" offset="20%" />
-      <stop stop-color="#777" offset="50%" />
-      <stop stop-color="#999" offset="70%" />
-    </linearGradient>
-  </defs>
-  <rect width="${w}" height="${h}" fill="#999" />
-  <rect id="r" width="${w}" height="${h}" fill="url(#g)" />
-  <animate xlink:href="#r" attributeName="x" from="-${w}" to="${w}" dur="1s" repeatCount="indefinite"  />
-</svg>`;
-
-const toBase64 = (str: string) =>
-  typeof window === "undefined"
-    ? Buffer.from(str).toString("base64")
-    : window.btoa(str);
 
 export default async function RootPage() {
   return (
     <main className="relative flex min-h-dvh w-full flex-col items-center justify-between">
       <div
         aria-hidden="true"
-        className="background-gradient-pattern pointer-events-none absolute left-1/2 top-0 z-10 h-[200px] w-full -translate-x-1/2 -translate-y-1/2 opacity-[0.15]"
+        className="background-gradient-pattern pointer-events-none absolute left-1/2 top-0 z-10 h-[100px] w-full -translate-x-1/2 -translate-y-1/2 opacity-[0.15]"
       />
 
-      {/* Vector from https://vaul.emilkowal.ski/ */}
       <svg
         className="pointer-events-none absolute inset-0 h-full w-full stroke-gray-200 opacity-50 [mask-image:radial-gradient(100%_100%_at_top_center,white,transparent)]"
         aria-hidden="true"
@@ -59,47 +38,31 @@ export default async function RootPage() {
       </svg>
 
       <div className="mx-auto flex min-h-screen w-full max-w-2xl flex-1 flex-col justify-center px-4 md:mt-[-3.5rem] md:px-0">
-        <div className="simple-bg rounded-lg border border-gray-100 bg-[#FCFCFD] p-6 shadow-sm backdrop-blur-md md:p-8">
-          <h1 className="text-2xl font-bold tracking-tight text-gray-900">
-            Coolection <span className="h-8 w-8 text-2xl">🍵</span>
+        <div className="bg-transparent p-6 md:p-8 ">
+          <h1 className="relative z-20 text-center font-serif text-4xl font-extrabold tracking-tight text-gray-900 sm:text-5xl lg:text-6xl ">
+            Superhuman for bookmarking
           </h1>
 
-          <div className="mt-3 grid gap-4 text-pretty leading-relaxed text-gray-800">
-            <p className="text-sm">
-              <span className="font-medium">Coolection</span> makes organizing
-              your favorite links easy. It&apos;s designed to be single-purpose
-              and focused on simplicity.
+          <div className="relative z-20 mt-3 grid gap-4 text-pretty leading-relaxed text-gray-800 ">
+            <p className="mx-auto mt-6 max-w-3xl text-center text-lg">
+              <span className="font-medium">Coolection</span> makes saving,
+              organizing, and retrieving your favorite links easy.
             </p>
           </div>
 
-          <div className="mt-4 text-start">
+          <div className="relative z-20 mx-auto mt-12 flex max-w-xs flex-col items-center space-y-4 text-center ">
             <Link
               href="/sign-in"
-              className="group rounded-full bg-black/80 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-black/90"
+              className="text-md group rounded-full bg-black/80 px-4 py-2 font-semibold text-white transition-colors hover:bg-black/90"
             >
               Sign in{""}
               <ArrowRightCircleIcon className="ml-1.5 mt-[-2px] inline-block h-4 w-4 transition-transform group-hover:translate-x-1 group-hover:transition-transform" />
             </Link>
+
+            <p className="max-w-[8em] text-xs text-neutral-500">
+              Available online or self-hosted
+            </p>
           </div>
-
-          <figure className="mt-6 flex h-full w-full flex-col items-center justify-center gap-6">
-            <Image
-              src="/demo.png"
-              width={1200}
-              height={690}
-              placeholder={`data:image/svg+xml;base64,${toBase64(shimmer(1200, 690))}`}
-              style={{
-                maxWidth: "100%",
-                height: "auto",
-              }}
-              alt="Screenshot of Coolection"
-              className="mt-6 rounded-lg shadow-[0_8px_30px_rgb(0,0,0,0.12)]"
-            />
-
-            <figcaption className="font-serif text-sm">
-              <q>Superhuman for bookmarking</q>
-            </figcaption>
-          </figure>
         </div>
       </div>
 
