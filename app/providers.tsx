@@ -2,19 +2,22 @@
 
 import { ClerkProvider } from "@clerk/nextjs";
 import {
-  simpleStorageHandler,
+  timestampStorageHandler,
   useCacheProvider,
 } from "@piotr-cz/swr-idb-cache";
 import { SWRConfig } from "swr";
 
 import { GlobalsProvider } from "./components/provider/globals-provider";
 
+// Max age of 7 days
+const maxAge = 7 * 24 * 60 * 60 * 1e3;
+
 const storageHandler = {
-  ...simpleStorageHandler,
-  replace: (key: any, value: any) =>
-    // Only cache the first page of items
-    key === "/api/items?page=1&limit=10"
-      ? simpleStorageHandler.replace(key, value)
+  ...timestampStorageHandler,
+  // https://github.com/piotr-cz/swr-idb-cache?tab=readme-ov-file#implement-garbage-collector
+  revive: (key: string, storeObject: any) =>
+    storeObject.ts > Date.now() - maxAge
+      ? timestampStorageHandler.revive(key, storeObject)
       : undefined,
 };
 

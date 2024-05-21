@@ -22,7 +22,8 @@ export default function Results({ query }: { query: string }) {
     mutate: mutateItems,
     size,
     setSize,
-    isValidating,
+    isLoadingMore,
+    isReachingEnd,
     loading: loadingItems,
   } = useItems();
 
@@ -69,7 +70,7 @@ export default function Results({ query }: { query: string }) {
         mutateSearchResults(updatedSearchResults, false);
       }
       if (Array.isArray(data)) {
-        const updatedData = (data as Array<Array<CoolectionItem>>).map((page) =>
+        const updatedData = (data as CoolectionItem[][]).map((page) =>
           page.filter((item) => item?.id !== itemId),
         );
         mutateItems(updatedData, false);
@@ -79,13 +80,6 @@ export default function Results({ query }: { query: string }) {
     },
     [searchResults, mutateSearchResults, mutate, data, mutateItems],
   );
-
-  const isLoadingMore =
-    loadingItems || (size > 0 && data && typeof data[size - 1] === "undefined");
-  const isEmpty = data?.[0]?.length === 0;
-  const isReachingEnd =
-    isEmpty || (data && data[data.length - 1]?.length < DEFAULT_PAGE_SIZE);
-  const isRefreshing = isValidating && data && data.length === size;
 
   return (
     <>

@@ -14,7 +14,7 @@
     "db:down": "docker-compose down -v",
     "db:migrate:dev": "prisma migrate dev",
     "db:migrate:deploy": "prisma migrate deploy",
-    "dev:unarchive": "ts-node --compiler-options {\"module\":\"CommonJS\"} prisma/purge-local-data.dev.ts"
+    "dev:unarchive": "ts-node --compiler-options {\"module\":\"CommonJS\"} prisma/purge-local-data.ts"
   },
   "prisma": {
     "seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} prisma/seed.ts"

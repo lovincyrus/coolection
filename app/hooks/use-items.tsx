@@ -12,7 +12,10 @@ export const getKey = (
   pageIndex: number,
   previousPageData: CoolectionItem[],
 ) => {
-  if (previousPageData && !previousPageData.length) return null;
+  // If there is no previous page data, then this is the first page
+  if (previousPageData && !previousPageData.length) {
+    return null;
+  }
   return `/api/items?page=${pageIndex + 1}&limit=${DEFAULT_PAGE_SIZE}`;
 };
 
@@ -30,6 +33,14 @@ export function useItems() {
     revalidateAll: true,
   });
 
+  const isLoadingMore =
+    loadingItems ||
+    (size > 0 && items && typeof items[size - 1] === "undefined");
+  const isEmpty = items?.[0]?.length === 0;
+  const isReachingEnd =
+    isEmpty || (items && items[items.length - 1]?.length < DEFAULT_PAGE_SIZE);
+  const isRefreshing = isValidating && items && items.length === size;
+
   return {
     data: items ?? [],
     loading: loadingItems,
@@ -37,5 +48,9 @@ export function useItems() {
     size,
     setSize,
     isValidating,
+    isLoadingMore,
+    isEmpty,
+    isReachingEnd,
+    isRefreshing,
   };
 }
