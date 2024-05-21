@@ -8,15 +8,20 @@ import { getLatestItems } from "@/lib/data/get-latest-items";
 export async function GET(req: NextRequest) {
   const { userId } = auth();
 
-  const limit = Number(req.nextUrl.searchParams.get("limit"));
-  const page = Number(req.nextUrl.searchParams.get("page"));
+  const searchParams = new URL(req.url).searchParams;
+  const limit = searchParams.get("limit");
+  const page = searchParams.get("page");
 
   if (!userId) {
     return new NextResponse("Unauthorized", { status: 401 });
   }
 
   try {
-    const latestItems = await getLatestItems(userId as string, limit, page);
+    const latestItems = await getLatestItems(
+      userId.toString(),
+      Number(limit),
+      Number(page),
+    );
     return NextResponse.json(latestItems);
   } catch (error) {
     if (error instanceof Error) {

@@ -7,7 +7,9 @@ import prisma from "@/lib/prisma";
 
 export async function GET(req: NextRequest) {
   const { userId } = auth();
-  const query = req.nextUrl.searchParams.get("q");
+
+  const searchParams = new URL(req.url).searchParams;
+  const query = searchParams.get("q");
 
   if (!userId) {
     return new NextResponse("Unauthorized", { status: 401 });
