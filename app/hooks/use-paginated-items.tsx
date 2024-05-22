@@ -10,6 +10,8 @@ export const getKey: SWRInfiniteKeyLoader = (
   pageIndex: number,
   previousPageData: any | null,
 ) => {
+  if (pageIndex === undefined)
+    return `/api/items?page=1&limit=${DEFAULT_PAGE_SIZE}`;
   if (previousPageData && !previousPageData.length) return null; // reached the end
   return `/api/items?page=${pageIndex + 1}&limit=${DEFAULT_PAGE_SIZE}`;
 };
