@@ -4,7 +4,7 @@ import useSWR from "swr";
 
 import { fetcher } from "@/lib/fetcher";
 
-export function useItemsFromLIst(listId: string) {
+export function useItemsFromList(listId: string) {
   const { data, isLoading, error } = useSWR(
     `/api/lists/${listId}/items`,
     fetcher,

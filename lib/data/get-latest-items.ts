@@ -6,7 +6,7 @@ export async function getLatestItems(
   page: number,
   limit: number,
 ): Promise<Array<any>> {
-  const skip = page * limit;
+  const skip = (page - 1) * limit;
 
   const latestResults = await prisma.item.findMany({
     where: {
