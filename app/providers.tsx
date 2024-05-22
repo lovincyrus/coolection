@@ -16,15 +16,9 @@ const maxAge = 7 * 24 * 60 * 60 * 1e3;
 const storageHandler = {
   ...timestampStorageHandler,
   replace: (key: string, value: any) =>
-    // TODO: Look into $inf$ key
-    // key === "$inf$/api/items?page=1&limit=10"
-    !key.startsWith("/api/search")
-      ? timestampStorageHandler.replace(
-          key,
-          Array.isArray(value) ? [value[0]] : value,
-        )
+    !key.startsWith("$inf$")
+      ? timestampStorageHandler.replace(key, value)
       : undefined,
-
   revive: (key: string, storeObject: any) =>
     storeObject.ts > Date.now() - maxAge
       ? timestampStorageHandler.revive(key, storeObject)
