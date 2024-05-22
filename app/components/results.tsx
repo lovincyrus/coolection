@@ -70,16 +70,17 @@ export default function Results({ query }: { query: string }) {
         );
         mutateSearchResults(updatedSearchResults, false);
       }
-      if (Array.isArray(data)) {
-        const updatedData = (data as CoolectionItem[][]).map((page) =>
-          page.filter((item) => item?.id !== itemId),
+
+      if (Array.isArray(items)) {
+        const updatedData = (items as CoolectionItem[]).filter(
+          (item) => item.id !== itemId,
         );
         mutateItems(updatedData, false);
       }
 
       mutate(unstable_serialize(getKey));
     },
-    [searchResults, mutateSearchResults, mutate, data, mutateItems],
+    [searchResults, mutateSearchResults, mutate, items, mutateItems],
   );
 
   return (
