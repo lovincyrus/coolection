@@ -9,19 +9,12 @@ import { SWRConfig } from "swr";
 
 import { GlobalsProvider } from "./components/provider/globals-provider";
 
-// Max age of 7 days
-const maxAge = 7 * 24 * 60 * 60 * 1e3;
-
 // See: https://github.com/piotr-cz/swr-idb-cache
 const storageHandler = {
   ...timestampStorageHandler,
   replace: (key: string, value: any) =>
-    !key.startsWith("$inf$")
+    key === "/api/items?page=1&limit=10"
       ? timestampStorageHandler.replace(key, value)
-      : undefined,
-  revive: (key: string, storeObject: any) =>
-    storeObject.ts > Date.now() - maxAge
-      ? timestampStorageHandler.revive(key, storeObject)
       : undefined,
 };
 

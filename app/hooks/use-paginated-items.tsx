@@ -27,6 +27,7 @@ export function usePaginatedItems() {
   } = useSWRInfinite(getKey, fetcher, {
     // See: https://swr.vercel.app/docs/pagination#parameters
     initialSize: 1,
+    parallel: true,
   });
 
   const isLoadingMore =
