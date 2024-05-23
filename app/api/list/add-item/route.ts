@@ -30,13 +30,15 @@ export async function POST(req: Request) {
       );
     }
 
-    await prisma.list.update({
-      where: { id: listId },
-      data: { items: { connect: { id: itemId } } },
+    await prisma.itemList.create({
+      data: {
+        listId: listId,
+        itemId: itemId,
+      },
     });
 
     return NextResponse.json(
-      { message: `List ${listId} updated successfully` },
+      { message: `Item ${itemId} added to list ${listId} successfully` },
       { status: 200 },
     );
   } catch (error) {

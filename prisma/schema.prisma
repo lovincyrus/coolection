@@ -10,15 +10,16 @@ datasource db {
 }
 
 model User {
-  id        String   @id @unique
-  email     String
+  id        String   @id @default(uuid())
+  email     String   @unique
   firstName String?
   lastName  String?
   imageUrl  String?
-  createdAt DateTime
-  updatedAt DateTime
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
   items     Item[]
   lists     List[]
+  tags      Tag[]
 
   @@map("user")
 }
@@ -39,22 +40,65 @@ model Item {
   embedding   Unsupported("vector")?
   userId      String
   user        User                   @relation(fields: [userId], references: [id])
-  lists       List[]                 @relation("itemsInList")
+  lists       ItemList[]
+  tags        ItemTag[]
 
+  @@index([userId])
   @@map("item")
 }
 
 model List {
-  id          String    @id @default(uuid())
+  id          String     @id @default(uuid())
   name        String
   description String?
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
   deletedAt   DateTime?
-  isDeleted   Boolean   @default(false)
+  isDeleted   Boolean    @default(false)
   userId      String
-  user        User      @relation(fields: [userId], references: [id])
-  items       Item[]    @relation("itemsInList")
+  user        User       @relation(fields: [userId], references: [id])
+  items       ItemList[]
 
+  @@index([userId])
   @@map("list")
+}
+
+model Tag {
+  id        String    @id @default(uuid())
+  userId    String
+  user      User      @relation(fields: [userId], references: [id])
+  name      String
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+  isDeleted Boolean   @default(false)
+  items     ItemTag[]
+
+  @@unique([userId, name])
+  @@index([userId])
+  @@map("tag")
+}
+
+model ItemTag {
+  item   Item   @relation(fields: [itemId], references: [id])
+  tag    Tag    @relation(fields: [tagId], references: [id])
+  itemId String
+  tagId  String
+
+  @@unique([itemId, tagId])
+  @@index([itemId])
+  @@index([tagId])
+  @@map("item_tag")
+}
+
+model ItemList {
+  item   Item   @relation(fields: [itemId], references: [id])
+  list   List   @relation(fields: [listId], references: [id])
+  itemId String
+  listId String
+
+  @@unique([itemId, listId])
+  @@index([itemId])
+  @@index([listId])
+  @@map("item_list")
 }
