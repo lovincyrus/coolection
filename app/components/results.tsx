@@ -1,9 +1,13 @@
+"use client";
+
 import { AnimatePresence } from "framer-motion";
+import { usePathname, useSearchParams } from "next/navigation";
 import React, { useCallback, useMemo } from "react";
 import { unstable_serialize, useSWRConfig } from "swr";
 
 import { DEFAULT_PAGE_SIZE } from "@/lib/constants";
 
+import { useItemsFromList } from "../hooks/use-items-from-list";
 import { useLists } from "../hooks/use-lists";
 import { useLoadingWithTimeout } from "../hooks/use-loading-with-timeout";
 import { getKey, usePaginatedItems } from "../hooks/use-paginated-items";
@@ -16,7 +20,9 @@ import { ResultItem } from "./result-item";
 import { ResultItemSkeletons } from "./result-item-skeletons";
 import { Button } from "./ui/button";
 
-export function Results({ query }: { query: string }) {
+export function Results({ listId }: { listId?: string }) {
+  const searchParams = useSearchParams();
+  const pathname = usePathname();
   const {
     data,
     mutate: mutateItems,
@@ -32,15 +38,24 @@ export function Results({ query }: { query: string }) {
   const { data: lists } = useLists();
   const { setOpenNewItemDialog } = useGlobals();
 
+  const querySearchParam = searchParams.get("q")?.toString() ?? "";
+
+  const { data: itemsFromList } = useItemsFromList(listId ? listId : "");
+
   const {
     data: searchResults,
     loading: searchingResults,
     mutate: mutateSearchResults,
-  } = useSearchResults(query);
+  } = useSearchResults(querySearchParam);
 
   const items = useMemo(() => (data ? [].concat(...data) : []), [data]);
 
-  const itemsOrSearchResults = query.length > 0 ? searchResults : items;
+  const itemsOrSearchResults =
+    pathname !== "/home"
+      ? itemsFromList
+      : querySearchParam.length > 0
+        ? searchResults
+        : items;
 
   // TODO: revisit
   // useEffect(() => {
@@ -51,7 +66,7 @@ export function Results({ query }: { query: string }) {
 
   const isSearchingResultsWithTimeout = useLoadingWithTimeout(searchingResults);
   const showEmptyItemsCopy = useLoadingWithTimeout(
-    query.length === 0 &&
+    querySearchParam.length === 0 &&
       Array.isArray(items) &&
       items.length === 0 &&
       !loadingItems,
@@ -59,7 +74,7 @@ export function Results({ query }: { query: string }) {
   );
   const showNoResults =
     !searchingResults &&
-    query.length > 0 &&
+    querySearchParam.length > 0 &&
     Array.isArray(searchResults) &&
     searchResults.length === 0;
 
@@ -85,7 +100,7 @@ export function Results({ query }: { query: string }) {
   );
 
   return (
-    <>
+    <div className="mb-8">
       <AnimatePresence initial={false}>
         {showEmptyItemsCopy ? (
           <p className="mt-4 text-center text-sm font-medium text-gray-700">
@@ -103,7 +118,7 @@ export function Results({ query }: { query: string }) {
         {showNoResults ? (
           <div className="mt-4 flex w-full justify-center">
             <p className="max-w-[80%] truncate text-center text-sm font-medium text-gray-700">
-              No results for <q>{query}</q>
+              No results for <q>{querySearchParam}</q>
             </p>
           </div>
         ) : null}
@@ -126,7 +141,7 @@ export function Results({ query }: { query: string }) {
         )}
       </AnimatePresence>
 
-      {!isReachingEnd && !query && (
+      {!isReachingEnd && !querySearchParam && (
         <Button
           className="mt-4 h-[30px] w-full items-center justify-center whitespace-nowrap rounded-lg border bg-white px-3 text-xs font-medium shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 disabled:pointer-events-none disabled:opacity-50"
           disabled={isLoadingMore || isReachingEnd}
@@ -139,6 +154,6 @@ export function Results({ query }: { query: string }) {
       )}
 
       <EditItemDialog />
-    </>
+    </div>
   );
 }

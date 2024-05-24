@@ -7,7 +7,9 @@ import { saveOrUpdateUser } from "@/lib/save-or-update-user";
 
 import { Footer } from "../components/footer";
 import { Header } from "../components/header";
-import { Search } from "../components/search";
+import { Navigation } from "../components/navigation";
+import { Results } from "../components/results";
+import { SearchBar } from "../components/search-bar";
 
 export async function generateMetadata() {
   return {
@@ -39,7 +41,9 @@ export default async function HomePage() {
         <Header />
 
         <div className="mt-20 flex flex-col">
-          <Search />
+          <Navigation />
+          <SearchBar />
+          <Results />
         </div>
       </div>
 

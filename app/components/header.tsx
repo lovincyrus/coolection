@@ -2,22 +2,29 @@
 
 import { useClerk } from "@clerk/clerk-react";
 import { LogOutIcon } from "lucide-react";
+import Link from "next/link";
 import React from "react";
 
 import { NewItemDialog } from "./new-item-dialog";
 import { NewListDialog } from "./new-list-dialog";
 import { Button } from "./ui/button";
 
-export function Header() {
+export function Header({ heading = "Home" }: { heading?: string }) {
   const { signOut } = useClerk();
 
   return (
     <div className="mx-auto w-full max-w-2xl xl:max-w-4xl 2xl:max-w-6xl">
       <div className="flex flex-row items-center justify-between gap-2">
-        <div className="flex flex-row items-center space-x-0">
+        <div className="flex flex-row items-center space-x-1">
           <div className="flex h-8 w-8 items-center justify-center text-2xl">
-            🍵
+            <Link href="/home">🍵</Link>
+            <span className="sr-only">Coolection</span>
           </div>
+          {heading && (
+            <span className="ml-1 text-xs font-medium text-gray-800">
+              {heading}
+            </span>
+          )}
         </div>
 
         <div className="flex flex-row gap-1">
