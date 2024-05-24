@@ -65,13 +65,13 @@ model List {
 
 model Tag {
   id        String    @id @default(uuid())
-  userId    String
-  user      User      @relation(fields: [userId], references: [id])
   name      String
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
   deletedAt DateTime?
   isDeleted Boolean   @default(false)
+  userId    String
+  user      User      @relation(fields: [userId], references: [id])
   items     ItemTag[]
 
   @@unique([userId, name])
@@ -80,9 +80,9 @@ model Tag {
 }
 
 model ItemTag {
-  item   Item   @relation(fields: [itemId], references: [id])
-  tag    Tag    @relation(fields: [tagId], references: [id])
+  item   Item   @relation(fields: [itemId], references: [id], onUpdate: Cascade, onDelete: Cascade)
   itemId String
+  tag    Tag    @relation(fields: [tagId], references: [id], onUpdate: Cascade, onDelete: Cascade)
   tagId  String
 
   @@unique([itemId, tagId])
@@ -92,8 +92,8 @@ model ItemTag {
 }
 
 model ItemList {
-  item   Item   @relation(fields: [itemId], references: [id])
-  list   List   @relation(fields: [listId], references: [id])
+  item   Item   @relation(fields: [itemId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  list   List   @relation(fields: [listId], references: [id], onUpdate: Cascade, onDelete: Cascade)
   itemId String
   listId String
 

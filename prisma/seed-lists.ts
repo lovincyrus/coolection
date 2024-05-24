@@ -7,7 +7,6 @@ if (!process.env.DATABASE_URL) {
 }
 
 async function main() {
-  // Check if the list already exists
   const existingList = await prisma.list.findFirst({
     where: {
       name: "My Favorite Items",
@@ -16,12 +15,11 @@ async function main() {
 
   if (existingList) {
     console.log(
-      `List 'My Favorite Items' already exists with id: ${existingList.id}`
+      `List 'My Favorite Items' already exists with id: ${existingList.id}`,
     );
     return;
   }
 
-  // If the list does not exist, create it
   const newList = await prisma.list.create({
     data: {
       name: "My Favorite Items",

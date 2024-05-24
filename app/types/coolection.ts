@@ -25,7 +25,7 @@ export interface CoolectionList {
   description?: string;
   createdAt: string;
   updatedAt: string;
-  items: Array<CoolectionItem>;
+  items: CoolectionItem[];
 }
 
 export enum ItemType {

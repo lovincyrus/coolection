@@ -25,7 +25,7 @@ async function main() {
       firstName: "Bacon",
       lastName: "Egg",
       createdAt: new Date(),
-      updatedAt: new Date(),
+      updatedAt: new Date().toISOString(),
     },
   });
 

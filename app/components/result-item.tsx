@@ -34,12 +34,6 @@ export function ResultItem({
   const querySearchParam = searchParams.get("q")?.toString() ?? "";
   const { setOpenEditItemDialog, setCurrentItem } = useGlobals();
 
-  const handleRightClick = (event: React.MouseEvent) => {
-    event.preventDefault();
-    // eslint-disable-next-line no-console
-    // console.log("Right-clicked on item:", item.title);
-  };
-
   const handleAddToList = (listId: string) => {
     function getListName() {
       const list = lists.find((l) => l.id === listId);
@@ -122,74 +116,72 @@ export function ResultItem({
   }
 
   return (
-    <div onContextMenu={handleRightClick}>
-      <ContextMenu>
-        <ContextMenuTrigger>
-          <a
-            href={getUrl()}
-            target="_blank"
-            rel="noreferrer noopener"
-            key={item.id}
-            onPointerOver={() => {
-              setCurrentItem(item);
-            }}
-          >
-            <div className="flex select-none flex-col py-4 hover:rounded-lg hover:bg-gray-50 hover:shadow">
-              <div className="flex flex-col gap-1 px-4">
-                <h3 className="text-sm font-medium">
+    <ContextMenu>
+      <ContextMenuTrigger>
+        <a
+          href={getUrl()}
+          target="_blank"
+          rel="noreferrer noopener"
+          key={item.id}
+          onPointerOver={() => {
+            setCurrentItem(item);
+          }}
+        >
+          <div className="flex select-none flex-col py-4 hover:rounded-lg hover:bg-gray-50 hover:shadow">
+            <div className="flex flex-col gap-1 px-4">
+              <h3 className="text-sm font-medium">
+                <HighlightChars
+                  text={item.title}
+                  searchTerm={querySearchParam}
+                />
+              </h3>
+              {/* <code className="text-[12px]">{item.similarity}</code> */}
+              <div className="flex flex-row items-center space-x-2">
+                <LinkIcon className="h-3 w-3 text-gray-400" />
+                <p className="text-sm text-gray-400">
                   <HighlightChars
-                    text={item.title}
-                    searchTerm={querySearchParam}
-                  />
-                </h3>
-                {/* <code className="text-[12px]">{item.similarity}</code> */}
-                <div className="flex flex-row items-center space-x-2">
-                  <LinkIcon className="h-3 w-3 text-gray-400" />
-                  <p className="text-sm text-gray-400">
-                    <HighlightChars
-                      text={extractDomain(String(item.url))}
-                      searchTerm={querySearchParam}
-                    />
-                  </p>
-                </div>
-                <p className="line-clamp-3 text-sm text-gray-600">
-                  <HighlightChars
-                    text={getDescription() ?? ""}
+                    text={extractDomain(String(item.url))}
                     searchTerm={querySearchParam}
                   />
                 </p>
               </div>
+              <p className="line-clamp-3 text-sm text-gray-600">
+                <HighlightChars
+                  text={getDescription() ?? ""}
+                  searchTerm={querySearchParam}
+                />
+              </p>
             </div>
-          </a>
-        </ContextMenuTrigger>
-        <ContextMenuContent className="bg-white">
-          {lists?.length > 0 && (
-            <ContextMenuSub>
-              <ContextMenuSubTrigger>Move...</ContextMenuSubTrigger>
-              <ContextMenuSubContent className="w-48 bg-white">
-                {lists.map((list) => (
-                  <ContextMenuItem
-                    key={list.id}
-                    onClick={() => handleAddToList(list.id)}
-                  >
-                    Add to {list.name}
-                  </ContextMenuItem>
-                ))}
-              </ContextMenuSubContent>
-            </ContextMenuSub>
-          )}
-          <ContextMenuItem
-            onClick={() => {
-              navigator.clipboard.writeText(item.url ?? "");
-              toast.success("URL copied to clipboard");
-            }}
-          >
-            Copy URL
-          </ContextMenuItem>
-          <ContextMenuItem onClick={handleEditItem}>Edit</ContextMenuItem>
-          <ContextMenuItem onClick={handleArchiveItem}>Archive</ContextMenuItem>
-        </ContextMenuContent>
-      </ContextMenu>
-    </div>
+          </div>
+        </a>
+      </ContextMenuTrigger>
+      <ContextMenuContent className="bg-white">
+        {lists?.length > 0 && (
+          <ContextMenuSub>
+            <ContextMenuSubTrigger>Move...</ContextMenuSubTrigger>
+            <ContextMenuSubContent className="w-48 bg-white">
+              {lists.map((list) => (
+                <ContextMenuItem
+                  key={list.id}
+                  onClick={() => handleAddToList(list.id)}
+                >
+                  Add to {list.name}
+                </ContextMenuItem>
+              ))}
+            </ContextMenuSubContent>
+          </ContextMenuSub>
+        )}
+        <ContextMenuItem
+          onClick={() => {
+            navigator.clipboard.writeText(item.url ?? "");
+            toast.success("URL copied to clipboard");
+          }}
+        >
+          Copy URL
+        </ContextMenuItem>
+        <ContextMenuItem onClick={handleEditItem}>Edit</ContextMenuItem>
+        <ContextMenuItem onClick={handleArchiveItem}>Archive</ContextMenuItem>
+      </ContextMenuContent>
+    </ContextMenu>
   );
 }

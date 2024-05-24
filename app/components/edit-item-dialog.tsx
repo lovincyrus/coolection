@@ -1,5 +1,6 @@
 "use client";
 
+import { XIcon } from "lucide-react";
 import { useSearchParams } from "next/navigation";
 import React, { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
@@ -31,16 +32,41 @@ export function EditItemDialog() {
   const [description, setDescription] = useState(
     currentItem?.description ?? "",
   );
+  const [tags, setTags] = useState([]);
+  const [newTag, setNewTag] = useState("");
 
   const searchParams = useSearchParams();
   const querySearchParam = searchParams.get("q")?.toString() ?? "";
 
   useEffect(() => {
-    if (currentItem && !openEditItemDialog) {
+    if (currentItem) {
       setTitle(currentItem.title ?? "");
       setDescription(currentItem.description ?? "");
+      setNewTag("");
     }
-  }, [openEditItemDialog, currentItem]);
+  }, [openEditItemDialog, currentItem, setNewTag]);
+
+  useEffect(() => {
+    const fetchTags = async () => {
+      try {
+        const response = await fetch(
+          `/api/item/tags?item_id=${currentItem?.id}`,
+        );
+        if (response.ok) {
+          const tags = await response.json();
+          setTags(tags.map((tag) => tag.tag.name));
+        } else {
+          toast.error("Failed to fetch tags");
+        }
+      } catch (error) {
+        toast.error("Failed to fetch tags");
+      }
+    };
+
+    if (currentItem) {
+      fetchTags();
+    }
+  }, [currentItem]);
 
   const handleTitleChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -56,6 +82,60 @@ export function EditItemDialog() {
     [],
   );
 
+  const handleNewTagChange = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      setNewTag(event.target.value);
+    },
+    [],
+  );
+
+  const handleAddNewTag = async () => {
+    try {
+      const response = await fetch("/api/tags/create", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          item_id: currentItem.id,
+          tag_name: newTag,
+        }),
+      });
+
+      if (response.ok) {
+        const newTagData = await response.json();
+        setTags((prevTags) => [...prevTags, newTagData.name]);
+        setNewTag("");
+      } else {
+        toast.error("Failed to create tag");
+      }
+    } catch (error) {
+      toast.error("Failed to create tag");
+    }
+  };
+
+  const handleRemoveTag = useCallback(async (tagToRemove: string) => {
+    try {
+      const response = await fetch("/api/tags/delete", {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          tag_name: tagToRemove,
+        }),
+      });
+
+      if (response.ok) {
+        setTags((prevTags) => prevTags.filter((tag) => tag !== tagToRemove));
+      } else {
+        toast.error("Failed to remove tag");
+      }
+    } catch (error) {
+      toast.error("Failed to remove tag");
+    }
+  }, []);
+
   const haveChanges =
     currentItem &&
     (title !== currentItem.title || description !== currentItem.description);
@@ -63,7 +143,7 @@ export function EditItemDialog() {
   const searchSwrKey = getSearchSwrKey(querySearchParam);
 
   const handleSubmit = useCallback(
-    async (event: React.FormEvent) => {
+    async (event: React.FormEvent<HTMLFormElement>) => {
       event.preventDefault();
 
       if (!haveChanges) {
@@ -110,7 +190,7 @@ export function EditItemDialog() {
         <DialogHeader>
           <DialogTitle>Edit item</DialogTitle>
           <DialogDescription>
-            Update the title and description
+            Update the title, description, and tags
           </DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit}>
@@ -134,6 +214,44 @@ export function EditItemDialog() {
                 value={description}
                 onChange={handleDescriptionChange}
               />
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="tags">Tag</Label>
+              <div className="flex gap-2">
+                <Input
+                  id="newTag"
+                  type="text"
+                  placeholder="New tag"
+                  value={newTag}
+                  onChange={handleNewTagChange}
+                  onKeyPress={(event) => {
+                    if (event.key === "Enter") {
+                      if (!newTag) {
+                        return;
+                      }
+                      handleAddNewTag();
+                    }
+                  }}
+                />
+                <Button
+                  type="button"
+                  onClick={handleAddNewTag}
+                  disabled={!newTag}
+                >
+                  Add Tag
+                </Button>
+              </div>
+              <div className="flex flex-wrap gap-2">
+                {tags.map((tag) => (
+                  <span
+                    key={tag}
+                    className="flex select-none items-center gap-1 rounded bg-gray-200 px-2 py-1 text-xs"
+                  >
+                    {tag}
+                    <XIcon size={12} onClick={() => handleRemoveTag(tag)} />
+                  </span>
+                ))}
+              </div>
             </div>
           </div>
           <DialogFooter>
