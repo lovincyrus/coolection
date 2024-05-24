@@ -3,25 +3,33 @@
 import { auth } from "@clerk/nextjs/server";
 import { NextRequest, NextResponse } from "next/server";
 
-import { getLatestItems } from "@/lib/data/get-latest-items";
-
 export async function GET(req: NextRequest) {
   const { userId } = auth();
 
   const searchParams = new URL(req.url).searchParams;
-  const page = searchParams.get("page");
-  const limit = searchParams.get("limit");
+  const page = Number(searchParams.get("page"));
+  const limit = Number(searchParams.get("limit"));
 
   if (!userId) {
     return new NextResponse("Unauthorized", { status: 401 });
   }
 
   try {
-    const latestItems = await getLatestItems(
-      userId.toString(),
-      Number(page),
-      Number(limit),
-    );
+    const skip = (page - 1) * limit;
+
+    // See: https://www.prisma.io/docs/orm/prisma-client/queries/pagination#offset-pagination
+    const latestItems = await prisma.item.findMany({
+      where: {
+        userId: userId,
+        isDeleted: false,
+      },
+      orderBy: {
+        createdAt: "desc",
+      },
+      take: limit,
+      skip: skip,
+    });
+
     return NextResponse.json(latestItems);
   } catch (error) {
     if (error instanceof Error) {

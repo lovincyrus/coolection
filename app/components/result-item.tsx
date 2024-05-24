@@ -179,7 +179,7 @@ export function ResultItem({
         >
           Copy URL
         </ContextMenuItem>
-        <ContextMenuItem onClick={handleEditItem}>Edit</ContextMenuItem>
+        <ContextMenuItem onClick={handleEditItem}>Edit...</ContextMenuItem>
         <ContextMenuItem onClick={handleArchiveItem}>Archive</ContextMenuItem>
       </ContextMenuContent>
     </ContextMenu>
