@@ -5,12 +5,25 @@ import { LogOutIcon } from "lucide-react";
 import Link from "next/link";
 import React from "react";
 
+import { useLists } from "../hooks/use-lists";
 import { NewItemDialog } from "./new-item-dialog";
 import { NewListDialog } from "./new-list-dialog";
 import { Button } from "./ui/button";
 
-export function Header({ heading = "Home" }: { heading?: string }) {
+export function Header({
+  heading,
+  listId,
+}: {
+  heading?: string;
+  listId?: string;
+}) {
   const { signOut } = useClerk();
+  const { data: lists } = useLists();
+
+  function getListName(listId: string) {
+    const list = lists.find((list) => list.id === listId);
+    return list?.name;
+  }
 
   return (
     <div className="mx-auto w-full max-w-2xl xl:max-w-4xl 2xl:max-w-6xl">
@@ -23,6 +36,11 @@ export function Header({ heading = "Home" }: { heading?: string }) {
           {heading && (
             <span className="ml-1 text-xs font-medium text-gray-800">
               {heading}
+            </span>
+          )}
+          {listId && (
+            <span className="ml-1 text-xs font-medium text-gray-800">
+              {getListName(listId)}
             </span>
           )}
         </div>

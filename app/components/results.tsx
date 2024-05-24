@@ -50,7 +50,7 @@ export function Results({ listId }: { listId?: string }) {
 
   const items = useMemo(() => (data ? [].concat(...data) : []), [data]);
 
-  const itemsOrSearchResults =
+  const results =
     pathname !== "/home"
       ? itemsFromList
       : querySearchParam.length > 0
@@ -66,12 +66,18 @@ export function Results({ listId }: { listId?: string }) {
 
   const isSearchingResultsWithTimeout = useLoadingWithTimeout(searchingResults);
   const showEmptyItemsCopy = useLoadingWithTimeout(
-    querySearchParam.length === 0 &&
+    pathname === "/home" &&
+      querySearchParam.length === 0 &&
       Array.isArray(items) &&
       items.length === 0 &&
       !loadingItems,
     300,
   );
+  const showEmptyListItemsCopy = useLoadingWithTimeout(
+    pathname !== "/home" && Object.keys(itemsFromList).length === 0,
+    300,
+  );
+
   const showNoResults =
     !searchingResults &&
     querySearchParam.length > 0 &&
@@ -123,12 +129,20 @@ export function Results({ listId }: { listId?: string }) {
           </div>
         ) : null}
 
+        {showEmptyListItemsCopy ? (
+          <div className="mt-4 flex w-full justify-center">
+            <p className="max-w-[80%] truncate text-center text-sm font-medium text-gray-700">
+              There is nothing in this list yet.
+            </p>
+          </div>
+        ) : null}
+
         {loadingItems || isSearchingResultsWithTimeout ? (
           <ResultItemSkeletons count={DEFAULT_PAGE_SIZE} />
         ) : (
           <>
-            {Array.isArray(itemsOrSearchResults) &&
-              itemsOrSearchResults.map((item: CoolectionItem) => (
+            {Array.isArray(results) &&
+              results.map((item: CoolectionItem) => (
                 <AnimatedListItem key={item.id}>
                   <ResultItem
                     item={item}
@@ -141,6 +155,7 @@ export function Results({ listId }: { listId?: string }) {
         )}
       </AnimatePresence>
 
+      {/* TODO: fix lingering load more button when archiving item in a list */}
       {!isReachingEnd && !querySearchParam && (
         <Button
           className="mt-4 h-[30px] w-full items-center justify-center whitespace-nowrap rounded-lg border bg-white px-3 text-xs font-medium shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 disabled:pointer-events-none disabled:opacity-50"

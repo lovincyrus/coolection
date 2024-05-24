@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import React from "react";
 
 import { cn } from "@/lib/utils";
@@ -11,6 +12,7 @@ import { ScrollArea, ScrollBar } from "./ui/scroll-area";
 interface NavProps extends React.HTMLAttributes<HTMLDivElement> {}
 
 export function Navigation({ className, ...props }: NavProps) {
+  const pathname = usePathname();
   const { data: lists } = useLists();
 
   return (
@@ -24,7 +26,8 @@ export function Navigation({ className, ...props }: NavProps) {
             <Link key={list.name} href={`/lists/${list.id}`}>
               <button
                 className={cn(
-                  "flex h-6 items-center justify-center rounded-full border bg-gray-50 px-3 text-center text-xs font-medium shadow-sm hover:bg-gray-100",
+                  "flex h-6 items-center justify-center rounded-full bg-gray-50 px-3 text-center text-xs font-medium shadow-sm hover:bg-gray-100",
+                  pathname.includes(list.id) ? "border" : "",
                 )}
               >
                 {list.name}

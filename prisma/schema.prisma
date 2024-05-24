@@ -46,7 +46,7 @@ model Item {
 }
 
 model List {
-  id        String     @id @default(uuid())
+  id        String     @id @default(nanoid())
   name      String
   slug      String
   createdAt DateTime   @default(now())

@@ -34,7 +34,9 @@ export async function GET(req: Request, ctx: Context) {
       },
     });
 
-    const items = listWithItems?.items.map((itemList) => itemList.item);
+    const items = listWithItems?.items
+      .filter((itemList) => itemList.item.deletedAt === null)
+      .map((itemList) => itemList.item);
 
     return NextResponse.json(items);
   } catch (error) {
