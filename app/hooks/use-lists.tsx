@@ -7,7 +7,7 @@ import { fetcher } from "@/lib/fetcher";
 import { CoolectionList } from "../types";
 
 export function useLists() {
-  const { data, isLoading, error } = useSWR<CoolectionList[]>(
+  const { data, isLoading, mutate, error } = useSWR<CoolectionList[]>(
     "/api/lists",
     fetcher,
   );
@@ -15,6 +15,7 @@ export function useLists() {
   return {
     data: data ?? [],
     loading: isLoading,
+    mutate,
     error,
   };
 }

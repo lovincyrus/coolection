@@ -1,6 +1,6 @@
 "use client";
 
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import React from "react";
 
 import { cn } from "@/lib/utils";
@@ -11,36 +11,26 @@ import { ScrollArea, ScrollBar } from "./ui/scroll-area";
 interface NavProps extends React.HTMLAttributes<HTMLDivElement> {}
 
 export function Navigation({ className, ...props }: NavProps) {
-  const pathname = usePathname();
-  const searchParams = useSearchParams();
-  const { replace } = useRouter();
   const router = useRouter();
   const { data: lists } = useLists();
 
-  const handleListClick = (listId: string) => {
-    // const params = new URLSearchParams(searchParams);
-    // if (listId) {
-    //   params.set("list", listId);
-    // } else {
-    //   params.delete("list");
-    // }
-    // replace(`${pathname}?${params.toString()}`);
-    router.push(`/lists/${listId}`);
+  const handleListClick = (slug: string) => {
+    router.push(`/lists/${slug}`);
   };
 
   return (
     <div className="relative">
       <ScrollArea className="max-w-[600px] lg:max-w-none">
-        <div className={cn("mb-4 flex items-center", className)} {...props}>
+        <div
+          className={cn("mb-4 flex items-center gap-x-1", className)}
+          {...props}
+        >
           {lists.map((list) => (
             <button
-              onClick={() => handleListClick(list.id)}
+              onClick={() => handleListClick(list.slug)}
               key={list.name}
               className={cn(
-                "hover:text-primary flex h-7 items-center justify-center rounded-full px-4 text-center text-sm",
-                searchParams.get("list") === list.id
-                  ? "font-semibold"
-                  : "text-muted-foreground",
+                "flex h-6 items-center justify-center rounded-full border bg-gray-50 px-3 text-center text-xs font-medium shadow-sm hover:bg-gray-100",
               )}
             >
               {list.name}

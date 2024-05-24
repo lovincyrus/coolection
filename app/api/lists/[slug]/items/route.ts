@@ -20,17 +20,21 @@ export async function GET(req: Request, ctx: Context) {
   }
 
   try {
-    // TODO: itemList
-    const listWithItems = await prisma.list.findMany({
+    const listWithItems = await prisma.list.findUnique({
       where: {
         id: params.listId,
         userId: userId,
       },
       include: {
-        items: true,
+        items: {
+          include: {
+            item: true,
+          },
+        },
       },
     });
-    const items = listWithItems?.items;
+
+    const items = listWithItems?.items.map((itemList) => itemList.item);
 
     return NextResponse.json(items);
   } catch (error) {

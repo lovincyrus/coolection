@@ -1,7 +1,7 @@
 import { ItemType } from "@/app/types/coolection";
 import prisma from "@/lib/prisma";
 
-import { getTweet } from "../get-tweet";
+import { getTweet } from "./get-tweet";
 
 // https://twitter.com/i/bookmarks?post_id=1784694622566187100
 // https://twitter.com/rauchg/status/1784694622566187100

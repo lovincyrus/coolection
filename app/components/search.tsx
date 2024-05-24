@@ -6,7 +6,7 @@ import React, { useRef } from "react";
 import { useHotkeys } from "reakeys";
 import { useDebouncedCallback } from "use-debounce";
 
-// import { Navigation } from "./navigation";
+import { Navigation } from "./navigation";
 import { Results } from "./results";
 
 // After user stops typing for 300ms, update the URL with the new search query
@@ -46,7 +46,7 @@ export function Search() {
 
   return (
     <>
-      {/* <Navigation /> */}
+      <Navigation />
       <div className="relative mb-8">
         <SearchIcon className="text-muted-foreground absolute left-2 top-[0.6rem] h-4 w-4 opacity-60 grayscale" />
         <input

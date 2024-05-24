@@ -1,6 +1,6 @@
 "use client";
 
-import { FolderPlusIcon, XIcon } from "lucide-react";
+import { ListPlusIcon, XIcon } from "lucide-react";
 import React, { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
 
@@ -20,12 +20,10 @@ import { Input } from "./ui/input";
 
 export function NewListDialog() {
   const { openNewListDialog, setOpenNewListDialog, currentItem } = useGlobals();
-  const { data: listsData } = useLists();
+  const { data: listsData, mutate } = useLists();
 
   const [lists, setLists] = useState<string[]>([]);
   const [newList, setNewList] = useState("");
-
-  console.log("listsData: ", listsData);
 
   useEffect(() => {
     if (currentItem) {
@@ -34,28 +32,6 @@ export function NewListDialog() {
     }
   }, [currentItem, setNewList, listsData]);
 
-  // useEffect(() => {
-  //   // TODO: move to swr hook
-  //   const fetchLists = async () => {
-  //     try {
-  //       const response = await fetch(`/api/lists`);
-
-  //       if (response.ok) {
-  //         const lists = await response.json();
-  //         setLists(lists.map((l) => l.name));
-  //       } else {
-  //         toast.error("Failed to fetch lists");
-  //       }
-  //     } catch (error) {
-  //       toast.error("Failed to fetch lists");
-  //     }
-  //   };
-
-  //   if (currentItem) {
-  //     fetchLists();
-  //   }
-  // }, [currentItem]);
-
   const handleNewListChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
       setNewList(event.target.value);
@@ -63,29 +39,36 @@ export function NewListDialog() {
     [],
   );
 
-  const handleRemoveList = useCallback(async (listNameToRemove: string) => {
-    try {
-      const response = await fetch("/api/list/delete", {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          list_name: listNameToRemove,
-        }),
-      });
+  const handleRemoveList = useCallback(
+    async (listNameToRemove: string) => {
+      try {
+        const response = await fetch("/api/list/delete", {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            list_name: listNameToRemove,
+          }),
+        });
 
-      if (response.ok) {
-        setLists((prevLists) =>
-          prevLists.filter((list) => list !== listNameToRemove),
-        );
-      } else {
+        if (response.ok) {
+          setLists((prevLists) =>
+            prevLists.filter((list) => list !== listNameToRemove),
+          );
+          mutate(
+            listsData.filter((list) => list.name !== listNameToRemove),
+            false,
+          );
+        } else {
+          toast.error("Failed to remove list");
+        }
+      } catch (error) {
         toast.error("Failed to remove list");
       }
-    } catch (error) {
-      toast.error("Failed to remove list");
-    }
-  }, []);
+    },
+    [mutate, listsData],
+  );
 
   const handleSubmit = useCallback(
     async (event: React.FormEvent<HTMLFormElement>) => {
@@ -117,7 +100,7 @@ export function NewListDialog() {
     <Dialog open={openNewListDialog} onOpenChange={setOpenNewListDialog}>
       <DialogTrigger asChild>
         <Button className="focus-visible:ring-ring border-input bg-background hover:bg-accent hover:text-accent-foreground ml-auto h-[30px] items-center justify-center whitespace-nowrap rounded-lg border bg-white px-3 text-xs font-medium shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 disabled:pointer-events-none disabled:opacity-50">
-          <FolderPlusIcon className="mr-1.5 h-4 w-4" />
+          <ListPlusIcon className="mr-1.5 h-4 w-4" />
           New List
         </Button>
       </DialogTrigger>

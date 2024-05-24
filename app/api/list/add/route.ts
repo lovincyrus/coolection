@@ -13,37 +13,37 @@ export async function POST(req: Request) {
     return new NextResponse("Unauthorized", { status: 401 });
   }
 
+  const item = await prisma.item.findUnique({
+    where: { id: itemId },
+  });
+
+  if (!item) {
+    return NextResponse.json({ message: "Item not found" }, { status: 404 });
+  }
+
+  if (item.userId !== userId) {
+    return NextResponse.json(
+      { message: "Unauthorized to create list for this item" },
+      { status: 403 },
+    );
+  }
+
+  const existingItemList = await prisma.itemList.findFirst({
+    where: {
+      itemId: itemId,
+      listId: listId,
+    },
+  });
+
+  if (existingItemList) {
+    return NextResponse.json(
+      { message: "Item is already associated with this list" },
+      { status: 400 },
+    );
+  }
+
   try {
-    const item = await prisma.item.findUnique({
-      where: { id: itemId },
-    });
-
-    if (!item) {
-      return NextResponse.json({ message: "Item not found" }, { status: 404 });
-    }
-
-    if (item.userId !== userId) {
-      return NextResponse.json(
-        { message: "Unauthorized to create list for this item" },
-        { status: 403 },
-      );
-    }
-
-    const existingItemList = await prisma.itemList.findFirst({
-      where: {
-        itemId: itemId,
-        listId: listId,
-      },
-    });
-
-    if (existingItemList) {
-      return NextResponse.json(
-        { message: "Item is already associated with this list" },
-        { status: 400 },
-      );
-    }
-
-    const createdItemList = await prisma.itemList.create({
+    await prisma.itemList.create({
       data: {
         item: {
           connect: { id: itemId },

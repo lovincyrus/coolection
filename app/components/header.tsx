@@ -26,7 +26,10 @@ export function Header() {
 
           <Button
             className="focus-visible:ring-ring border-input bg-background hover:bg-accent hover:text-accent-foreground ml-auto h-[30px] items-center justify-center whitespace-nowrap rounded-lg border bg-white px-3 text-xs font-medium shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 disabled:pointer-events-none disabled:opacity-50"
-            onClick={() => signOut()}
+            onClick={() => {
+              // See: https://github.com/clerk/javascript/issues/3408
+              signOut();
+            }}
           >
             <LogOutIcon className="h-4 w-4" />
           </Button>

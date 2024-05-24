@@ -3,9 +3,9 @@
 import { auth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 
+import { addTwitterPostOrBookmark } from "@/lib/add-twitter-post-or-bookmark";
+import { addWebsite } from "@/lib/add-website";
 import { checkDuplicateItem } from "@/lib/check-duplicate-item";
-import { addTwitterPostOrBookmark } from "@/lib/data/add-twitter-post-or-bookmark";
-import { addWebsite } from "@/lib/data/add-website";
 import { isTwitterPostOrBookmarkUrl, normalizeLink } from "@/lib/url";
 
 export async function POST(req: Request) {

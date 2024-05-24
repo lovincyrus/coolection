@@ -51,8 +51,19 @@ export function ResultItem({
           itemId: item.id,
         }),
       });
+
       if (!response.ok) {
-        throw new Error(`Failed to add the item to list ${getListName()}`);
+        let errorMessage = `Failed to add the item to list ${getListName()}`;
+
+        if (response.status === 400) {
+          errorMessage = "Item is already associated with this list";
+        } else {
+          const responseText = await response.text();
+          errorMessage = responseText || errorMessage;
+        }
+
+        toast.error(errorMessage);
+        throw new Error(errorMessage);
       }
       return response.json();
     };
@@ -60,7 +71,7 @@ export function ResultItem({
     toast.promise(addItemToList(), {
       loading: `Adding item to ${getListName()}...`,
       success: `Item added to ${getListName()} successfully`,
-      error: `Failed to add the item to ${getListName()}`,
+      // error: `Failed to add the item to ${getListName()}`,
     });
   };
 
@@ -167,6 +178,7 @@ export function ResultItem({
           <ContextMenuSub>
             <ContextMenuSubTrigger>Move...</ContextMenuSubTrigger>
             <ContextMenuSubContent className="w-48 bg-white">
+              {/* TODO: disable item that is already in the list */}
               {lists.map((list) => (
                 <ContextMenuItem
                   key={list.id}

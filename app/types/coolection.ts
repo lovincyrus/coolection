@@ -22,6 +22,7 @@ export type CoolectionItemWithSimilarity = CoolectionItem & Similarity;
 export interface CoolectionList {
   id: string;
   name: string;
+  slug: string;
   description?: string;
   createdAt: string;
   updatedAt: string;
