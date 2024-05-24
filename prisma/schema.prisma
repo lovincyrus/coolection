@@ -19,7 +19,6 @@ model User {
   updatedAt DateTime @updatedAt
   items     Item[]
   lists     List[]
-  tags      Tag[]
 
   @@map("user")
 }
@@ -41,60 +40,31 @@ model Item {
   userId      String
   user        User                   @relation(fields: [userId], references: [id])
   lists       ItemList[]
-  tags        ItemTag[]
 
   @@index([userId])
   @@map("item")
 }
 
 model List {
-  id          String     @id @default(uuid())
-  name        String
-  description String?
-  createdAt   DateTime   @default(now())
-  updatedAt   DateTime   @updatedAt
-  deletedAt   DateTime?
-  isDeleted   Boolean    @default(false)
-  userId      String
-  user        User       @relation(fields: [userId], references: [id])
-  items       ItemList[]
+  id        String     @id @default(uuid())
+  name      String
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  deletedAt DateTime?
+  isDeleted Boolean    @default(false)
+  userId    String
+  user      User       @relation(fields: [userId], references: [id])
+  items     ItemList[]
 
+  @@unique([userId, name])
   @@index([userId])
   @@map("list")
 }
 
-model Tag {
-  id        String    @id @default(uuid())
-  name      String
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  deletedAt DateTime?
-  isDeleted Boolean   @default(false)
-  userId    String
-  user      User      @relation(fields: [userId], references: [id])
-  items     ItemTag[]
-
-  @@unique([userId, name])
-  @@index([userId])
-  @@map("tag")
-}
-
-model ItemTag {
-  item   Item   @relation(fields: [itemId], references: [id], onUpdate: Cascade, onDelete: Cascade)
-  itemId String
-  tag    Tag    @relation(fields: [tagId], references: [id], onUpdate: Cascade, onDelete: Cascade)
-  tagId  String
-
-  @@unique([itemId, tagId])
-  @@index([itemId])
-  @@index([tagId])
-  @@map("item_tag")
-}
-
 model ItemList {
   item   Item   @relation(fields: [itemId], references: [id], onUpdate: Cascade, onDelete: Cascade)
-  list   List   @relation(fields: [listId], references: [id], onUpdate: Cascade, onDelete: Cascade)
   itemId String
+  list   List   @relation(fields: [listId], references: [id], onUpdate: Cascade, onDelete: Cascade)
   listId String
 
   @@unique([itemId, listId])

@@ -32,8 +32,8 @@ export function EditItemDialog() {
   const [description, setDescription] = useState(
     currentItem?.description ?? "",
   );
-  const [tags, setTags] = useState([]);
-  const [newTag, setNewTag] = useState("");
+  const [lists, setLists] = useState([]);
+  const [newList, setNewList] = useState("");
 
   const searchParams = useSearchParams();
   const querySearchParam = searchParams.get("q")?.toString() ?? "";
@@ -42,19 +42,19 @@ export function EditItemDialog() {
     if (currentItem) {
       setTitle(currentItem.title ?? "");
       setDescription(currentItem.description ?? "");
-      setNewTag("");
+      setNewList("");
     }
-  }, [openEditItemDialog, currentItem, setNewTag]);
+  }, [openEditItemDialog, currentItem, setNewList]);
 
   useEffect(() => {
-    const fetchTags = async () => {
+    const fetchLists = async () => {
       try {
         const response = await fetch(
           `/api/item/tags?item_id=${currentItem?.id}`,
         );
         if (response.ok) {
-          const tags = await response.json();
-          setTags(tags.map((tag) => tag.tag.name));
+          const lists = await response.json();
+          setLists(lists.map((tag) => tag.list.name));
         } else {
           toast.error("Failed to fetch tags");
         }
@@ -64,7 +64,7 @@ export function EditItemDialog() {
     };
 
     if (currentItem) {
-      fetchTags();
+      fetchLists();
     }
   }, [currentItem]);
 
@@ -84,28 +84,28 @@ export function EditItemDialog() {
 
   const handleNewTagChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
-      setNewTag(event.target.value);
+      setNewList(event.target.value);
     },
     [],
   );
 
   const handleAddNewTag = async () => {
     try {
-      const response = await fetch("/api/tags/create", {
+      const response = await fetch("/api/list/create", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
           item_id: currentItem.id,
-          tag_name: newTag,
+          tag_name: newList,
         }),
       });
 
       if (response.ok) {
         const newTagData = await response.json();
-        setTags((prevTags) => [...prevTags, newTagData.name]);
-        setNewTag("");
+        setLists((prevTags) => [...prevTags, newTagData.name]);
+        setNewList("");
       } else {
         toast.error("Failed to create tag");
       }
@@ -116,7 +116,7 @@ export function EditItemDialog() {
 
   const handleRemoveTag = useCallback(async (tagToRemove: string) => {
     try {
-      const response = await fetch("/api/tags/delete", {
+      const response = await fetch("/api/list/delete", {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
@@ -127,7 +127,7 @@ export function EditItemDialog() {
       });
 
       if (response.ok) {
-        setTags((prevTags) => prevTags.filter((tag) => tag !== tagToRemove));
+        setLists((prevTags) => prevTags.filter((tag) => tag !== tagToRemove));
       } else {
         toast.error("Failed to remove tag");
       }
@@ -222,11 +222,11 @@ export function EditItemDialog() {
                   id="newTag"
                   type="text"
                   placeholder="New tag"
-                  value={newTag}
+                  value={newList}
                   onChange={handleNewTagChange}
                   onKeyPress={(event) => {
                     if (event.key === "Enter") {
-                      if (!newTag) {
+                      if (!newList) {
                         return;
                       }
                       handleAddNewTag();
@@ -236,13 +236,13 @@ export function EditItemDialog() {
                 <Button
                   type="button"
                   onClick={handleAddNewTag}
-                  disabled={!newTag}
+                  disabled={!newList}
                 >
                   Add Tag
                 </Button>
               </div>
               <div className="flex flex-wrap gap-2">
-                {tags.map((tag) => (
+                {lists.map((tag) => (
                   <span
                     key={tag}
                     className="flex select-none items-center gap-1 rounded bg-gray-200 px-2 py-1 text-xs"

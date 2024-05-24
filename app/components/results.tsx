@@ -1,5 +1,5 @@
 import { AnimatePresence } from "framer-motion";
-import React, { useCallback, useEffect, useMemo } from "react";
+import React, { useCallback, useMemo } from "react";
 import { unstable_serialize, useSWRConfig } from "swr";
 
 import { DEFAULT_PAGE_SIZE } from "@/lib/constants";
@@ -16,7 +16,7 @@ import { ResultItem } from "./result-item";
 import { ResultItemSkeletons } from "./result-item-skeletons";
 import { Button } from "./ui/button";
 
-export default function Results({ query }: { query: string }) {
+export function Results({ query }: { query: string }) {
   const {
     data,
     mutate: mutateItems,
@@ -42,11 +42,12 @@ export default function Results({ query }: { query: string }) {
 
   const itemsOrSearchResults = query.length > 0 ? searchResults : items;
 
-  useEffect(() => {
-    if (Array.isArray(itemsOrSearchResults)) {
-      document.title = `Home · Coolection (${itemsOrSearchResults.length})`;
-    }
-  }, [itemsOrSearchResults]);
+  // TODO: revisit
+  // useEffect(() => {
+  //   if (Array.isArray(itemsOrSearchResults)) {
+  //     document.title = `Home · Coolection (${itemsOrSearchResults.length})`;
+  //   }
+  // }, [itemsOrSearchResults]);
 
   const isSearchingResultsWithTimeout = useLoadingWithTimeout(searchingResults);
   const showEmptyItemsCopy = useLoadingWithTimeout(

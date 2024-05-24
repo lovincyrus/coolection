@@ -23,12 +23,12 @@ export async function GET(req: NextRequest) {
   }
 
   try {
-    const tags = await prisma.itemTag.findMany({
+    const tags = await prisma.itemList.findMany({
       where: {
         itemId: itemId,
       },
       include: {
-        tag: true,
+        list: true,
       },
     });
     return NextResponse.json(tags);

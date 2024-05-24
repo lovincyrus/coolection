@@ -19,6 +19,7 @@ export async function GET() {
         isDeleted: false,
       },
     });
+
     return NextResponse.json(lists);
   } catch (error) {
     if (error instanceof Error) {

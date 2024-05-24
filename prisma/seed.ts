@@ -1,9 +1,12 @@
-import { execSync } from 'child_process';
+import { execSync } from "child_process";
 
 const runSeedScript = (scriptPath: string) => {
   console.log(`Running seed script: ${scriptPath}`);
   try {
-    execSync(`ts-node --compiler-options '{"module":"CommonJS"}' ${scriptPath}`, { stdio: 'inherit' });
+    execSync(
+      `ts-node --compiler-options '{"module":"CommonJS"}' ${scriptPath}`,
+      { stdio: "inherit" },
+    );
   } catch (error) {
     console.error(`Error occurred while running ${scriptPath}:`, error);
     // Don't exit the process if an error occurs; just log the error.
@@ -11,9 +14,9 @@ const runSeedScript = (scriptPath: string) => {
 };
 
 const main = async () => {
-  runSeedScript('prisma/seed-user.ts');
-  runSeedScript('prisma/seed-websites.ts');
-  runSeedScript('prisma/seed-lists.ts');
+  runSeedScript("prisma/seed-user.ts");
+  runSeedScript("prisma/seed-websites.ts");
+  // runSeedScript('prisma/seed-lists.ts');
 };
 
 main();

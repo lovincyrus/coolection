@@ -5,35 +5,40 @@ import { NextResponse } from "next/server";
 
 import prisma from "@/lib/prisma";
 
-interface Context {
-  params: {
-    listId: string;
-  };
-}
-
-export async function GET(req: Request, ctx: Context) {
+export async function DELETE(req: Request) {
   const { userId } = auth();
-  const { params } = ctx;
+
+  const body = await req.json();
+  const { tag_name } = body;
 
   if (!userId) {
     return new NextResponse("Unauthorized", { status: 401 });
   }
 
   try {
-    const listWithItems = await prisma.list.findUnique({
-      where: { id: params.listId },
-      include: {
-        items: true,
+    const tagToDelete = await prisma.list.findFirst({
+      where: {
+        userId: userId,
+        name: tag_name,
       },
     });
-    const items = listWithItems?.items;
 
-    return NextResponse.json(items);
+    await prisma.list.delete({
+      where: {
+        id: tagToDelete.id,
+        userId: userId,
+      },
+    });
+
+    return NextResponse.json(
+      { message: `Tag ${tag_name} deleted successfully` },
+      { status: 200 },
+    );
   } catch (error) {
     if (error instanceof Error) {
       return NextResponse.json(
         {
-          message: "Failed to fetch items from the list",
+          message: "Failed to delete the tag",
           error: error instanceof Error ? error.message : "Unknown error",
         },
         { status: 500 },

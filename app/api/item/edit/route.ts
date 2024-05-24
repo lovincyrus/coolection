@@ -40,52 +40,6 @@ export async function PATCH(req: Request) {
       );
     }
 
-    // TODO: Should have draft tags and mass create new tags
-
-    // const existingTags = await prisma.tag.findMany({
-    //   where: {
-    //     items: {
-    //       some: {
-    //         itemId: item_id,
-    //       },
-    //     },
-    //   },
-    // });
-
-    // const existingTagNames = existingTags.map((tag) => tag.name);
-
-    // const tagsToAdd = newTags.filter(
-    //   (tagName: string) => !existingTagNames.includes(tagName),
-    // );
-
-    // const manyTags = await Promise.all(
-    //   tagsToAdd.map((tagName: string) => {
-    //     return prisma.tag.create({
-    //       data: {
-    //         name: tagName,
-    //         userId: userId,
-    //       },
-    //     });
-    //   }),
-    // );
-
-    // const createdTags = await Promise.all(
-    //   manyTags.map((tag) => {
-    //     return prisma.itemTag.create({
-    //       data: {
-    //         item: {
-    //           connect: { id: item_id },
-    //         },
-    //         tag: {
-    //           connect: { id: tag.id },
-    //         },
-    //       },
-    //     });
-    //   }),
-    // );
-
-    // console.log("createdTags: ", createdTags);
-
     const updatedItem = await prisma.item.update({
       where: { id: item_id },
       data: {

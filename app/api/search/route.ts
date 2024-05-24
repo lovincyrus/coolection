@@ -23,6 +23,7 @@ export async function GET(req: NextRequest) {
 
   try {
     // Approach 1: Simple ILIKE search
+    // TODO: filter by list id here
     const results: Array<CoolectionItemWithSimilarity> = await prisma.$queryRaw`
       SELECT
         id,

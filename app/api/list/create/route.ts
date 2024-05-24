@@ -36,7 +36,7 @@ export async function POST(req: Request) {
       );
     }
 
-    const existingTag = await prisma.tag.findFirst({
+    const existingTag = await prisma.list.findFirst({
       where: {
         userId: userId,
         name: tag_name,
@@ -44,12 +44,12 @@ export async function POST(req: Request) {
     });
 
     if (existingTag) {
-      await prisma.itemTag.create({
+      await prisma.itemList.create({
         data: {
           item: {
             connect: { id: item_id },
           },
-          tag: {
+          list: {
             connect: { id: existingTag.id },
           },
         },
@@ -57,33 +57,33 @@ export async function POST(req: Request) {
 
       return NextResponse.json(
         {
-          message: `Tag ${tag_name} associated with item ${item_id}`,
+          message: `List ${tag_name} associated with item ${item_id}`,
           name: tag_name,
         },
         { status: 200 },
       );
     } else {
-      const newTag = await prisma.tag.create({
+      const newList = await prisma.list.create({
         data: {
           name: tag_name,
           userId: userId,
         },
       });
 
-      await prisma.itemTag.create({
+      await prisma.itemList.create({
         data: {
           item: {
             connect: { id: item_id },
           },
-          tag: {
-            connect: { id: newTag.id },
+          list: {
+            connect: { id: newList.id },
           },
         },
       });
 
       return NextResponse.json(
         {
-          message: `Tag ${tag_name} created and associated with item ${item_id}`,
+          message: `List ${tag_name} created and associated with item ${item_id}`,
           name: tag_name,
         },
         { status: 200 },
