@@ -1,6 +1,6 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+import Link from "next/link";
 import React from "react";
 
 import { cn } from "@/lib/utils";
@@ -11,12 +11,7 @@ import { ScrollArea, ScrollBar } from "./ui/scroll-area";
 interface NavProps extends React.HTMLAttributes<HTMLDivElement> {}
 
 export function Navigation({ className, ...props }: NavProps) {
-  const router = useRouter();
   const { data: lists } = useLists();
-
-  const handleListClick = (slug: string) => {
-    router.push(`/lists/${slug}`);
-  };
 
   return (
     <div className="relative">
@@ -26,15 +21,15 @@ export function Navigation({ className, ...props }: NavProps) {
           {...props}
         >
           {lists.map((list) => (
-            <button
-              onClick={() => handleListClick(list.slug)}
-              key={list.name}
-              className={cn(
-                "flex h-6 items-center justify-center rounded-full border bg-gray-50 px-3 text-center text-xs font-medium shadow-sm hover:bg-gray-100",
-              )}
-            >
-              {list.name}
-            </button>
+            <Link key={list.name} href={`/lists/${list.id}`}>
+              <button
+                className={cn(
+                  "flex h-6 items-center justify-center rounded-full border bg-gray-50 px-3 text-center text-xs font-medium shadow-sm hover:bg-gray-100",
+                )}
+              >
+                {list.name}
+              </button>
+            </Link>
           ))}
         </div>
         <ScrollBar orientation="horizontal" className="invisible" />

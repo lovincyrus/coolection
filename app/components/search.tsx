@@ -6,17 +6,21 @@ import React, { useRef } from "react";
 import { useHotkeys } from "reakeys";
 import { useDebouncedCallback } from "use-debounce";
 
+import { useItemsFromList } from "../hooks/use-items-from-list";
 import { Navigation } from "./navigation";
 import { Results } from "./results";
 
 // After user stops typing for 300ms, update the URL with the new search query
 const DEBOUNCE_TIME = 300;
 
-export function Search() {
+export function Search({ listId }: { listId?: string }) {
   const inputRef = useRef<HTMLInputElement>(null);
   const searchParams = useSearchParams();
   const pathname = usePathname();
   const { replace } = useRouter();
+
+  const { data: itemsFromList } = useItemsFromList(listId);
+  console.log("itemsFromList: ", itemsFromList);
 
   useHotkeys([
     {
