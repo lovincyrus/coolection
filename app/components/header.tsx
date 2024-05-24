@@ -5,6 +5,7 @@ import { LogOutIcon } from "lucide-react";
 import React from "react";
 
 import { NewItemDialog } from "./new-item-dialog";
+import { NewListDialog } from "./new-list-dialog";
 import { Button } from "./ui/button";
 
 export function Header() {
@@ -20,6 +21,7 @@ export function Header() {
         </div>
 
         <div className="flex flex-row gap-1">
+          <NewListDialog />
           <NewItemDialog />
 
           <Button

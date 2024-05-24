@@ -41,7 +41,7 @@ export function ResultItem({
     }
 
     const addItemToList = async () => {
-      const response = await fetch("/api/list/add-item", {
+      const response = await fetch("/api/list/add", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -52,16 +52,14 @@ export function ResultItem({
         }),
       });
       if (!response.ok) {
-        throw new Error(`Failed to add the item to ${getListName()}`);
+        throw new Error(`Failed to add the item to list ${getListName()}`);
       }
       return response.json();
     };
 
     toast.promise(addItemToList(), {
       loading: `Adding item to ${getListName()}...`,
-      success: `${
-        item.title.charAt(0).toUpperCase() + item.title.slice(1)
-      } added to ${getListName()} successfully`,
+      success: `Item added to ${getListName()} successfully`,
       error: `Failed to add the item to ${getListName()}`,
     });
   };
@@ -156,6 +154,15 @@ export function ResultItem({
         </a>
       </ContextMenuTrigger>
       <ContextMenuContent className="bg-white">
+        <ContextMenuItem
+          onClick={() => {
+            navigator.clipboard.writeText(item.url ?? "");
+            toast.success("URL copied to clipboard");
+          }}
+        >
+          Copy URL
+        </ContextMenuItem>
+        <ContextMenuItem onClick={handleEditItem}>Edit...</ContextMenuItem>
         {lists?.length > 0 && (
           <ContextMenuSub>
             <ContextMenuSubTrigger>Move...</ContextMenuSubTrigger>
@@ -171,15 +178,6 @@ export function ResultItem({
             </ContextMenuSubContent>
           </ContextMenuSub>
         )}
-        <ContextMenuItem
-          onClick={() => {
-            navigator.clipboard.writeText(item.url ?? "");
-            toast.success("URL copied to clipboard");
-          }}
-        >
-          Copy URL
-        </ContextMenuItem>
-        <ContextMenuItem onClick={handleEditItem}>Edit...</ContextMenuItem>
         <ContextMenuItem onClick={handleArchiveItem}>Archive</ContextMenuItem>
       </ContextMenuContent>
     </ContextMenu>

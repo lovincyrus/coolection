@@ -5,40 +5,39 @@ import { NextResponse } from "next/server";
 
 import prisma from "@/lib/prisma";
 
-export async function DELETE(req: Request) {
-  const { userId } = auth();
+interface Context {
+  params: {
+    listId: string;
+  };
+}
 
-  const body = await req.json();
-  const { list_name } = body;
+export async function GET(req: Request, ctx: Context) {
+  const { userId } = auth();
+  const { params } = ctx;
 
   if (!userId) {
     return new NextResponse("Unauthorized", { status: 401 });
   }
 
   try {
-    const listToDelete = await prisma.list.findFirst({
+    // TODO: itemList
+    const listWithItems = await prisma.list.findMany({
       where: {
-        userId: userId,
-        name: list_name,
-      },
-    });
-
-    await prisma.list.delete({
-      where: {
-        id: listToDelete.id,
+        id: params.listId,
         userId: userId,
       },
+      include: {
+        items: true,
+      },
     });
+    const items = listWithItems?.items;
 
-    return NextResponse.json(
-      { message: `List ${list_name} deleted successfully` },
-      { status: 200 },
-    );
+    return NextResponse.json(items);
   } catch (error) {
     if (error instanceof Error) {
       return NextResponse.json(
         {
-          message: "Failed to delete the list",
+          message: "Failed to get items from the list",
           error: error instanceof Error ? error.message : "Unknown error",
         },
         { status: 500 },

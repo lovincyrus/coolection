@@ -106,7 +106,7 @@ export function NewItemDialog() {
       <DialogTrigger asChild>
         <Button className="focus-visible:ring-ring border-input bg-background hover:bg-accent hover:text-accent-foreground ml-auto h-[30px] items-center justify-center whitespace-nowrap rounded-lg border bg-white px-3 text-xs font-medium shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 disabled:pointer-events-none disabled:opacity-50">
           <PlusIcon className="mr-1 h-4 w-4" />
-          New item
+          New Item
         </Button>
       </DialogTrigger>
       <DialogContent className="bg-white sm:max-w-[425px]">

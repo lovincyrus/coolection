@@ -14,16 +14,18 @@ export function Navigation({ className, ...props }: NavProps) {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const { replace } = useRouter();
+  const router = useRouter();
   const { data: lists } = useLists();
 
   const handleListClick = (listId: string) => {
-    const params = new URLSearchParams(searchParams);
-    if (listId) {
-      params.set("list", listId);
-    } else {
-      params.delete("list");
-    }
-    replace(`${pathname}?${params.toString()}`);
+    // const params = new URLSearchParams(searchParams);
+    // if (listId) {
+    //   params.set("list", listId);
+    // } else {
+    //   params.delete("list");
+    // }
+    // replace(`${pathname}?${params.toString()}`);
+    router.push(`/lists/${listId}`);
   };
 
   return (

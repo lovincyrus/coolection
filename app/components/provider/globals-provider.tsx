@@ -6,6 +6,8 @@ import { CoolectionItem } from "../../types";
 interface GlobalsContextType {
   openNewItemDialog: boolean;
   setOpenNewItemDialog: (_openNewItemDialog: boolean) => void;
+  openNewListDialog: boolean;
+  setOpenNewListDialog: (_openNewListDialog: boolean) => void;
   openEditItemDialog: boolean;
   setOpenEditItemDialog: (_openEditItemDialog: boolean) => void;
   currentItem: CoolectionItem | null;
@@ -18,6 +20,7 @@ export const GlobalsProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
   const [openNewItemDialog, setOpenNewItemDialog] = useState<boolean>(false);
+  const [openNewListDialog, setOpenNewListDialog] = useState<boolean>(false);
   const [openEditItemDialog, setOpenEditItemDialog] = useState<boolean>(false);
   const [currentItem, setCurrentItem] = useState<CoolectionItem | null>(null);
 
@@ -37,6 +40,8 @@ export const GlobalsProvider: React.FC<{ children: React.ReactNode }> = ({
       value={{
         openNewItemDialog,
         setOpenNewItemDialog,
+        openNewListDialog,
+        setOpenNewListDialog,
         openEditItemDialog,
         setOpenEditItemDialog,
         currentItem,

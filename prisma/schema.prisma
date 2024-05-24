@@ -48,6 +48,7 @@ model Item {
 model List {
   id        String     @id @default(uuid())
   name      String
+  slug      String
   createdAt DateTime   @default(now())
   updatedAt DateTime   @updatedAt
   deletedAt DateTime?
