@@ -119,7 +119,7 @@ export function NewListDialog() {
               <div className="flex gap-2">
                 <Input
                   type="text"
-                  placeholder="New list"
+                  placeholder="Favorites"
                   value={listName}
                   onChange={handleNewListChange}
                 />

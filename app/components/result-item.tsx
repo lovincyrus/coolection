@@ -203,7 +203,7 @@ export function ResultItem({
         </a>
       </ContextMenuTrigger>
       {isInList ? (
-        <ContextMenuContent className="bg-white">
+        <ContextMenuContent className="w-32 md:w-48">
           <ContextMenuItem
             onClick={() => {
               navigator.clipboard.writeText(item.url ?? "");
@@ -217,7 +217,7 @@ export function ResultItem({
           </ContextMenuItem>
         </ContextMenuContent>
       ) : (
-        <ContextMenuContent className="bg-white">
+        <ContextMenuContent className="w-32 md:w-48">
           <ContextMenuItem
             onClick={() => {
               navigator.clipboard.writeText(item.url ?? "");
@@ -230,7 +230,7 @@ export function ResultItem({
           {lists?.length > 0 && (
             <ContextMenuSub>
               <ContextMenuSubTrigger>Move...</ContextMenuSubTrigger>
-              <ContextMenuSubContent className="w-48 bg-white">
+              <ContextMenuSubContent className="w-32 md:w-48">
                 {lists.map((list) => (
                   <ContextMenuItem
                     key={list.id}

@@ -6,6 +6,7 @@ import React from "react";
 import { useIsInList } from "../hooks/use-is-in-list";
 import { useItemsFromList } from "../hooks/use-items-from-list";
 import { useLists } from "../hooks/use-lists";
+import { useLoadingWithTimeout } from "../hooks/use-loading-with-timeout";
 import { CoolectionItem } from "../types";
 import { AnimatedListItem } from "./animated-list-item";
 import { EditItemDialog } from "./edit-item-dialog";
@@ -18,8 +19,10 @@ export function ListResults({ listId }: { listId?: string }) {
     listId ?? "",
   );
 
-  const showEmptyListItemsCopy =
-    isInList && Object.keys(itemsFromList).length === 0;
+  const showEmptyListItemsCopy = useLoadingWithTimeout(
+    isInList && Object.keys(itemsFromList).length === 0,
+    300,
+  );
 
   return (
     <div className="mb-8">
