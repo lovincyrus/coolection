@@ -40,7 +40,7 @@ export default async function HomePage() {
       <div className="mx-auto h-full w-full max-w-2xl px-4 pt-4 md:border-l md:border-r md:border-dashed xl:max-w-4xl 2xl:max-w-6xl">
         <Header heading="Home" />
 
-        <div className="mt-20 flex flex-col">
+        <div className="mt-14 flex flex-col">
           <ListNavigation />
           <SearchBar />
           <MainResults />
