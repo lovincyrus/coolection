@@ -33,6 +33,14 @@ export const GlobalsProvider: React.FC<{ children: React.ReactNode }> = ({
         setOpenNewItemDialog(true);
       },
     },
+    {
+      name: "Open new list dialog",
+      keys: "l",
+      callback: (event) => {
+        event?.preventDefault();
+        setOpenNewListDialog(true);
+      },
+    },
   ]);
 
   return (

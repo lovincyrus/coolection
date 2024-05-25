@@ -39,7 +39,7 @@ export function Header({
             </span>
           )}
           {listId && (
-            <span className="ml-1 max-w-[120px] truncate text-xs font-medium text-gray-800">
+            <span className="ml-1 max-w-[240px] truncate text-xs font-medium text-gray-800">
               {getListName(listId)}
             </span>
           )}
