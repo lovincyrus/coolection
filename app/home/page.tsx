@@ -36,7 +36,8 @@ export default async function HomePage() {
   await saveOrUpdateUser(userData);
 
   return (
-    <main className="block min-h-dvh w-full content-center md:grid md:grid-rows-[1fr,49px]">
+    // TODO: fix layout shift on refresh
+    <main className="grid min-h-dvh w-full grid-rows-[1fr,49px] content-center">
       <div className="mx-auto h-full w-full max-w-2xl px-4 pt-4 md:border-l md:border-r md:border-dashed xl:max-w-4xl 2xl:max-w-6xl">
         <Header heading="Home" />
 
