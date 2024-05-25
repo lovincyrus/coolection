@@ -71,8 +71,7 @@ export function MainResults({ listId }: { listId?: string }) {
     querySearchParam.length > 0 &&
     Array.isArray(searchResults) &&
     searchResults.length === 0;
-  const showLoadMore =
-    !isReachingEnd && !querySearchParam && items.length < DEFAULT_PAGE_SIZE;
+  const showLoadMore = !isReachingEnd && !querySearchParam;
 
   const handleArchiveItem = useCallback(
     (itemId: string) => {

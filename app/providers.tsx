@@ -2,7 +2,7 @@
 
 import { ClerkProvider } from "@clerk/nextjs";
 import {
-  timestampStorageHandler,
+  simpleStorageHandler,
   useCacheProvider,
 } from "@piotr-cz/swr-idb-cache";
 import { SWRConfig } from "swr";
@@ -11,10 +11,12 @@ import { GlobalsProvider } from "./components/provider/globals-provider";
 
 // See: https://github.com/piotr-cz/swr-idb-cache
 const storageHandler = {
-  ...timestampStorageHandler,
+  ...simpleStorageHandler,
   replace: (key: string, value: any) =>
-    key === "/api/items?page=1&limit=10"
-      ? timestampStorageHandler.replace(key, value)
+    key !== "$inf$/api/items?page=1&limit=10" &&
+    !key.startsWith("/api/search") &&
+    key !== "/api/lists"
+      ? simpleStorageHandler.replace(key, value)
       : undefined,
 };
 

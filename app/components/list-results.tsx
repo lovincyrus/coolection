@@ -30,7 +30,7 @@ export function ListResults({ listId }: { listId?: string }) {
         {showEmptyListItemsCopy ? (
           <div className="mt-4 flex min-h-48 w-full items-center justify-center">
             <p className="max-w-[80%] truncate text-center text-sm font-medium text-gray-700">
-              There is nothing in this list yet
+              There is nothing in this list yet.
             </p>
           </div>
         ) : null}
