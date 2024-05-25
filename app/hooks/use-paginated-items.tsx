@@ -34,8 +34,11 @@ export function usePaginatedItems() {
     loadingItems ||
     (size > 0 && items && typeof items[size - 1] === "undefined");
   const isEmpty = items?.[0]?.length === 0;
-  const isReachingEnd =
-    isEmpty || (items && items[items.length - 1]?.length < DEFAULT_PAGE_SIZE);
+  const lastPage = items && items[items.length - 1];
+  const isLastPageFull = lastPage?.length === DEFAULT_PAGE_SIZE;
+  const totalItems = items?.flat().length;
+  const isAllPagesFull = totalItems === DEFAULT_PAGE_SIZE * size;
+  const isReachingEnd = isEmpty || !isLastPageFull || !isAllPagesFull;
   const isRefreshing = isValidating && items && items.length === size;
 
   return {
