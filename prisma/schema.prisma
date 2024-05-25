@@ -46,16 +46,17 @@ model Item {
 }
 
 model List {
-  id        String     @id @default(nanoid())
-  name      String
-  slug      String
-  createdAt DateTime   @default(now())
-  updatedAt DateTime   @updatedAt
-  deletedAt DateTime?
-  isDeleted Boolean    @default(false)
-  userId    String
-  user      User       @relation(fields: [userId], references: [id])
-  items     ItemList[]
+  id          String     @id @default(nanoid())
+  name        String
+  slug        String
+  description String?
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+  deletedAt   DateTime?
+  isDeleted   Boolean    @default(false)
+  userId      String
+  user        User       @relation(fields: [userId], references: [id])
+  items       ItemList[]
 
   @@unique([userId, name])
   @@index([userId])

@@ -6,9 +6,10 @@ import { generateEmbedding } from "../lib/generate-embedding";
 import prisma from "../lib/prisma";
 import coolection from "./coolection-with-embeddings.json";
 
-if (!process.env.OPENAI_API_KEY) {
-  throw new Error("process.env.OPENAI_API_KEY is not defined. Please set it.");
-}
+// Uncomment when we have implemented the generateEmbedding function
+// if (!process.env.OPENAI_API_KEY) {
+//   throw new Error("process.env.OPENAI_API_KEY is not defined. Please set it.");
+// }
 
 if (!process.env.DATABASE_URL) {
   throw new Error("process.env.DATABASE_URL is not defined. Please set it.");
@@ -30,7 +31,7 @@ async function _generateEmbeddingsFile() {
   // Write the data with embeddings into a new JSON file
   fs.writeFileSync(
     path.join(__dirname, "./coolection-with-embeddings.json"),
-    JSON.stringify({ data: dataWithEmbeddings }, null, 2)
+    JSON.stringify({ data: dataWithEmbeddings }, null, 2),
   );
   console.log("Coolection data with embeddings seeded successfully!");
 }

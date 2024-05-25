@@ -6,6 +6,10 @@ if (!process.env.DATABASE_URL) {
   throw new Error("process.env.DATABASE_URL is not defined. Please set it.");
 }
 
+function slugify(text: string) {
+  return text.toLowerCase().replace(/ /g, "-");
+}
+
 async function main() {
   const existingList = await prisma.list.findFirst({
     where: {
@@ -23,6 +27,7 @@ async function main() {
   const newList = await prisma.list.create({
     data: {
       name: "My Favorite Items",
+      slug: slugify("My Favorite Items"),
       description: "A list of my favorite items.",
       userId: empty(),
     },
