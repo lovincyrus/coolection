@@ -42,7 +42,7 @@ export function SearchBar() {
   );
 
   return (
-    <div className="relative mb-8">
+    <div className="relative mb-4">
       <SearchIcon className="text-muted-foreground absolute left-2 top-[0.6rem] h-4 w-4 opacity-60 grayscale" />
       <input
         ref={inputRef}
