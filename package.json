@@ -4,9 +4,10 @@
   "private": true,
   "scripts": {
     "dev": "prisma generate && next dev",
-    "build": "prisma generate && prisma db push && prisma db seed && next build",
+    "build": "prisma generate && prisma migrate deploy && next build",
     "start": "next start",
     "lint": "next lint",
+    "dev:setup": "prisma generate && prisma db push && prisma db seed && next build",
     "db:seed": "prisma generate && prisma db seed",
     "db:push": "prisma db push --accept-data-loss",
     "db:pull": "prisma db pull",
