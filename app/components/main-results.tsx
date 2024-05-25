@@ -20,7 +20,7 @@ import { ResultItem } from "./result-item";
 import { ResultItemSkeletons } from "./result-item-skeletons";
 import { Button } from "./ui/button";
 
-export function MainResults({ listId }: { listId?: string }) {
+export function MainResults() {
   const searchParams = useSearchParams();
   const {
     data,
