@@ -1,7 +1,7 @@
 "use client";
 
 import { ListPlusIcon } from "lucide-react";
-import Link from "next/link";
+import { Link } from "next-view-transitions";
 import React from "react";
 
 import { useLists } from "../hooks/use-lists";

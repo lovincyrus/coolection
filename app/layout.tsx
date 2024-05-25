@@ -3,6 +3,7 @@ import "./globals.css";
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import type { Metadata, Viewport } from "next";
+import { ViewTransitions } from "next-view-transitions";
 import { Toaster } from "sonner";
 
 import { fontSans } from "@/lib/fonts";
@@ -43,16 +44,18 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className={fontSans.className}>
-        <Providers>
-          <Toaster />
-          <Analytics />
-          {children}
-          <TailwindIndicator />
-          <SpeedInsights />
-        </Providers>
-      </body>
-    </html>
+    <ViewTransitions>
+      <html lang="en">
+        <body className={fontSans.className}>
+          <Providers>
+            <Toaster />
+            <Analytics />
+            {children}
+            <TailwindIndicator />
+            <SpeedInsights />
+          </Providers>
+        </body>
+      </html>
+    </ViewTransitions>
   );
 }
