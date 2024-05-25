@@ -34,12 +34,12 @@ export function Header({
             <span className="sr-only">Coolection</span>
           </div>
           {heading && (
-            <span className="ml-1 text-xs font-medium text-gray-800">
+            <span className="ml-1 max-w-[120px] truncate text-xs font-medium text-gray-800">
               {heading}
             </span>
           )}
           {listId && (
-            <span className="ml-1 text-xs font-medium text-gray-800">
+            <span className="ml-1 max-w-[120px] truncate text-xs font-medium text-gray-800">
               {getListName(listId)}
             </span>
           )}

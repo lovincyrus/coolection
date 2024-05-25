@@ -3,6 +3,7 @@ import { useSearchParams } from "next/navigation";
 import React from "react";
 import { toast } from "sonner";
 
+import { useIsInList } from "../hooks/use-is-in-list";
 import { CoolectionItem, CoolectionList, ItemType } from "../types";
 import { HighlightChars } from "./highlight-chars";
 import { useGlobals } from "./provider/globals-provider";
@@ -33,6 +34,7 @@ export function ResultItem({
   const searchParams = useSearchParams();
   const querySearchParam = searchParams.get("q")?.toString() ?? "";
   const { setOpenEditItemDialog, setCurrentItem } = useGlobals();
+  const isInList = useIsInList();
 
   const handleAddToList = (listId: string) => {
     function getListName() {
@@ -164,34 +166,48 @@ export function ResultItem({
           </div>
         </a>
       </ContextMenuTrigger>
-      <ContextMenuContent className="bg-white">
-        <ContextMenuItem
-          onClick={() => {
-            navigator.clipboard.writeText(item.url ?? "");
-            toast.success("URL copied to clipboard");
-          }}
-        >
-          Copy URL
-        </ContextMenuItem>
-        <ContextMenuItem onClick={handleEditItem}>Edit...</ContextMenuItem>
-        {lists?.length > 0 && (
-          <ContextMenuSub>
-            <ContextMenuSubTrigger>Move...</ContextMenuSubTrigger>
-            <ContextMenuSubContent className="w-48 bg-white">
-              {/* TODO: disable item that is already in the list */}
-              {lists.map((list) => (
-                <ContextMenuItem
-                  key={list.id}
-                  onClick={() => handleAddToList(list.id)}
-                >
-                  Add to {list.name}
-                </ContextMenuItem>
-              ))}
-            </ContextMenuSubContent>
-          </ContextMenuSub>
-        )}
-        <ContextMenuItem onClick={handleArchiveItem}>Archive</ContextMenuItem>
-      </ContextMenuContent>
+      {isInList ? (
+        <ContextMenuContent className="bg-white">
+          <ContextMenuItem
+            onClick={() => {
+              navigator.clipboard.writeText(item.url ?? "");
+              toast.success("URL copied to clipboard");
+            }}
+          >
+            Copy URL
+          </ContextMenuItem>
+          {/* TODO: remove item that is already in the list */}
+          <ContextMenuItem>Remove</ContextMenuItem>
+        </ContextMenuContent>
+      ) : (
+        <ContextMenuContent className="bg-white">
+          <ContextMenuItem
+            onClick={() => {
+              navigator.clipboard.writeText(item.url ?? "");
+              toast.success("URL copied to clipboard");
+            }}
+          >
+            Copy URL
+          </ContextMenuItem>
+          <ContextMenuItem onClick={handleEditItem}>Edit...</ContextMenuItem>
+          {lists?.length > 0 && (
+            <ContextMenuSub>
+              <ContextMenuSubTrigger>Move...</ContextMenuSubTrigger>
+              <ContextMenuSubContent className="w-48 bg-white">
+                {lists.map((list) => (
+                  <ContextMenuItem
+                    key={list.id}
+                    onClick={() => handleAddToList(list.id)}
+                  >
+                    Add to {list.name}
+                  </ContextMenuItem>
+                ))}
+              </ContextMenuSubContent>
+            </ContextMenuSub>
+          )}
+          <ContextMenuItem onClick={handleArchiveItem}>Archive</ContextMenuItem>
+        </ContextMenuContent>
+      )}
     </ContextMenu>
   );
 }

@@ -7,8 +7,8 @@ import { saveOrUpdateUser } from "@/lib/save-or-update-user";
 
 import { Footer } from "../components/footer";
 import { Header } from "../components/header";
-import { Navigation } from "../components/navigation";
-import { Results } from "../components/results";
+import { ListNavigation } from "../components/list-navigation";
+import { MainResults } from "../components/main-results";
 import { SearchBar } from "../components/search-bar";
 
 export async function generateMetadata() {
@@ -41,9 +41,9 @@ export default async function HomePage() {
         <Header heading="Home" />
 
         <div className="mt-20 flex flex-col">
-          <Navigation />
+          <ListNavigation />
           <SearchBar />
-          <Results />
+          <MainResults />
         </div>
       </div>
 

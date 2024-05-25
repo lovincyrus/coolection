@@ -1,12 +1,13 @@
 "use client";
 
 import { AnimatePresence } from "framer-motion";
-import { usePathname, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import React, { useCallback, useMemo } from "react";
 import { unstable_serialize, useSWRConfig } from "swr";
 
 import { DEFAULT_PAGE_SIZE } from "@/lib/constants";
 
+import { useIsInList } from "../hooks/use-is-in-list";
 import { useItemsFromList } from "../hooks/use-items-from-list";
 import { useLists } from "../hooks/use-lists";
 import { useLoadingWithTimeout } from "../hooks/use-loading-with-timeout";
@@ -20,9 +21,8 @@ import { ResultItem } from "./result-item";
 import { ResultItemSkeletons } from "./result-item-skeletons";
 import { Button } from "./ui/button";
 
-export function Results({ listId }: { listId?: string }) {
+export function MainResults({ listId }: { listId?: string }) {
   const searchParams = useSearchParams();
-  const pathname = usePathname();
   const {
     data,
     mutate: mutateItems,
@@ -32,6 +32,7 @@ export function Results({ listId }: { listId?: string }) {
     isReachingEnd,
     loading: loadingItems,
   } = usePaginatedItems();
+  const isInList = useIsInList();
 
   const { mutate } = useSWRConfig();
 
@@ -50,12 +51,11 @@ export function Results({ listId }: { listId?: string }) {
 
   const items = useMemo(() => (data ? [].concat(...data) : []), [data]);
 
-  const results =
-    pathname !== "/home"
-      ? itemsFromList
-      : querySearchParam.length > 0
-        ? searchResults
-        : items;
+  const results = isInList
+    ? itemsFromList
+    : querySearchParam.length > 0
+      ? searchResults
+      : items;
 
   // TODO: revisit
   // useEffect(() => {
@@ -66,17 +66,17 @@ export function Results({ listId }: { listId?: string }) {
 
   const isSearchingResultsWithTimeout = useLoadingWithTimeout(searchingResults);
   const showEmptyItemsCopy = useLoadingWithTimeout(
-    pathname === "/home" &&
+    !isInList &&
       querySearchParam.length === 0 &&
       Array.isArray(items) &&
       items.length === 0 &&
       !loadingItems,
     300,
   );
-  const showEmptyListItemsCopy = useLoadingWithTimeout(
-    pathname !== "/home" && Object.keys(itemsFromList).length === 0,
-    300,
-  );
+  // const showEmptyListItemsCopy = useLoadingWithTimeout(
+  //   !isInList && Object.keys(itemsFromList).length === 0,
+  //   300,
+  // );
 
   const showNoResults =
     !searchingResults &&
@@ -129,13 +129,13 @@ export function Results({ listId }: { listId?: string }) {
           </div>
         ) : null}
 
-        {showEmptyListItemsCopy ? (
+        {/* {showEmptyListItemsCopy ? (
           <div className="mt-4 flex w-full justify-center">
             <p className="max-w-[80%] truncate text-center text-sm font-medium text-gray-700">
               There is nothing in this list yet.
             </p>
           </div>
-        ) : null}
+        ) : null} */}
 
         {loadingItems || isSearchingResultsWithTimeout ? (
           <ResultItemSkeletons count={DEFAULT_PAGE_SIZE} />
