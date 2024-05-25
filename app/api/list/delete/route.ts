@@ -23,15 +23,15 @@ export async function DELETE(req: Request) {
       },
     });
 
-    await prisma.list.delete({
+    const deletedList = await prisma.list.delete({
       where: {
-        id: listToDelete.id,
+        id: listToDelete?.id,
         userId: userId,
       },
     });
 
     return NextResponse.json(
-      { message: `List ${list_name} deleted successfully` },
+      { message: `List ${deletedList.name} deleted successfully` },
       { status: 200 },
     );
   } catch (error) {

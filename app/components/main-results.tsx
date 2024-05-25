@@ -8,7 +8,6 @@ import { unstable_serialize, useSWRConfig } from "swr";
 import { DEFAULT_PAGE_SIZE } from "@/lib/constants";
 
 import { useIsInList } from "../hooks/use-is-in-list";
-import { useItemsFromList } from "../hooks/use-items-from-list";
 import { useLists } from "../hooks/use-lists";
 import { useLoadingWithTimeout } from "../hooks/use-loading-with-timeout";
 import { getKey, usePaginatedItems } from "../hooks/use-paginated-items";
@@ -41,8 +40,6 @@ export function MainResults({ listId }: { listId?: string }) {
 
   const querySearchParam = searchParams.get("q")?.toString() ?? "";
 
-  const { data: itemsFromList } = useItemsFromList(listId ? listId : "");
-
   const {
     data: searchResults,
     loading: searchingResults,
@@ -51,11 +48,7 @@ export function MainResults({ listId }: { listId?: string }) {
 
   const items = useMemo(() => (data ? [].concat(...data) : []), [data]);
 
-  const results = isInList
-    ? itemsFromList
-    : querySearchParam.length > 0
-      ? searchResults
-      : items;
+  const results = querySearchParam.length > 0 ? searchResults : items;
 
   // TODO: revisit
   // useEffect(() => {
@@ -73,16 +66,13 @@ export function MainResults({ listId }: { listId?: string }) {
       !loadingItems,
     300,
   );
-  // const showEmptyListItemsCopy = useLoadingWithTimeout(
-  //   !isInList && Object.keys(itemsFromList).length === 0,
-  //   300,
-  // );
-
   const showNoResults =
     !searchingResults &&
     querySearchParam.length > 0 &&
     Array.isArray(searchResults) &&
     searchResults.length === 0;
+  const showLoadMore =
+    !isReachingEnd && !querySearchParam && items.length < DEFAULT_PAGE_SIZE;
 
   const handleArchiveItem = useCallback(
     (itemId: string) => {
@@ -129,14 +119,6 @@ export function MainResults({ listId }: { listId?: string }) {
           </div>
         ) : null}
 
-        {/* {showEmptyListItemsCopy ? (
-          <div className="mt-4 flex w-full justify-center">
-            <p className="max-w-[80%] truncate text-center text-sm font-medium text-gray-700">
-              There is nothing in this list yet.
-            </p>
-          </div>
-        ) : null} */}
-
         {loadingItems || isSearchingResultsWithTimeout ? (
           <ResultItemSkeletons count={DEFAULT_PAGE_SIZE} />
         ) : (
@@ -155,8 +137,7 @@ export function MainResults({ listId }: { listId?: string }) {
         )}
       </AnimatePresence>
 
-      {/* TODO: fix lingering load more button when archiving item in a list */}
-      {!isReachingEnd && !querySearchParam && (
+      {showLoadMore && (
         <Button
           className="mt-4 h-[30px] w-full items-center justify-center whitespace-nowrap rounded-lg border bg-white px-3 text-xs font-medium shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 disabled:pointer-events-none disabled:opacity-50"
           disabled={isLoadingMore || isReachingEnd}

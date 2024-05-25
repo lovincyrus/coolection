@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
 import React from "react";
 
 import { cn } from "@/lib/utils";
@@ -11,7 +10,6 @@ import { Button } from "./ui/button";
 import { ScrollArea, ScrollBar } from "./ui/scroll-area";
 
 export function ListNavigation() {
-  const pathname = usePathname();
   const { data: lists } = useLists();
 
   return (
@@ -22,8 +20,7 @@ export function ListNavigation() {
             <Link key={list.name} href={`/lists/${list.id}`}>
               <Button
                 className={cn(
-                  "flex h-6 items-center justify-center rounded-full bg-gray-50 px-3 text-center text-xs font-medium shadow-sm hover:bg-gray-100",
-                  pathname.includes(list.id) ? "border" : "",
+                  "flex h-6 items-center justify-center rounded-full bg-gray-100 px-3 text-center text-xs font-medium hover:bg-gray-200",
                 )}
               >
                 {list.name}

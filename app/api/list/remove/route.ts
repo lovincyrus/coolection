@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 
 import prisma from "@/lib/prisma";
 
-export async function POST(req: Request) {
+export async function PATCH(req: Request) {
   const { userId } = auth();
 
   const body = await req.json();
@@ -23,7 +23,7 @@ export async function POST(req: Request) {
 
   if (item.userId !== userId) {
     return NextResponse.json(
-      { message: "Unauthorized to create list for this item" },
+      { message: "Unauthorized to remove item from this list" },
       { status: 403 },
     );
   }
@@ -35,36 +35,31 @@ export async function POST(req: Request) {
     },
   });
 
-  if (existingItemList) {
+  if (!existingItemList) {
     return NextResponse.json(
-      { message: "Item is already associated with this list" },
+      { message: "Item is not associated with this list" },
       { status: 400 },
     );
   }
 
   try {
-    await prisma.itemList.create({
-      data: {
-        item: {
-          connect: { id: item_id },
-        },
-        list: {
-          connect: { id: list_id },
+    await prisma.itemList.delete({
+      where: {
+        itemId_listId: {
+          itemId: item_id,
+          listId: list_id,
         },
       },
     });
 
     return NextResponse.json(
-      {
-        message: `List ${list_id} associated with item ${item_id}`,
-        name: list_id,
-      },
+      { message: `Item ${item_id} removed from list ${list_id}` },
       { status: 200 },
     );
   } catch (error) {
     return NextResponse.json(
       {
-        message: `Failed to create list for item ${item_id}`,
+        message: `Failed to remove item ${item_id} from list ${list_id}`,
         error: error instanceof Error ? error.message : "Unknown error",
       },
       { status: 500 },

@@ -3,6 +3,7 @@
 import { ListPlusIcon, XIcon } from "lucide-react";
 import React, { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
+import { useSWRConfig } from "swr";
 
 import { useLists } from "../hooks/use-lists";
 import { useGlobals } from "./provider/globals-provider";
@@ -20,21 +21,22 @@ import { Input } from "./ui/input";
 
 export function NewListDialog() {
   const { openNewListDialog, setOpenNewListDialog, currentItem } = useGlobals();
-  const { data: listsData, mutate } = useLists();
+  const { data: listsData } = useLists();
+  const { mutate } = useSWRConfig();
 
   const [lists, setLists] = useState<string[]>([]);
-  const [newList, setNewList] = useState("");
+  const [listName, setListName] = useState("");
 
   useEffect(() => {
     if (currentItem) {
-      setNewList("");
+      setListName("");
       setLists(listsData.map((l) => l.name));
     }
-  }, [currentItem, setNewList, listsData]);
+  }, [currentItem, setListName, listsData]);
 
   const handleNewListChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
-      setNewList(event.target.value);
+      setListName(event.target.value);
     },
     [],
   );
@@ -56,10 +58,8 @@ export function NewListDialog() {
           setLists((prevLists) =>
             prevLists.filter((list) => list !== listNameToRemove),
           );
-          mutate(
-            listsData.filter((list) => list.name !== listNameToRemove),
-            false,
-          );
+
+          mutate("/api/lists");
         } else {
           toast.error("Failed to remove list");
         }
@@ -67,7 +67,7 @@ export function NewListDialog() {
         toast.error("Failed to remove list");
       }
     },
-    [mutate, listsData],
+    [mutate],
   );
 
   const handleSubmit = useCallback(
@@ -80,20 +80,22 @@ export function NewListDialog() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          list_name: newList,
+          list_name: listName,
         }),
       });
 
       if (response.ok) {
         const newListData = await response.json();
         toast.success(newListData.message);
-        setNewList("");
+        setLists((prevLists) => [...prevLists, listName]);
+        mutate("/api/lists");
+        setListName("");
         setOpenNewListDialog(false);
       } else {
         toast.error("Failed to create list");
       }
     },
-    [newList, setOpenNewListDialog],
+    [listName, setOpenNewListDialog, mutate],
   );
 
   return (
@@ -118,7 +120,7 @@ export function NewListDialog() {
                 <Input
                   type="text"
                   placeholder="New list"
-                  value={newList}
+                  value={listName}
                   onChange={handleNewListChange}
                 />
               </div>
@@ -139,7 +141,7 @@ export function NewListDialog() {
             <Button
               className="focus-visible:ring-ring border-input bg-background hover:bg-accent hover:text-accent-foreground ml-auto w-fit items-center justify-center whitespace-nowrap rounded-md border bg-white/80 px-3 text-sm font-medium shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 disabled:pointer-events-none disabled:opacity-50"
               type="submit"
-              disabled={!newList}
+              disabled={!listName}
             >
               Submit
             </Button>

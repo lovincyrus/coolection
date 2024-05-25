@@ -39,7 +39,7 @@ export async function POST(req: Request) {
       );
     }
 
-    const newList = await prisma.list.create({
+    const createdList = await prisma.list.create({
       data: {
         name: list_name,
         slug: slugify(list_name),
@@ -49,7 +49,7 @@ export async function POST(req: Request) {
 
     return NextResponse.json(
       {
-        message: `List ${list_name} created successfully`,
+        message: `List ${createdList.name} created successfully`,
         name: list_name,
       },
       { status: 200 },

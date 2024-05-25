@@ -25,11 +25,15 @@ function extractDomain(url: string) {
 export function ResultItem({
   item,
   onArchive,
+  onRemove,
   lists,
+  listId,
 }: {
   item: CoolectionItem & { similarity?: number };
-  onArchive: (_itemId: string) => void;
+  onArchive?: (_itemId: string) => void;
+  onRemove?: (_itemId: string) => void;
   lists: CoolectionList[];
+  listId?: string;
 }) {
   const searchParams = useSearchParams();
   const querySearchParam = searchParams.get("q")?.toString() ?? "";
@@ -49,8 +53,8 @@ export function ResultItem({
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          listId: listId,
-          itemId: item.id,
+          list_id: listId,
+          item_id: item.id,
         }),
       });
 
@@ -75,6 +79,36 @@ export function ResultItem({
       success: `Item added to ${getListName()} successfully`,
       // error: `Failed to add the item to ${getListName()}`,
     });
+  };
+
+  const handleRemoveFromList = (listId: string) => {
+    const removeItemFromList = async () => {
+      const response = await fetch("/api/list/remove", {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          list_id: listId,
+          item_id: item.id,
+        }),
+      });
+
+      if (!response.ok) {
+        toast.error(`Failed to remove the item from list`);
+        throw new Error("Network response was not ok");
+      }
+    };
+
+    toast.promise(removeItemFromList(), {
+      loading: `Removing item from list...`,
+      success: `Item removed from list successfully`,
+      error: `Failed to remove the item from list`,
+    });
+
+    if (onRemove) {
+      onRemove(item.id);
+    }
   };
 
   const handleEditItem = () => {
@@ -105,7 +139,9 @@ export function ResultItem({
       error: `Failed to archive item ${item.title}`,
     });
 
-    onArchive(item.id);
+    if (onArchive) {
+      onArchive(item.id);
+    }
   };
 
   function getDescription() {
@@ -176,8 +212,9 @@ export function ResultItem({
           >
             Copy URL
           </ContextMenuItem>
-          {/* TODO: remove item that is already in the list */}
-          <ContextMenuItem>Remove</ContextMenuItem>
+          <ContextMenuItem onClick={() => handleRemoveFromList(listId ?? "")}>
+            Remove from list
+          </ContextMenuItem>
         </ContextMenuContent>
       ) : (
         <ContextMenuContent className="bg-white">
