@@ -28,6 +28,7 @@ export function usePaginatedItems() {
     // See: https://swr.vercel.app/docs/pagination#parameters
     initialSize: 1,
     parallel: true,
+    suspense: true,
   });
 
   const isLoadingMore =
@@ -38,7 +39,7 @@ export function usePaginatedItems() {
   const isLastPageFull = lastPage?.length === DEFAULT_PAGE_SIZE;
   const totalItems = items?.flat().length;
   const isAllPagesFull = totalItems === DEFAULT_PAGE_SIZE * size;
-  const isReachingEnd = isEmpty || !isLastPageFull || !isAllPagesFull;
+  const isReachingEnd = isEmpty || !isLastPageFull;
   const isRefreshing = isValidating && items && items.length === size;
 
   return {

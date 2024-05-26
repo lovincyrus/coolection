@@ -7,12 +7,12 @@ import { saveOrUpdateUser } from "@/lib/save-or-update-user";
 
 import { Footer } from "../components/footer";
 import { Header } from "../components/header";
-import { MainResults } from "../components/main-results";
 import { SearchBar } from "../components/search-bar";
 
 const ListNavigation = React.lazy(
   () => import("../components/list-navigation"),
 );
+const MainResults = React.lazy(() => import("../components/main-results"));
 
 export async function generateMetadata() {
   return {
@@ -49,7 +49,9 @@ export default async function HomePage() {
             <ListNavigation />
           </Suspense>
           <SearchBar />
-          <MainResults />
+          <Suspense fallback={null}>
+            <MainResults />
+          </Suspense>
         </div>
       </div>
 

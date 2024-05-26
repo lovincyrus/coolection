@@ -11,6 +11,7 @@ import { CoolectionItem } from "../types";
 import { AnimatedListItem } from "./animated-list-item";
 import { EditItemDialog } from "./edit-item-dialog";
 import { ResultItem } from "./result-item";
+import { ResultItemSkeletons } from "./result-item-skeletons";
 
 export function ListResults({ listId }: { listId?: string }) {
   const isInList = useIsInList();
@@ -37,22 +38,28 @@ export function ListResults({ listId }: { listId?: string }) {
           </div>
         ) : null}
 
-        {Array.isArray(itemsFromList) &&
-          itemsFromList.map((item: CoolectionItem) => (
-            <AnimatedListItem key={item.id}>
-              <ResultItem
-                item={item}
-                onRemove={() => {
-                  mutateItemsFromList(
-                    itemsFromList.filter((result) => result.id !== item.id),
-                    false,
-                  );
-                }}
-                lists={lists}
-                listId={listId}
-              />
-            </AnimatedListItem>
-          ))}
+        {loading ? (
+          <ResultItemSkeletons />
+        ) : (
+          <>
+            {Array.isArray(itemsFromList) &&
+              itemsFromList.map((item: CoolectionItem) => (
+                <AnimatedListItem key={item.id}>
+                  <ResultItem
+                    item={item}
+                    onRemove={() => {
+                      mutateItemsFromList(
+                        itemsFromList.filter((result) => result.id !== item.id),
+                        false,
+                      );
+                    }}
+                    lists={lists}
+                    listId={listId}
+                  />
+                </AnimatedListItem>
+              ))}
+          </>
+        )}
       </AnimatePresence>
 
       <EditItemDialog />

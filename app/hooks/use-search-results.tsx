@@ -18,6 +18,7 @@ export function useSearchResults(query: string) {
     {
       // See: https://swr.vercel.app/docs/advanced/understanding#return-previous-data-for-better-ux
       keepPreviousData: true,
+      suspense: true,
     },
   );
 

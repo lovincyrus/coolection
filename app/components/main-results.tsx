@@ -5,8 +5,6 @@ import { useSearchParams } from "next/navigation";
 import React, { useCallback, useEffect, useMemo } from "react";
 import { unstable_serialize, useSWRConfig } from "swr";
 
-import { DEFAULT_PAGE_SIZE } from "@/lib/constants";
-
 import { useIsInList } from "../hooks/use-is-in-list";
 import { useLists } from "../hooks/use-lists";
 import { useLoadingWithTimeout } from "../hooks/use-loading-with-timeout";
@@ -20,7 +18,7 @@ import { ResultItem } from "./result-item";
 import { ResultItemSkeletons } from "./result-item-skeletons";
 import { Button } from "./ui/button";
 
-export function MainResults() {
+export default function MainResults() {
   const searchParams = useSearchParams();
   const {
     data,
@@ -52,7 +50,7 @@ export function MainResults() {
 
   useEffect(() => {
     if (Array.isArray(results)) {
-      document.title = `Home · Coolection (${results.length})`;
+      document.title = `Home · Coolection ${results.length > 0 ? `(${results.length}) ` : ""}`;
     }
   }, [results]);
 
@@ -110,7 +108,7 @@ export function MainResults() {
         ) : null}
 
         {showNoResults ? (
-          <div className="mt-4 flex w-full justify-center">
+          <div className="mt-4 flex w-full items-center justify-center">
             <p className="max-w-[80%] truncate text-center text-sm font-medium text-gray-700">
               No results for <q>{querySearchParam}</q>
             </p>
@@ -118,7 +116,7 @@ export function MainResults() {
         ) : null}
 
         {loadingItems || isSearchingResultsWithTimeout ? (
-          <ResultItemSkeletons count={DEFAULT_PAGE_SIZE} />
+          <ResultItemSkeletons />
         ) : (
           <>
             {Array.isArray(results) &&

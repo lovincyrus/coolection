@@ -1,5 +1,6 @@
 "use server";
 
+import { notFound } from "next/navigation";
 import React from "react";
 
 import { Footer } from "@/app/components/footer";
@@ -14,6 +15,9 @@ type Params = {
 
 export async function generateMetadata({ params }: Params) {
   const list = await getListById(params.listId);
+
+  if (!list) return notFound();
+
   return {
     title: `${list?.name} · Coolection`,
   };
