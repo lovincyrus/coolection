@@ -7,6 +7,8 @@ import { saveOrUpdateUser } from "@/lib/save-or-update-user";
 
 import { Footer } from "../components/footer";
 import { Header } from "../components/header";
+import { ListNavigationSkeletons } from "../components/list-navigation-skeletons";
+import { ResultItemSkeletons } from "../components/result-item-skeletons";
 import { SearchBar } from "../components/search-bar";
 
 const ListNavigation = React.lazy(
@@ -45,11 +47,13 @@ export default async function HomePage() {
         <Header heading="Home" />
 
         <div className="mt-14 flex flex-col">
-          <Suspense fallback={null}>
+          <Suspense fallback={<ListNavigationSkeletons />}>
             <ListNavigation />
           </Suspense>
+
           <SearchBar />
-          <Suspense fallback={null}>
+
+          <Suspense fallback={<ResultItemSkeletons />}>
             <MainResults />
           </Suspense>
         </div>

@@ -27,7 +27,7 @@ body {
 
 @layer utilities {
   button {
-    @apply hover:bg-gray-50 ;
+    @apply hover:bg-gray-50;
   }
 }
 
