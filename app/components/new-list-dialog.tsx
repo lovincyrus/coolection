@@ -19,7 +19,7 @@ import {
 import { Input } from "./ui/input";
 
 export function NewListDialog() {
-  const { openNewListDialog, setOpenNewListDialog, currentItem } = useGlobals();
+  const { openNewListDialog, setOpenNewListDialog } = useGlobals();
   const { data: listsData } = useLists();
   const { mutate } = useSWRConfig();
 
@@ -27,11 +27,11 @@ export function NewListDialog() {
   const [listName, setListName] = useState("");
 
   useEffect(() => {
-    if (currentItem) {
+    if (openNewListDialog) {
       setListName("");
       setLists(listsData.map((l) => l.name));
     }
-  }, [currentItem, setListName, listsData]);
+  }, [openNewListDialog, setListName, listsData]);
 
   const handleNewListChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {

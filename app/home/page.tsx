@@ -1,15 +1,18 @@
 "use server";
 
 import { auth, clerkClient } from "@clerk/nextjs/server";
-import React from "react";
+import React, { Suspense } from "react";
 
 import { saveOrUpdateUser } from "@/lib/save-or-update-user";
 
 import { Footer } from "../components/footer";
 import { Header } from "../components/header";
-import { ListNavigation } from "../components/list-navigation";
 import { MainResults } from "../components/main-results";
 import { SearchBar } from "../components/search-bar";
+
+const ListNavigation = React.lazy(
+  () => import("../components/list-navigation"),
+);
 
 export async function generateMetadata() {
   return {
@@ -42,7 +45,9 @@ export default async function HomePage() {
         <Header heading="Home" />
 
         <div className="mt-14 flex flex-col">
-          <ListNavigation />
+          <Suspense fallback={null}>
+            <ListNavigation />
+          </Suspense>
           <SearchBar />
           <MainResults />
         </div>

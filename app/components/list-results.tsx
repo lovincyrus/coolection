@@ -15,12 +15,14 @@ import { ResultItem } from "./result-item";
 export function ListResults({ listId }: { listId?: string }) {
   const isInList = useIsInList();
   const { data: lists } = useLists();
-  const { data: itemsFromList, mutate: mutateItemsFromList } = useItemsFromList(
-    listId ?? "",
-  );
+  const {
+    data: itemsFromList,
+    loading,
+    mutate: mutateItemsFromList,
+  } = useItemsFromList(listId ?? "");
 
   const showEmptyListItemsCopy = useLoadingWithTimeout(
-    isInList && Object.keys(itemsFromList).length === 0,
+    isInList && Object.keys(itemsFromList).length === 0 && !loading,
     300,
   );
 

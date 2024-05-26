@@ -10,6 +10,9 @@ export function useLists() {
   const { data, isLoading, mutate, error } = useSWR<CoolectionList[]>(
     "/api/lists",
     fetcher,
+    {
+      suspense: true,
+    },
   );
 
   return {

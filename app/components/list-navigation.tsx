@@ -9,7 +9,7 @@ import { useGlobals } from "./provider/globals-provider";
 import { Button } from "./ui/button";
 import { ScrollArea, ScrollBar } from "./ui/scroll-area";
 
-export function ListNavigation() {
+export default function ListNavigation() {
   const { data: lists } = useLists();
   const { setOpenNewListDialog } = useGlobals();
 
