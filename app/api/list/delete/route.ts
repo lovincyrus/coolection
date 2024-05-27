@@ -5,7 +5,7 @@ import { NextResponse } from "next/server";
 
 import prisma from "@/lib/prisma";
 
-export async function DELETE(req: Request) {
+export async function PATCH(req: Request) {
   const { userId } = auth();
 
   const body = await req.json();

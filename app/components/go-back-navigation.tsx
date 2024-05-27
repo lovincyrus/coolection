@@ -1,9 +1,10 @@
 "use client";
 
-import { ArrowLeftIcon, ChevronRightIcon } from "lucide-react";
+import { AnimatePresence, motion } from "framer-motion";
+import { ArrowLeftIcon, ChevronRightIcon, LoaderIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { Link } from "next-view-transitions";
-import React, { useCallback } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
 import { useSWRConfig } from "swr";
 
@@ -12,10 +13,32 @@ import { cn } from "@/lib/utils";
 import { useLists } from "../hooks/use-lists";
 import { Button } from "./ui/button";
 
+type ButtonCopyState = "default" | "confirmation" | "loading";
+const buttonCopy = {
+  default: "Remove",
+  confirmation: "Are you sure?",
+  loading: <LoaderIcon className="h-4 w-4 animate-spin" />,
+};
+
 export function GoBackNavigation({ listId }: { listId: string }) {
   const { data: lists } = useLists();
   const { mutate } = useSWRConfig();
   const { replace } = useRouter();
+
+  const [areYouSure, setAreYouSure] = useState(false);
+  const [buttonState, setButtonState] = useState("default");
+
+  // JIC users change their mind
+  useEffect(() => {
+    if (areYouSure) {
+      const timeout = setTimeout(() => {
+        setAreYouSure(false);
+        setButtonState("default");
+      }, 5_000);
+
+      return () => clearTimeout(timeout);
+    }
+  }, [areYouSure]);
 
   function getList(listId: string) {
     const list = lists.find((list) => list.id === listId);
@@ -26,7 +49,7 @@ export function GoBackNavigation({ listId }: { listId: string }) {
     async (listId: string) => {
       try {
         const response = await fetch("/api/list/delete", {
-          method: "DELETE",
+          method: "PATCH",
           headers: {
             "Content-Type": "application/json",
           },
@@ -37,6 +60,7 @@ export function GoBackNavigation({ listId }: { listId: string }) {
 
         if (response.ok) {
           mutate("/api/lists");
+          toast.success("List removed successfully");
         } else {
           toast.error("Failed to remove list");
         }
@@ -63,7 +87,7 @@ export function GoBackNavigation({ listId }: { listId: string }) {
           {listId && (
             <Button
               className={cn(
-                "pointer-events-none flex h-6 select-none items-center justify-center rounded-full border bg-gray-50 px-3 text-center text-xs font-medium shadow-sm",
+                "pointer-events-none flex h-6 max-w-[200px] select-none items-center justify-center truncate rounded-full border bg-gray-50 px-3 text-center text-xs font-medium shadow-sm md:max-w-none",
               )}
             >
               {getList(listId)?.name}
@@ -72,13 +96,33 @@ export function GoBackNavigation({ listId }: { listId: string }) {
         </div>
         <div className="flex flex-row items-center gap-x-1">
           <Button
-            className="flex h-6 select-none items-center justify-center rounded-full border bg-gray-50 px-3 text-center text-xs font-medium shadow-sm"
+            className="flex h-6 select-none items-center justify-center overflow-hidden rounded-full border bg-gray-50 px-3 text-center text-xs font-medium shadow-sm"
+            disabled={buttonState === "loading"}
             onClick={() => {
-              handleRemoveList(String(getList(listId)?.id));
-              replace("/home");
+              setButtonState("loading");
+
+              if (areYouSure) {
+                setTimeout(() => {
+                  handleRemoveList(String(getList(listId)?.id));
+                  replace("/home");
+                }, 1750);
+              } else {
+                setAreYouSure(true);
+                setButtonState("confirmation");
+              }
             }}
           >
-            Remove
+            <AnimatePresence mode="popLayout" initial={false}>
+              <motion.span
+                transition={{ type: "spring", duration: 0.3, bounce: 0 }}
+                initial={{ opacity: 0, y: -25 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: 25 }}
+                key={buttonState}
+              >
+                {buttonCopy[buttonState as ButtonCopyState]}
+              </motion.span>
+            </AnimatePresence>
           </Button>
         </div>
       </div>

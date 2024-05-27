@@ -213,7 +213,7 @@ export function ResultItem({
             Copy URL
           </ContextMenuItem>
           <ContextMenuItem onClick={() => handleRemoveFromList(listId ?? "")}>
-            Remove from list
+            Remove from List
           </ContextMenuItem>
         </ContextMenuContent>
       ) : (
