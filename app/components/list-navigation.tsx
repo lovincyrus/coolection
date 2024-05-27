@@ -3,9 +3,6 @@
 import { ListPlusIcon } from "lucide-react";
 import { Link } from "next-view-transitions";
 import React from "react";
-import { preload } from "swr";
-
-import { fetcher } from "@/lib/fetcher";
 
 import { useLists } from "../hooks/use-lists";
 import { useGlobals } from "./provider/globals-provider";
@@ -22,12 +19,7 @@ export default function ListNavigation() {
         <div className="flex items-center gap-x-1">
           {lists.map((list) => (
             <Link key={list.name} href={`/lists/${list.id}`}>
-              <Button
-                className="flex h-6 select-none items-center justify-center rounded-full bg-gray-100 px-3 text-center text-xs font-medium hover:bg-gray-200"
-                onPointerOver={() => {
-                  preload(`/api/lists/${list.id}/items`, fetcher);
-                }}
-              >
+              <Button className="flex h-6 select-none items-center justify-center rounded-full bg-gray-100 px-3 text-center text-xs font-medium hover:bg-gray-200">
                 {list.name}
               </Button>
             </Link>
