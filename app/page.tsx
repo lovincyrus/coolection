@@ -9,7 +9,7 @@ export default async function RootPage() {
     <main className="relative flex min-h-dvh w-full flex-col items-center justify-between">
       <div
         aria-hidden="true"
-        className="background-gradient-pattern pointer-events-none absolute left-1/2 top-0 z-10 h-[100px] w-full -translate-x-1/2 -translate-y-1/2 opacity-[0.15]"
+        className="background-gradient-pattern pointer-events-none absolute left-1/2 top-0 z-10 hidden h-[100px] w-full -translate-x-1/2 -translate-y-1/2 opacity-[0.15] md:block"
       />
 
       <svg
