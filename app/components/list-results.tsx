@@ -24,7 +24,7 @@ export function ListResults({ listId }: { listId?: string }) {
 
   const showEmptyListItemsCopy = useLoadingWithTimeout(
     isInList && Object.keys(itemsFromList).length === 0 && !loading,
-    300,
+    500,
   );
 
   return (

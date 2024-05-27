@@ -1,7 +1,7 @@
 import { motion } from "framer-motion";
 import { ReactNode } from "react";
 
-const base = 4;
+const base = 1;
 const timeMultiplier = (duration: number) => duration * base;
 
 interface AnimatedListItemProps {

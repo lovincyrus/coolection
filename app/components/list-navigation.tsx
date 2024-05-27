@@ -16,7 +16,7 @@ export default function ListNavigation() {
   return (
     <div className="relative">
       <ScrollArea className="max-w-2xl lg:max-w-none">
-        <div className="mb-4 flex items-center gap-x-1">
+        <div className="flex items-center gap-x-1">
           {lists.map((list) => (
             <Link key={list.name} href={`/lists/${list.id}`}>
               <Button className="flex h-6 select-text items-center justify-center rounded-full bg-gray-100 px-3 text-center text-xs font-medium hover:bg-gray-200">

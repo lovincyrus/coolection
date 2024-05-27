@@ -51,10 +51,16 @@ export default async function HomePage() {
             <ListNavigation />
           </Suspense>
 
+          <div className="h-4" />
+
           <SearchBar />
+
+          <div className="h-4" />
 
           <Suspense fallback={<ResultItemSkeletons />}>
             <MainResults />
+
+            <div className="h-8" />
           </Suspense>
         </div>
       </div>

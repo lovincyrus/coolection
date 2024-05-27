@@ -110,7 +110,7 @@ export function EditItemDialog() {
         <DialogHeader>
           <DialogTitle>Edit item</DialogTitle>
           <DialogDescription>
-            Update the title, description, and tags
+            Make it more memorable by updating the title and description
           </DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit}>
