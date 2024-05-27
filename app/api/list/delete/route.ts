@@ -9,24 +9,21 @@ export async function DELETE(req: Request) {
   const { userId } = auth();
 
   const body = await req.json();
-  const { list_name } = body;
+  const { list_id } = body;
 
   if (!userId) {
     return new NextResponse("Unauthorized", { status: 401 });
   }
 
   try {
-    const listToDelete = await prisma.list.findFirst({
+    const deletedList = await prisma.list.update({
       where: {
+        id: list_id,
         userId: userId,
-        name: list_name,
       },
-    });
-
-    const deletedList = await prisma.list.delete({
-      where: {
-        id: listToDelete?.id,
-        userId: userId,
+      data: {
+        isDeleted: true,
+        deletedAt: new Date(),
       },
     });
 

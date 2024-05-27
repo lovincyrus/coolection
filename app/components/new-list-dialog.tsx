@@ -1,11 +1,9 @@
 "use client";
 
-import { XIcon } from "lucide-react";
 import React, { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
 import { useSWRConfig } from "swr";
 
-import { useLists } from "../hooks/use-lists";
 import { useGlobals } from "./provider/globals-provider";
 import { Button } from "./ui/button";
 import {
@@ -20,53 +18,21 @@ import { Input } from "./ui/input";
 
 export function NewListDialog() {
   const { openNewListDialog, setOpenNewListDialog } = useGlobals();
-  const { data: listsData } = useLists();
   const { mutate } = useSWRConfig();
 
-  const [lists, setLists] = useState<string[]>([]);
   const [listName, setListName] = useState("");
 
   useEffect(() => {
     if (openNewListDialog) {
       setListName("");
-      setLists(listsData.map((l) => l.name));
     }
-  }, [openNewListDialog, setListName, listsData]);
+  }, [openNewListDialog, setListName]);
 
   const handleNewListChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
       setListName(event.target.value);
     },
     [],
-  );
-
-  const handleRemoveList = useCallback(
-    async (listNameToRemove: string) => {
-      try {
-        const response = await fetch("/api/list/delete", {
-          method: "DELETE",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            list_name: listNameToRemove,
-          }),
-        });
-
-        if (response.ok) {
-          setLists((prevLists) =>
-            prevLists.filter((list) => list !== listNameToRemove),
-          );
-
-          mutate("/api/lists");
-        } else {
-          toast.error("Failed to remove list");
-        }
-      } catch (error) {
-        toast.error("Failed to remove list");
-      }
-    },
-    [mutate],
   );
 
   const handleSubmit = useCallback(
@@ -87,7 +53,6 @@ export function NewListDialog() {
         if (response.ok) {
           const newListData = await response.json();
           toast.success(newListData.message);
-          setLists((prevLists) => [...prevLists, listName]);
           mutate("/api/lists");
           setListName("");
           setOpenNewListDialog(false);
@@ -120,17 +85,6 @@ export function NewListDialog() {
                   value={listName}
                   onChange={handleNewListChange}
                 />
-              </div>
-              <div className="flex flex-wrap gap-2">
-                {lists.map((tag) => (
-                  <span
-                    key={tag}
-                    className="flex select-none items-center gap-1 rounded border bg-gray-100 px-2 py-1 text-xs"
-                  >
-                    {tag}
-                    <XIcon size={12} onClick={() => handleRemoveList(tag)} />
-                  </span>
-                ))}
               </div>
             </div>
           </div>

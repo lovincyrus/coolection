@@ -2,7 +2,7 @@
 
 import { AnimatePresence } from "framer-motion";
 import { useSearchParams } from "next/navigation";
-import React, { useCallback, useEffect, useMemo } from "react";
+import React, { useCallback, useMemo } from "react";
 import { unstable_serialize, useSWRConfig } from "swr";
 
 import { useIsInList } from "../hooks/use-is-in-list";
@@ -48,11 +48,11 @@ export default function MainResults() {
 
   const results = querySearchParam.length > 0 ? searchResults : items;
 
-  useEffect(() => {
-    if (Array.isArray(results)) {
-      document.title = `Home · Coolection ${results.length > 0 ? `(${results.length}) ` : ""}`;
-    }
-  }, [results]);
+  // useEffect(() => {
+  //   if (Array.isArray(results)) {
+  //     document.title = `Home · Coolection ${results.length > 0 ? `(${results.length}) ` : ""}`;
+  //   }
+  // }, [results]);
 
   const isSearchingResultsWithTimeout = useLoadingWithTimeout(searchingResults);
   const showEmptyItemsCopy = useLoadingWithTimeout(
