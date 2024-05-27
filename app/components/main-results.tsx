@@ -135,17 +135,20 @@ export default function MainResults() {
 
       <div className="h-4" />
 
-      {showLoadMore && (
-        <Button
-          className="h-[30px] w-full items-center justify-center whitespace-nowrap rounded-lg border bg-white px-3 text-xs font-medium shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 disabled:pointer-events-none disabled:opacity-50"
-          disabled={isLoadingMore || isReachingEnd}
-          onClick={() => {
-            setSize(size + 1);
-          }}
-        >
-          {isLoadingMore ? "Loading..." : "Load More"}
-        </Button>
-      )}
+      {showLoadMore ? (
+        <>
+          <Button
+            className="h-[30px] w-full items-center justify-center whitespace-nowrap rounded-lg border bg-white px-3 text-xs font-medium shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 disabled:pointer-events-none disabled:opacity-50"
+            disabled={isLoadingMore || isReachingEnd}
+            onClick={() => {
+              setSize(size + 1);
+            }}
+          >
+            {isLoadingMore ? "Loading..." : "Load More"}
+          </Button>
+          <div className="h-8" />
+        </>
+      ) : null}
 
       <EditItemDialog />
     </div>

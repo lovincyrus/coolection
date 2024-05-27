@@ -12,19 +12,17 @@ export function getSearchSwrKey(query: string) {
 
 export function useSearchResults(query: string) {
   const searchSwrKey = getSearchSwrKey(query);
-  const { data, isLoading, error, mutate } = useSWR<CoolectionItem[]>(
-    query ? searchSwrKey : null,
-    fetcher,
-    {
-      // See: https://swr.vercel.app/docs/advanced/understanding#return-previous-data-for-better-ux
-      keepPreviousData: true,
-      suspense: true,
-    },
-  );
+  const { data, isLoading, isValidating, error, mutate } = useSWR<
+    CoolectionItem[]
+  >(query ? searchSwrKey : null, fetcher, {
+    // See: https://swr.vercel.app/docs/advanced/understanding#return-previous-data-for-better-ux
+    keepPreviousData: true,
+  });
 
   return {
     data: data ?? [],
     loading: isLoading,
+    isValidating,
     error,
     mutate,
   };
