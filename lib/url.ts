@@ -54,10 +54,12 @@ export function isTwitterAccountUrl(href: string) {
 }
 
 export function normalizeLink(input: string) {
+  const isYoutubeLink = input.startsWith("https://www.youtube.com");
+
   return normalizeUrl(input, {
     removeTrailingSlash: true,
     stripWWW: false,
-    keepQueryParameters: ["ref"],
+    keepQueryParameters: isYoutubeLink ? ["list", "index", "v"] : ["ref"],
     removeQueryParameters: true,
     forceHttps: true,
   });
