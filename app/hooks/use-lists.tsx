@@ -11,7 +11,7 @@ export function useLists() {
     "/api/lists",
     fetcher,
     {
-      suspense: true, // Removing this will cause layout shifts
+      suspense: true,
     },
   );
 

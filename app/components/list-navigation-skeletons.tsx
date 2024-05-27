@@ -5,7 +5,7 @@ import { Skeleton } from "./ui/skeleton";
 
 export function ListNavigationSkeletons() {
   return (
-    <div className="mb-4 flex items-center gap-x-1">
+    <div className="flex items-center gap-x-1">
       {Array.from({ length: 3 }).map((_, idx) => (
         <Skeleton
           key={idx}

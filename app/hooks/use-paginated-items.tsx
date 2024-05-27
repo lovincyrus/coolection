@@ -28,7 +28,7 @@ export function usePaginatedItems() {
     // See: https://swr.vercel.app/docs/pagination#parameters
     initialSize: 1,
     parallel: true,
-    suspense: true, // Removing this will cause layout shifts
+    suspense: true,
   });
 
   const isLoadingMore =
