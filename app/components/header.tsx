@@ -3,7 +3,7 @@
 import { useClerk } from "@clerk/clerk-react";
 import { LogOutIcon } from "lucide-react";
 import { Link } from "next-view-transitions";
-import React, { useEffect } from "react";
+import React from "react";
 
 import { useLists } from "../hooks/use-lists";
 import { NewItemDialog } from "./new-item-dialog";
@@ -13,26 +13,12 @@ import { Button } from "./ui/button";
 export function Header({
   heading,
   listId,
-  saveOrUpdateUserAsync,
 }: {
   heading?: string;
   listId?: string;
-  saveOrUpdateUserAsync?: () => void;
 }) {
   const { signOut } = useClerk();
   const { data: lists } = useLists();
-
-  // https://nextjs.org/docs/app/building-your-application/data-fetching/server-actions-and-mutations#useeffect
-  useEffect(() => {
-    if (!saveOrUpdateUserAsync) return;
-
-    const init = async () => {
-      await saveOrUpdateUserAsync();
-    };
-
-    init();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   function getListName(listId: string) {
     const list = lists.find((list) => list.id === listId);

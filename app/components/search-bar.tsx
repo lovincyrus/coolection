@@ -46,7 +46,6 @@ export function SearchBar() {
       <SearchIcon className="text-muted-foreground absolute left-2 top-[0.6rem] h-4 w-4 opacity-60 grayscale" />
       <input
         ref={inputRef}
-        id="search"
         type="text"
         className="focus:shadow-outline w-full appearance-none rounded border bg-black/5 px-3 py-2 pl-8 pr-8 text-sm leading-tight text-gray-700 shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1"
         placeholder="What are you looking for?"
