@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import { nanoid } from "nanoid";
 import { ReactNode } from "react";
 
 const base = 1;
@@ -13,6 +14,7 @@ export const AnimatedListItem: React.FC<AnimatedListItemProps> = ({
 }) => {
   return (
     <motion.div
+      key={nanoid()}
       className="relative"
       initial={{ height: 0, opacity: 0 }}
       animate={{

@@ -16,6 +16,7 @@ export const getKey: SWRInfiniteKeyLoader = (
   return `/api/items?page=${pageIndex + 1}&limit=${DEFAULT_PAGE_SIZE}`;
 };
 
+// See: https://github.com/vercel/swr/issues/2702
 export function usePaginatedItems() {
   const {
     data: items,

@@ -1,10 +1,6 @@
 "use server";
 
-import { currentUser } from "@clerk/nextjs/server";
 import React from "react";
-
-import { checkUserExistsById } from "@/lib/check-user-exists-by-id";
-import { saveOrUpdateUser } from "@/lib/save-or-update-user";
 
 import { Footer } from "../components/footer";
 import { Header } from "../components/header";
@@ -19,24 +15,6 @@ export async function generateMetadata() {
 }
 
 export default async function HomePage() {
-  const user = await currentUser();
-
-  if (!user) return null;
-
-  const existingUser = await checkUserExistsById(user.id);
-  if (!existingUser) {
-    const userData = {
-      userId: user.id,
-      email: user.emailAddresses[0].emailAddress,
-      firstName: user.firstName,
-      lastName: user.lastName,
-      createdAt: user.createdAt,
-      updatedAt: user.updatedAt,
-    };
-
-    await saveOrUpdateUser(userData);
-  }
-
   return (
     <main>
       <div className="mx-auto min-h-dvh w-full max-w-2xl px-4 pt-4 md:border-l md:border-r md:border-dashed xl:max-w-4xl 2xl:max-w-6xl">

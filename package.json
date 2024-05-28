@@ -14,6 +14,7 @@
     "db:pull": "prisma db pull",
     "db:up": "docker-compose up -d",
     "db:down": "docker-compose down -v",
+    "db:reset": "prisma db push --force-reset && prisma db seed",
     "db:migrate:dev": "prisma migrate dev",
     "db:migrate:deploy": "prisma migrate deploy",
     "dev:unarchive": "ts-node --compiler-options {\"module\":\"CommonJS\"} prisma/purge-local-data.ts"
@@ -39,6 +40,7 @@
     "framer-motion": "^11.1.9",
     "jsdom": "^24.0.0",
     "lucide-react": "^0.376.0",
+    "nanoid": "^5.0.7",
     "next": "14.2.3",
     "next-view-transitions": "^0.1.1",
     "node-fetch": "^3.3.2",
@@ -51,6 +53,7 @@
     "react-wrap-balancer": "^1.1.1",
     "reakeys": "^2.0.2",
     "sonner": "^1.4.41",
+    "svix": "^1.24.0",
     "swr": "^2.2.5",
     "tailwind-merge": "^2.3.0",
     "use-debounce": "^10.0.0",
