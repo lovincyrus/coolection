@@ -173,6 +173,9 @@ export function ResultItem({
           onPointerOver={() => {
             setCurrentItem(item);
           }}
+          onPointerLeave={() => {
+            setCurrentItem(null);
+          }}
         >
           <div className="flex select-none flex-col py-4 hover:rounded-lg hover:bg-gray-50 hover:shadow">
             <div className="flex flex-col gap-1 px-4">

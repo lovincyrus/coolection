@@ -1,6 +1,7 @@
 import { ArrowRightCircleIcon } from "lucide-react";
 import { Link } from "next-view-transitions";
 import React from "react";
+import Balancer from "react-wrap-balancer";
 
 import { Footer } from "./components/footer";
 
@@ -44,9 +45,11 @@ export default async function RootPage() {
           </h1>
 
           <div className="relative z-20 mt-3 grid gap-4 leading-relaxed text-gray-800 ">
-            <p className="mx-auto mt-6 max-w-3xl text-balance text-center text-lg">
-              <span className="font-medium">Coolection</span> makes saving,
-              organizing, and retrieving your favorite links easy.
+            <p className="mt-6 text-center text-lg">
+              <Balancer>
+                <span className="font-medium">Coolection</span> makes saving,
+                organizing, and retrieving your favorite links easy.
+              </Balancer>
             </p>
           </div>
 
