@@ -3,6 +3,7 @@
 import { currentUser } from "@clerk/nextjs/server";
 import React from "react";
 
+import { checkUserExistsById } from "@/lib/check-user-exists-by-id";
 import { saveOrUpdateUser } from "@/lib/save-or-update-user";
 
 import { Footer } from "../components/footer";
@@ -22,16 +23,19 @@ export default async function HomePage() {
 
   if (!user) return null;
 
-  const userData = {
-    userId: user.id,
-    email: user.emailAddresses[0].emailAddress,
-    firstName: user.firstName,
-    lastName: user.lastName,
-    createdAt: user.createdAt,
-    updatedAt: user.updatedAt,
-  };
+  const existingUser = await checkUserExistsById(user.id);
+  if (!existingUser) {
+    const userData = {
+      userId: user.id,
+      email: user.emailAddresses[0].emailAddress,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      createdAt: user.createdAt,
+      updatedAt: user.updatedAt,
+    };
 
-  await saveOrUpdateUser(userData);
+    await saveOrUpdateUser(userData);
+  }
 
   return (
     <main>
