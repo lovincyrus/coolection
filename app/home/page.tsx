@@ -1,6 +1,6 @@
 "use server";
 
-import { auth, clerkClient } from "@clerk/nextjs/server";
+import { currentUser } from "@clerk/nextjs/server";
 import React from "react";
 
 import { saveOrUpdateUser } from "@/lib/save-or-update-user";
@@ -18,9 +18,7 @@ export async function generateMetadata() {
 }
 
 export default async function HomePage() {
-  const { userId } = auth().protect();
-
-  const user = await clerkClient.users.getUser(userId);
+  const user = await currentUser();
 
   if (!user) return null;
 

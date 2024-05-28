@@ -43,8 +43,8 @@ export default async function RootPage() {
             Superhuman for bookmarking
           </h1>
 
-          <div className="relative z-20 mt-3 grid gap-4 text-pretty leading-relaxed text-gray-800 ">
-            <p className="mx-auto mt-6 max-w-3xl text-center text-lg">
+          <div className="relative z-20 mt-3 grid gap-4 leading-relaxed text-gray-800 ">
+            <p className="mx-auto mt-6 max-w-3xl text-balance text-center text-lg">
               <span className="font-medium">Coolection</span> makes saving,
               organizing, and retrieving your favorite links easy.
             </p>
