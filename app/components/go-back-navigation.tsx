@@ -22,12 +22,12 @@ const buttonCopy = {
 
 export function GoBackNavigation({
   listId,
-  serverData,
+  listsServerData,
 }: {
   listId: string;
-  serverData: any;
+  listsServerData: any;
 }) {
-  const { data: lists } = useLists(serverData);
+  const { data: lists } = useLists(listsServerData);
   const { mutate } = useSWRConfig();
   const { replace } = useRouter();
 

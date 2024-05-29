@@ -20,10 +20,11 @@ import {
 } from "./ui/dialog";
 import { Input } from "./ui/input";
 
-export function NewItemDialog(itemsData: any) {
+export function NewItemDialog(itemsServerData: any) {
   const [inputText, setInputText] = useState("");
   const { openNewItemDialog, setOpenNewItemDialog } = useGlobals();
-  const { data: items, mutate: mutateItems } = usePaginatedItems(itemsData);
+  const { data: items, mutate: mutateItems } =
+    usePaginatedItems(itemsServerData);
 
   useEffect(() => {
     if (!openNewItemDialog) {

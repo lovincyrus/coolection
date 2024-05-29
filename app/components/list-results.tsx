@@ -13,13 +13,13 @@ import { ResultItem } from "./result-item";
 
 export function ListResults({
   listId,
-  serverData,
+  listsServerData,
 }: {
   listId?: string;
-  serverData: any;
+  listsServerData: any;
 }) {
   const isInList = useIsInList();
-  const { data: lists } = useLists(serverData);
+  const { data: lists } = useLists(listsServerData);
   const {
     data: itemsFromList,
     loading,

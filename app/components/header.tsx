@@ -13,16 +13,16 @@ import { Button } from "./ui/button";
 export function Header({
   heading,
   listId,
-  serverData,
-  itemsData,
+  listsServerData,
+  itemsServerData,
 }: {
   heading?: string;
   listId?: string;
-  serverData?: any;
-  itemsData?: any;
+  listsServerData?: any;
+  itemsServerData?: any;
 }) {
   const { signOut } = useClerk();
-  const { data: lists } = useLists(serverData);
+  const { data: lists } = useLists(listsServerData);
 
   function getListName(listId: string) {
     const list = lists.find((list) => list.id === listId);
@@ -52,7 +52,7 @@ export function Header({
         {!listId && (
           <div className="flex flex-row gap-1">
             <NewListDialog />
-            <NewItemDialog itemsData={itemsData} />
+            <NewItemDialog itemsServerData={itemsServerData} />
 
             <Button
               className="focus-visible:ring-ring border-input bg-background hover:bg-accent hover:text-accent-foreground ml-auto h-[30px] items-center justify-center whitespace-nowrap rounded-lg border bg-white px-3 text-xs font-medium shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 disabled:pointer-events-none disabled:opacity-50"

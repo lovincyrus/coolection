@@ -30,11 +30,14 @@ export default async function Page({ params }: Params) {
   return (
     <main>
       <div className="mx-auto min-h-screen w-full max-w-2xl px-4 pt-4 md:border-l md:border-r md:border-dashed xl:max-w-4xl 2xl:max-w-6xl">
-        <Header listId={params.listId} serverData={listsData} />
+        <Header listId={params.listId} listsServerData={listsData} />
 
         <div className="mt-14 flex flex-col">
-          <GoBackNavigation listId={params.listId} serverData={listsData} />
-          <ListResults listId={params.listId} serverData={listsData} />
+          <GoBackNavigation
+            listId={params.listId}
+            listsServerData={listsData}
+          />
+          <ListResults listId={params.listId} listsServerData={listsData} />
         </div>
       </div>
 

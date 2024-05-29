@@ -18,8 +18,11 @@ import { ResultItem } from "./result-item";
 import { ResultItemSkeletons } from "./result-item-skeletons";
 import { Button } from "./ui/button";
 
-export default function MainResults(serverData: any, itemsData: any) {
-  const { data: lists } = useLists(serverData);
+export default function MainResults(
+  listsServerData: any,
+  itemsServerData: any,
+) {
+  const { data: lists } = useLists(listsServerData);
 
   const searchParams = useSearchParams();
   const {
@@ -30,7 +33,7 @@ export default function MainResults(serverData: any, itemsData: any) {
     isLoadingMore,
     isReachingEnd,
     loading: loadingItems,
-  } = usePaginatedItems(itemsData);
+  } = usePaginatedItems(itemsServerData);
   const isInList = useIsInList();
 
   const { mutate } = useSWRConfig();
@@ -148,7 +151,7 @@ export default function MainResults(serverData: any, itemsData: any) {
         </>
       ) : null}
 
-      <EditItemDialog itemsData={itemsData} />
+      <EditItemDialog itemsServerData={itemsServerData} />
     </div>
   );
 }

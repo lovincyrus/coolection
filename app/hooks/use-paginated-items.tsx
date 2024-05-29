@@ -17,7 +17,7 @@ export const getKey: SWRInfiniteKeyLoader = (
 };
 
 // See: https://github.com/vercel/swr/issues/2702
-export function usePaginatedItems(itemsData: any) {
+export function usePaginatedItems(itemsServerData: any) {
   const {
     data: items,
     mutate: mutateItems,
@@ -30,7 +30,7 @@ export function usePaginatedItems(itemsData: any) {
     initialSize: 1,
     parallel: true,
     suspense: true,
-    fallbackData: itemsData,
+    fallbackData: itemsServerData,
   });
 
   const isLoadingMore =

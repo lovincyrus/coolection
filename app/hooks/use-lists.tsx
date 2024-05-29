@@ -6,13 +6,13 @@ import { fetcher } from "@/lib/fetcher";
 
 import { CoolectionList } from "../types";
 
-export function useLists(serverData: any) {
+export function useLists(listsServerData: any) {
   const { data, isLoading, mutate, error } = useSWR<CoolectionList[]>(
     "/api/lists",
     fetcher,
     {
       suspense: true,
-      fallbackData: serverData,
+      fallbackData: listsServerData,
     },
   );
 
