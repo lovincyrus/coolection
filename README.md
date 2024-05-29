@@ -63,9 +63,12 @@ This project uses Clerk for authentication. To get started, you need to create a
 ```bash
 NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=
 CLERK_SECRET_KEY=
+WEBHOOK_SECRET=
 NEXT_PUBLIC_CLERK_SIGN_IN_URL="/sign-in"
 NEXT_PUBLIC_CLERK_SIGN_UP_URL="/sign-up"
 ```
+
+You need to set up webhook https://clerk.com/docs/integrations/webhooks/sync-data locally if you wish to sync user creation from Clerk to your database.
 
 <br>
 
