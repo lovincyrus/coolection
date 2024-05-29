@@ -6,17 +6,35 @@ import { preload } from "swr";
 
 import { fetcher } from "@/lib/fetcher";
 
+import { getKey } from "../hooks/use-paginated-items";
 import MainResults from "./main-results";
 import { ResultItemSkeletons } from "./result-item-skeletons";
 
-// See: https://swr.vercel.app/docs/prefetching
-preload("/api/items?page=1&limit=10", fetcher);
-
-export function MainResultsClient() {
+function Fallback({ resetErrorBoundary }: any) {
   return (
-    <ErrorBoundary fallback={<div>Could not load results...</div>}>
+    <div role="alert">
+      <p>Something went wrong:</p>
+      <button
+        onClick={() => {
+          resetErrorBoundary();
+        }}
+      >
+        retry
+      </button>
+    </div>
+  );
+}
+
+export function MainResultsClient(serverData: any, itemsData: any) {
+  return (
+    <ErrorBoundary
+      FallbackComponent={Fallback}
+      onReset={() => {
+        preload(getKey, fetcher);
+      }}
+    >
       <Suspense fallback={<ResultItemSkeletons />}>
-        <MainResults />
+        <MainResults serverData={serverData} itemsData={itemsData} />
       </Suspense>
     </ErrorBoundary>
   );

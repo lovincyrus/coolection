@@ -9,12 +9,17 @@ import { useLists } from "../hooks/use-lists";
 import { useLoadingWithTimeout } from "../hooks/use-loading-with-timeout";
 import { CoolectionItem } from "../types";
 import { AnimatedListItem } from "./animated-list-item";
-import { EditItemDialog } from "./edit-item-dialog";
 import { ResultItem } from "./result-item";
 
-export function ListResults({ listId }: { listId?: string }) {
+export function ListResults({
+  listId,
+  serverData,
+}: {
+  listId?: string;
+  serverData: any;
+}) {
   const isInList = useIsInList();
-  const { data: lists } = useLists();
+  const { data: lists } = useLists(serverData);
   const {
     data: itemsFromList,
     loading,
@@ -54,8 +59,6 @@ export function ListResults({ listId }: { listId?: string }) {
             </AnimatedListItem>
           ))}
       </AnimatePresence>
-
-      <EditItemDialog />
     </div>
   );
 }

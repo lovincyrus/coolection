@@ -21,11 +21,11 @@ import { Input } from "./ui/input";
 import { Label } from "./ui/label";
 import { Textarea } from "./ui/textarea";
 
-export function EditItemDialog() {
+export function EditItemDialog(itemsData: any) {
   const { openEditItemDialog, setOpenEditItemDialog, currentItem } =
     useGlobals();
   const { mutate } = useSWRConfig();
-  const { mutate: mutateItems } = usePaginatedItems();
+  const { mutate: mutateItems } = usePaginatedItems(itemsData);
 
   const [title, setTitle] = useState(currentItem?.title ?? "");
   const [description, setDescription] = useState(

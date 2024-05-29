@@ -18,7 +18,9 @@ import { ResultItem } from "./result-item";
 import { ResultItemSkeletons } from "./result-item-skeletons";
 import { Button } from "./ui/button";
 
-export default function MainResults() {
+export default function MainResults(serverData: any, itemsData: any) {
+  const { data: lists } = useLists(serverData);
+
   const searchParams = useSearchParams();
   const {
     data,
@@ -28,12 +30,11 @@ export default function MainResults() {
     isLoadingMore,
     isReachingEnd,
     loading: loadingItems,
-  } = usePaginatedItems();
+  } = usePaginatedItems(itemsData);
   const isInList = useIsInList();
 
   const { mutate } = useSWRConfig();
 
-  const { data: lists } = useLists();
   const { setOpenNewItemDialog } = useGlobals();
 
   const querySearchParam = searchParams.get("q")?.toString() ?? "";
@@ -44,15 +45,12 @@ export default function MainResults() {
     mutate: mutateSearchResults,
   } = useSearchResults(querySearchParam);
 
-  const items = useMemo(() => (data ? [].concat(...data) : []), [data]);
+  const items = useMemo(
+    () => (Array.isArray(data) ? [].concat(...data) : []),
+    [data],
+  );
 
   const results = querySearchParam.length > 0 ? searchResults : items;
-
-  // useEffect(() => {
-  //   if (Array.isArray(results)) {
-  //     document.title = `Home · Coolection ${results.length > 0 ? `(${results.length}) ` : ""}`;
-  //   }
-  // }, [results]);
 
   const isSearchingResultsWithTimeout = useLoadingWithTimeout(searchingResults);
   const showEmptyItemsCopy = useLoadingWithTimeout(
@@ -150,7 +148,7 @@ export default function MainResults() {
         </>
       ) : null}
 
-      <EditItemDialog />
+      <EditItemDialog itemsData={itemsData} />
     </div>
   );
 }

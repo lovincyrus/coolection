@@ -9,14 +9,31 @@ import { fetcher } from "@/lib/fetcher";
 import ListNavigation from "./list-navigation";
 import { ListNavigationSkeletons } from "./list-navigation-skeletons";
 
-// See: https://swr.vercel.app/docs/prefetching
-preload("/api/lists", fetcher);
-
-export function ListNavigationClient() {
+function Fallback({ resetErrorBoundary }: any) {
   return (
-    <ErrorBoundary fallback={<div>Could not load lists...</div>}>
+    <div role="alert">
+      <p>Something went wrong:</p>
+      <button
+        onClick={() => {
+          resetErrorBoundary();
+        }}
+      >
+        retry
+      </button>
+    </div>
+  );
+}
+
+export function ListNavigationClient(serverData: any) {
+  return (
+    <ErrorBoundary
+      FallbackComponent={Fallback}
+      onReset={() => {
+        preload("/api/lists", fetcher);
+      }}
+    >
       <Suspense fallback={<ListNavigationSkeletons />}>
-        <ListNavigation />
+        <ListNavigation serverData={serverData} />
       </Suspense>
     </ErrorBoundary>
   );

@@ -234,14 +234,15 @@ export function ResultItem({
             <ContextMenuSub>
               <ContextMenuSubTrigger>Move...</ContextMenuSubTrigger>
               <ContextMenuSubContent className="w-32 md:w-48">
-                {lists.map((list) => (
-                  <ContextMenuItem
-                    key={list.id}
-                    onClick={() => handleAddToList(list.id)}
-                  >
-                    Add to {list.name}
-                  </ContextMenuItem>
-                ))}
+                {lists &&
+                  lists.map((list) => (
+                    <ContextMenuItem
+                      key={list.id}
+                      onClick={() => handleAddToList(list.id)}
+                    >
+                      Add to {list.name}
+                    </ContextMenuItem>
+                  ))}
               </ContextMenuSubContent>
             </ContextMenuSub>
           )}
