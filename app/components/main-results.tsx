@@ -57,7 +57,7 @@ export default function MainResults(
   //         loadMore();
   //       }
   //     },
-  //     { root: null, rootMargin: "60px", threshold: 1.0 },
+  //     { root: null, rootMargin: "0px", threshold: 1 },
   //   );
 
   //   if (loadMoreContainerRef.current) {
@@ -125,45 +125,43 @@ export default function MainResults(
 
   return (
     <div>
-      <AnimatePresence initial={false} key="results">
-        {showEmptyItemsCopy ? (
-          <p className="mt-4 text-center text-sm font-medium text-gray-700">
-            You have no items in your coolection. Start by{" "}
-            <span
-              className="cursor-pointer text-sky-400 hover:underline"
-              onClick={() => setOpenNewItemDialog(true)}
-            >
-              adding some
-            </span>
-            !
+      {showEmptyItemsCopy ? (
+        <p className="mt-4 text-center text-sm font-medium text-gray-700">
+          You have no items in your coolection. Start by{" "}
+          <span
+            className="cursor-pointer text-sky-400 hover:underline"
+            onClick={() => setOpenNewItemDialog(true)}
+          >
+            adding some
+          </span>
+          !
+        </p>
+      ) : null}
+
+      {showNoResults ? (
+        <div className="mt-4 flex w-full items-center justify-center">
+          <p className="max-w-[80%] truncate text-center text-sm font-medium text-gray-700">
+            No results for <q>{querySearchParam}</q>
           </p>
-        ) : null}
+        </div>
+      ) : null}
 
-        {showNoResults ? (
-          <div className="mt-4 flex w-full items-center justify-center">
-            <p className="max-w-[80%] truncate text-center text-sm font-medium text-gray-700">
-              No results for <q>{querySearchParam}</q>
-            </p>
-          </div>
-        ) : null}
-
-        {loadingItems || isSearchingResultsWithTimeout ? (
-          <ResultItemSkeletons />
-        ) : (
-          <>
-            {Array.isArray(results) &&
-              results.map((item: Item) => (
-                <AnimatedListItem key={item.id}>
-                  <ResultItem
-                    item={item}
-                    onArchive={handleArchiveItem}
-                    lists={lists}
-                  />
-                </AnimatedListItem>
-              ))}
-          </>
-        )}
-      </AnimatePresence>
+      {loadingItems || isSearchingResultsWithTimeout ? (
+        <ResultItemSkeletons />
+      ) : (
+        <AnimatePresence initial={false} key="results">
+          {Array.isArray(results) &&
+            results.map((item: Item) => (
+              <AnimatedListItem key={item.id}>
+                <ResultItem
+                  item={item}
+                  onArchive={handleArchiveItem}
+                  lists={lists}
+                />
+              </AnimatedListItem>
+            ))}
+        </AnimatePresence>
+      )}
 
       <div className="h-4" />
 

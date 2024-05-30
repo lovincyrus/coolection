@@ -5,7 +5,7 @@ import { DEFAULT_PAGE_SIZE } from "@/lib/constants";
 import { Skeleton } from "./ui/skeleton";
 
 export function ResultItemSkeletons({
-  count = DEFAULT_PAGE_SIZE,
+  count = DEFAULT_PAGE_SIZE - 1,
 }: {
   count?: number;
 }) {
