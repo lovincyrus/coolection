@@ -1,7 +1,7 @@
 "use client";
 import { AnimatePresence } from "framer-motion";
 import { useSearchParams } from "next/navigation";
-import React, { useCallback, useMemo, useRef } from "react";
+import React, { useCallback, useEffect, useMemo, useRef } from "react";
 import { unstable_serialize, useSWRConfig } from "swr";
 
 import { useIsInList } from "../hooks/use-is-in-list";
@@ -48,28 +48,28 @@ export default function MainResults(
     }
   }, [isFinished, isLoadingOrValidating, setSize]);
 
-  // Uncomment to enable infinite scrolling
-  // FIXME: load more button flashing on initial load
-  // useEffect(() => {
-  //   const observer = new IntersectionObserver(
-  //     ([entry]) => {
-  //       if (entry.isIntersecting) {
-  //         loadMore();
-  //       }
-  //     },
-  //     { root: null, rootMargin: "0px", threshold: 1 },
-  //   );
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          loadMore();
+        }
+      },
+      { root: null, rootMargin: "0px", threshold: 1 },
+    );
 
-  //   if (loadMoreContainerRef.current) {
-  //     observer.observe(loadMoreContainerRef.current);
-  //   }
+    const currentRef = loadMoreContainerRef.current;
 
-  //   return () => {
-  //     if (loadMoreContainerRef.current) {
-  //       observer.unobserve(loadMoreContainerRef.current);
-  //     }
-  //   };
-  // }, [loadMore]);
+    if (currentRef) {
+      observer.observe(currentRef);
+    }
+
+    return () => {
+      if (currentRef) {
+        observer.unobserve(currentRef);
+      }
+    };
+  }, [loadMore]);
 
   const querySearchParam = searchParams.get("q")?.toString() ?? "";
 
