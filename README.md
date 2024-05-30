@@ -68,7 +68,7 @@ NEXT_PUBLIC_CLERK_SIGN_IN_URL="/sign-in"
 NEXT_PUBLIC_CLERK_SIGN_UP_URL="/sign-up"
 ```
 
-You need to set up webhook https://clerk.com/docs/integrations/webhooks/sync-data locally if you wish to sync user creation from Clerk to your database.
+You need to set up webhook https://clerk.com/docs/integrations/webhooks/sync-data if you wish to sync user creation from Clerk to your database in development or production.
 
 <br>
 
