@@ -4,7 +4,7 @@ import React from "react";
 import { toast } from "sonner";
 
 import { useIsInList } from "../hooks/use-is-in-list";
-import { CoolectionItem, CoolectionList, ItemType } from "../types";
+import { Item, ItemType, List } from "../types";
 import { HighlightChars } from "./highlight-chars";
 import { useGlobals } from "./provider/globals-provider";
 import {
@@ -29,10 +29,10 @@ export function ResultItem({
   lists,
   listId,
 }: {
-  item: CoolectionItem & { similarity?: number };
+  item: Item & { similarity?: number };
   onArchive?: (_itemId: string) => void;
   onRemove?: (_itemId: string) => void;
-  lists: CoolectionList[];
+  lists: List[];
   listId?: string;
 }) {
   const searchParams = useSearchParams();

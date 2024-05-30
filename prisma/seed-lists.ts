@@ -1,5 +1,4 @@
-import { empty } from "uuidv4";
-
+import { empty } from "../lib/constants";
 import prisma from "../lib/prisma";
 
 if (!process.env.DATABASE_URL) {

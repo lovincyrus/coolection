@@ -7,7 +7,7 @@ import { useIsInList } from "../hooks/use-is-in-list";
 import { useItemsFromList } from "../hooks/use-items-from-list";
 import { useLists } from "../hooks/use-lists";
 import { useLoadingWithTimeout } from "../hooks/use-loading-with-timeout";
-import { CoolectionItem } from "../types";
+import { Item } from "../types";
 import { AnimatedListItem } from "./animated-list-item";
 import { ResultItem } from "./result-item";
 
@@ -43,7 +43,7 @@ export function ListResults({
         ) : null}
 
         {Array.isArray(itemsFromList) &&
-          itemsFromList.map((item: CoolectionItem) => (
+          itemsFromList.map((item: Item) => (
             <AnimatedListItem key={item.id}>
               <ResultItem
                 item={item}

@@ -25,6 +25,7 @@ export function usePaginatedItems(itemsServerData: any) {
     setSize,
     isValidating,
     isLoading: loadingItems,
+    error,
   } = useSWRInfinite(getKey, fetcher, {
     // See: https://swr.vercel.app/docs/pagination#parameters
     initialSize: 1,
@@ -38,8 +39,11 @@ export function usePaginatedItems(itemsServerData: any) {
     (size > 0 && items && typeof items[size - 1] === "undefined");
   const isEmpty = items?.[0]?.length === 0;
   const lastPage = items && items[items.length - 1];
-  const isLastPageFull = lastPage?.length === DEFAULT_PAGE_SIZE;
-  const isReachingEnd = isEmpty || !isLastPageFull;
+  const totalItemsRetrieved = (Array.isArray(items) ? [].concat(...items) : [])
+    .length;
+
+  // FIXME: lastPage?.length will become undefined after archiving an item
+  const isFinished = lastPage?.length < DEFAULT_PAGE_SIZE;
   const isRefreshing = isValidating && items && items.length === size;
 
   return {
@@ -51,7 +55,8 @@ export function usePaginatedItems(itemsServerData: any) {
     isValidating,
     isLoadingMore,
     isEmpty,
-    isReachingEnd,
+    isFinished,
     isRefreshing,
+    error,
   };
 }

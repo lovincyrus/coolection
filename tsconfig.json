@@ -27,9 +27,6 @@
     "paths": {
       "@/*": [
         "./*"
-      ],
-      "@/components/*": [
-        "components/*"
       ]
     }
   },
@@ -38,7 +35,9 @@
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts",
-    "prisma/seed-websites.ts"
+    "prisma/seed-lists.ts",
+    "prisma/seed-user.ts",
+    "prisma/seed-items.ts"
   ],
   "exclude": [
     "node_modules"

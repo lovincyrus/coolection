@@ -1,7 +1,7 @@
 import { auth } from "@clerk/nextjs/server";
 import { NextRequest, NextResponse } from "next/server";
 
-import { CoolectionItemWithSimilarity } from "@/app/types/coolection";
+import { ItemWithSimilarity } from "@/app/types/coolection";
 import { DEFAULT_PAGE_SIZE } from "@/lib/constants";
 import prisma from "@/lib/prisma";
 
@@ -23,7 +23,7 @@ export async function GET(req: NextRequest) {
 
   try {
     // Approach 1: Simple ILIKE search
-    const results: Array<CoolectionItemWithSimilarity> = await prisma.$queryRaw`
+    const results: Array<ItemWithSimilarity> = await prisma.$queryRaw`
       SELECT
         id,
         "title", "description", "url", "type", "content", "metadata",

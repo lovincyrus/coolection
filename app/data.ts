@@ -1,6 +1,7 @@
-import { empty } from "uuidv4";
-
 // See: https://github.com/vercel/swr/issues/1906
+
+import { empty } from "@/lib/constants";
+
 // See: https://x.com/shuding_/status/1794462595719848408
 export function getAllLists() {
   // const url = new URL(

@@ -1,4 +1,4 @@
-export interface CoolectionItem {
+export interface Item {
   id: string;
   url?: string;
   title: string;
@@ -17,16 +17,16 @@ interface Similarity {
   similarity?: number;
 }
 
-export type CoolectionItemWithSimilarity = CoolectionItem & Similarity;
+export type ItemWithSimilarity = Item & Similarity;
 
-export interface CoolectionList {
+export interface List {
   id: string;
   name: string;
   slug: string;
   description?: string;
   createdAt: string;
   updatedAt: string;
-  items: CoolectionItem[];
+  items: Item[];
 }
 
 export enum ItemType {
