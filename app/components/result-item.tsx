@@ -162,46 +162,45 @@ export function ResultItem({
     return item.url;
   }
 
-  const Item = () => (
-    <a
-      href={getUrl()}
-      target="_blank"
-      rel="noreferrer noopener"
-      key={item.id}
-      onPointerOver={() => {
-        setCurrentItem(item);
-      }}
-    >
-      <div className="flex select-none flex-col py-4 hover:rounded-lg hover:bg-gray-50 hover:shadow">
-        <div className="flex flex-col gap-1 px-4">
-          <h3 className="line-clamp-1 text-sm font-medium">
-            <HighlightChars text={item.title} searchTerm={querySearchParam} />
-          </h3>
-          {/* <code className="text-[12px]">{item.similarity}</code> */}
-          <div className="flex flex-row items-center space-x-2">
-            <LinkIcon className="h-3 w-3 text-gray-400" />
-            <p className="text-sm text-gray-400">
-              <HighlightChars
-                text={extractDomain(String(item.url))}
-                searchTerm={querySearchParam}
-              />
-            </p>
-          </div>
-          <p className="line-clamp-3 text-sm text-gray-600">
-            <HighlightChars
-              text={getDescription() ?? ""}
-              searchTerm={querySearchParam}
-            />
-          </p>
-        </div>
-      </div>
-    </a>
-  );
-
   return (
     <ContextMenu>
       <ContextMenuTrigger>
-        <Item />
+        <a
+          href={getUrl()}
+          target="_blank"
+          rel="noreferrer noopener"
+          key={item.id}
+          onPointerOver={() => {
+            setCurrentItem(item);
+          }}
+        >
+          <div className="flex select-none flex-col py-4 hover:rounded-lg hover:bg-gray-50 hover:shadow">
+            <div className="flex flex-col gap-1 px-4">
+              <h3 className="line-clamp-1 text-sm font-medium">
+                <HighlightChars
+                  text={item.title}
+                  searchTerm={querySearchParam}
+                />
+              </h3>
+              {/* <code className="text-[12px]">{item.similarity}</code> */}
+              <div className="flex flex-row items-center space-x-2">
+                <LinkIcon className="h-3 w-3 text-gray-400" />
+                <p className="text-sm text-gray-400">
+                  <HighlightChars
+                    text={extractDomain(String(item.url))}
+                    searchTerm={querySearchParam}
+                  />
+                </p>
+              </div>
+              <p className="line-clamp-3 text-sm text-gray-600">
+                <HighlightChars
+                  text={getDescription() ?? ""}
+                  searchTerm={querySearchParam}
+                />
+              </p>
+            </div>
+          </div>
+        </a>
       </ContextMenuTrigger>
       {isInList ? (
         <ContextMenuContent className="w-32 md:w-48">

@@ -1,7 +1,7 @@
 "use client";
 import { AnimatePresence } from "framer-motion";
 import { useSearchParams } from "next/navigation";
-import React, { useCallback, useEffect, useMemo, useRef } from "react";
+import React, { useCallback, useMemo, useRef } from "react";
 import { unstable_serialize, useSWRConfig } from "swr";
 
 import { useIsInList } from "../hooks/use-is-in-list";
@@ -48,30 +48,28 @@ export default function MainResults(
     }
   }, [isFinished, isLoadingOrValidating, setSize]);
 
-  useEffect(() => {
-    if (loadMoreContainerRef.current) {
-      const observer = new IntersectionObserver(
-        ([entry]) => {
-          if (entry.isIntersecting) {
-            loadMore();
-          }
-        },
-        { root: null, rootMargin: "0px", threshold: 1 },
-      );
+  // useEffect(() => {
+  //   const observer = new IntersectionObserver(
+  //     ([entry]) => {
+  //       if (entry.isIntersecting) {
+  //         loadMore();
+  //       }
+  //     },
+  //     { root: null, rootMargin: "0px", threshold: 1 },
+  //   );
 
-      const currentRef = loadMoreContainerRef.current;
+  //   const currentRef = loadMoreContainerRef.current;
 
-      if (currentRef) {
-        observer.observe(currentRef);
-      }
+  //   if (currentRef) {
+  //     observer.observe(currentRef);
+  //   }
 
-      return () => {
-        if (currentRef) {
-          observer.unobserve(currentRef);
-        }
-      };
-    }
-  }, [loadMore]);
+  //   return () => {
+  //     if (currentRef) {
+  //       observer.unobserve(currentRef);
+  //     }
+  //   };
+  // }, [loadMore]);
 
   const querySearchParam = searchParams.get("q")?.toString() ?? "";
 
