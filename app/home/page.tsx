@@ -7,6 +7,7 @@ import { Header } from "../components/header";
 import ListNavigation from "../components/list-navigation";
 import { ListNavigationSkeletons } from "../components/list-navigation-skeletons";
 import MainResults from "../components/main-results";
+import { SWRProvider } from "../components/provider/swr-provider";
 import { ResultItemSkeletons } from "../components/result-item-skeletons";
 import { SearchBar } from "../components/search-bar";
 import { getAllLists, getItems } from "../data";
@@ -22,37 +23,39 @@ const itemsServerData = getItems(1, 10);
 
 export default async function HomePage() {
   return (
-    <main>
-      <div className="mx-auto min-h-dvh w-full max-w-2xl px-4 pt-4 md:border-l md:border-r md:border-dashed xl:max-w-4xl 2xl:max-w-6xl">
-        <Header
-          heading="Home"
-          listsServerData={listsServerData}
-          itemsServerData={itemsServerData}
-        />
+    <SWRProvider>
+      <main>
+        <div className="mx-auto min-h-dvh w-full max-w-2xl px-4 pt-4 md:border-l md:border-r md:border-dashed xl:max-w-4xl 2xl:max-w-6xl">
+          <Header
+            heading="Home"
+            listsServerData={listsServerData}
+            itemsServerData={itemsServerData}
+          />
 
-        <div className="mt-14 flex flex-col">
-          <Suspense fallback={<ListNavigationSkeletons />}>
-            <ListNavigation listsServerData={listsServerData} />
-          </Suspense>
+          <div className="mt-14 flex flex-col">
+            <Suspense fallback={<ListNavigationSkeletons />}>
+              <ListNavigation listsServerData={listsServerData} />
+            </Suspense>
 
-          <div className="h-4" />
+            <div className="h-4" />
 
-          <Suspense fallback={null}>
-            <SearchBar />
-          </Suspense>
+            <Suspense fallback={null}>
+              <SearchBar />
+            </Suspense>
 
-          <div className="h-4" />
+            <div className="h-4" />
 
-          <Suspense fallback={<ResultItemSkeletons />}>
-            <MainResults
-              listsServerData={listsServerData}
-              itemsServerData={itemsServerData}
-            />
-          </Suspense>
+            <Suspense fallback={<ResultItemSkeletons />}>
+              <MainResults
+                listsServerData={listsServerData}
+                itemsServerData={itemsServerData}
+              />
+            </Suspense>
+          </div>
         </div>
-      </div>
 
-      <Footer type="home" />
-    </main>
+        <Footer type="home" />
+      </main>
+    </SWRProvider>
   );
 }
