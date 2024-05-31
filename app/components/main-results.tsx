@@ -1,9 +1,8 @@
 "use client";
 import { AnimatePresence } from "framer-motion";
 import { useSearchParams } from "next/navigation";
-import React, { useEffect, useMemo, useRef } from "react";
+import React, { useCallback, useEffect, useMemo, useRef } from "react";
 import { unstable_serialize, useSWRConfig } from "swr";
-import { useThrottledCallback } from "use-debounce";
 
 import { useIsInList } from "../hooks/use-is-in-list";
 import { useLists } from "../hooks/use-lists";
@@ -43,11 +42,11 @@ export default function MainResults(
 
   const isLoadingOrValidating = loadingItems || isValidating;
 
-  const loadMore = useThrottledCallback(() => {
+  const loadMore = useCallback(() => {
     if (!isFinished && !isLoadingOrValidating) {
       setSize((size) => size + 1);
     }
-  }, 100);
+  }, [isFinished, isLoadingOrValidating, setSize]);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -74,11 +73,6 @@ export default function MainResults(
 
   const querySearchParam = searchParams.get("q")?.toString() ?? "";
 
-  const showLoadMore = useMemo(
-    () => !isFinished && !querySearchParam && !isRefreshing,
-    [isFinished, querySearchParam, isRefreshing],
-  );
-
   const {
     data: searchResults,
     loading: searchingResults,
@@ -98,15 +92,18 @@ export default function MainResults(
       querySearchParam.length === 0 &&
       Array.isArray(items) &&
       items.length === 0 &&
-      !loadingItems &&
-      !isValidating,
+      !isLoadingOrValidating,
     300,
   );
   const showNoResults =
     !searchingResults &&
     querySearchParam.length > 0 &&
-    Array.isArray(searchResults) &&
-    searchResults.length === 0;
+    (searchResults?.length ?? 0) === 0;
+  const showLoadMore =
+    !isFinished &&
+    querySearchParam.length === 0 &&
+    !isRefreshing &&
+    !isLoadingOrValidating;
 
   const handleArchiveItem = (itemId: string) => {
     if (Array.isArray(searchResults)) {
@@ -124,32 +121,36 @@ export default function MainResults(
     mutate(unstable_serialize(getKey));
   };
 
+  const EmptyState = () => (
+    <p className="mt-4 text-center text-sm font-medium text-gray-700">
+      You have no items in your coolection. Start by{" "}
+      <span
+        className="cursor-pointer text-sky-400 hover:underline"
+        onClick={() => setOpenNewItemDialog(true)}
+      >
+        adding one
+      </span>
+      !
+    </p>
+  );
+
+  const NoResultsState = () => (
+    <div className="mt-4 flex w-full items-center justify-center">
+      <p className="max-w-[80%] truncate text-center text-sm font-medium text-gray-700">
+        No results for <q>{querySearchParam}</q>
+      </p>
+    </div>
+  );
+
   return (
     <div>
-      {showEmptyItemsCopy ? (
-        <p className="mt-4 text-center text-sm font-medium text-gray-700">
-          You have no items in your coolection. Start by{" "}
-          <span
-            className="cursor-pointer text-sky-400 hover:underline"
-            onClick={() => setOpenNewItemDialog(true)}
-          >
-            adding some
-          </span>
-          !
-        </p>
-      ) : null}
-
-      {showNoResults ? (
-        <div className="mt-4 flex w-full items-center justify-center">
-          <p className="max-w-[80%] truncate text-center text-sm font-medium text-gray-700">
-            No results for <q>{querySearchParam}</q>
-          </p>
-        </div>
-      ) : null}
-
-      {loadingItems || isSearchingResultsWithTimeout ? (
+      {showEmptyItemsCopy ? <EmptyState /> : null}
+      {showNoResults ? <NoResultsState /> : null}
+      {isLoadingOrValidating || isSearchingResultsWithTimeout ? (
         <ResultItemSkeletons />
-      ) : (
+      ) : null}
+
+      {results && results.length > 0 ? (
         <AnimatePresence initial={false} key="results">
           {Array.isArray(results) &&
             results.map((item: Item) => (
@@ -162,7 +163,7 @@ export default function MainResults(
               </AnimatedListItem>
             ))}
         </AnimatePresence>
-      )}
+      ) : null}
 
       <div className="h-4" />
 
