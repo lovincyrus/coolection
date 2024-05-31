@@ -68,7 +68,8 @@ export default function MainResults(
       Array.isArray(items) &&
       items.length === 0 &&
       !isLoadingOrValidating &&
-      !isValidating,
+      !isValidating &&
+      !error,
     300,
   );
   const showNoResults =
