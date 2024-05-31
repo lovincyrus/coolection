@@ -28,7 +28,7 @@ export function GoBackNavigation({
   listsServerData: any;
 }) {
   const { data: lists } = useLists(listsServerData);
-  const { mutate } = useSWRConfig();
+  const { mutate, cache } = useSWRConfig();
   const { replace } = useRouter();
 
   const [areYouSure, setAreYouSure] = useState(false);
@@ -66,6 +66,7 @@ export function GoBackNavigation({
 
         if (response.ok) {
           mutate("/api/lists");
+          cache.delete(`/api/lists/${listId}/items`);
           toast.success("List removed successfully");
         } else {
           toast.error("Failed to remove list");
@@ -74,7 +75,7 @@ export function GoBackNavigation({
         toast.error("Failed to remove list");
       }
     },
-    [mutate],
+    [mutate, cache],
   );
 
   return (

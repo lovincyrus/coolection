@@ -1,9 +1,8 @@
 "use client";
 import { AnimatePresence } from "framer-motion";
 import { useSearchParams } from "next/navigation";
-import React, { useMemo, useRef } from "react";
+import React, { useCallback, useMemo, useRef } from "react";
 import { unstable_serialize, useSWRConfig } from "swr";
-import { useThrottledCallback } from "use-debounce";
 
 import { useIsInList } from "../hooks/use-is-in-list";
 import { useLists } from "../hooks/use-lists";
@@ -43,11 +42,11 @@ export default function MainResults(
 
   const isLoadingOrValidating = loadingItems || isValidating;
 
-  const loadMore = useThrottledCallback(() => {
+  const loadMore = useCallback(() => {
     if (!isFinished && !isLoadingOrValidating) {
       setSize((size) => size + 1);
     }
-  }, 100);
+  }, [isFinished, isLoadingOrValidating, setSize]);
 
   // useEffect(() => {
   //   const observer = new IntersectionObserver(
