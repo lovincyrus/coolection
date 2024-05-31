@@ -142,7 +142,7 @@ export default function MainResults(
         </div>
       ) : null}
 
-      {isLoadingOrValidating || isSearchingResultsWithTimeout ? (
+      {loadingItems || isSearchingResultsWithTimeout ? (
         <ResultItemSkeletons />
       ) : null}
 
