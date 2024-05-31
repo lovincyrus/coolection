@@ -57,6 +57,7 @@ export function usePaginatedItems(itemsServerData: any) {
     isEmpty,
     isFinished,
     isRefreshing,
+    totalItemsRetrieved,
     error,
   };
 }

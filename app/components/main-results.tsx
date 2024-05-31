@@ -1,7 +1,7 @@
 "use client";
 import { AnimatePresence } from "framer-motion";
 import { useSearchParams } from "next/navigation";
-import React, { useCallback, useMemo, useRef } from "react";
+import React, { useCallback, useMemo } from "react";
 import { unstable_serialize, useSWRConfig } from "swr";
 
 import { useIsInList } from "../hooks/use-is-in-list";
@@ -38,8 +38,6 @@ export default function MainResults(
     error,
   } = usePaginatedItems(itemsServerData);
 
-  const loadMoreContainerRef = useRef<HTMLDivElement>(null);
-
   const isLoadingOrValidating = loadingItems || isValidating;
 
   const loadMore = useCallback(() => {
@@ -47,29 +45,6 @@ export default function MainResults(
       setSize((size) => size + 1);
     }
   }, [isFinished, isLoadingOrValidating, setSize]);
-
-  // useEffect(() => {
-  //   const observer = new IntersectionObserver(
-  //     ([entry]) => {
-  //       if (entry.isIntersecting) {
-  //         loadMore();
-  //       }
-  //     },
-  //     { root: null, rootMargin: "0px", threshold: 1 },
-  //   );
-
-  //   const currentRef = loadMoreContainerRef.current;
-
-  //   if (currentRef) {
-  //     observer.observe(currentRef);
-  //   }
-
-  //   return () => {
-  //     if (currentRef) {
-  //       observer.unobserve(currentRef);
-  //     }
-  //   };
-  // }, [loadMore]);
 
   const querySearchParam = searchParams.get("q")?.toString() ?? "";
 
@@ -149,22 +124,31 @@ export default function MainResults(
       {results && results.length > 0 ? (
         <AnimatePresence initial={false} key="results">
           {Array.isArray(results) &&
-            results.map((item: Item) => (
-              <AnimatedListItem key={item.id}>
-                <ResultItem
-                  item={item}
-                  onArchive={handleArchiveItem}
-                  lists={lists}
-                />
-              </AnimatedListItem>
-            ))}
+            results.map((item: Item, idx: number) => {
+              return (
+                <AnimatedListItem key={item.id}>
+                  <ResultItem
+                    item={item}
+                    onArchive={handleArchiveItem}
+                    lists={lists}
+                    isLastItem={idx === results.length - 1}
+                    onLoadMore={
+                      idx === results.length - 1 &&
+                      querySearchParam.length === 0
+                        ? loadMore
+                        : undefined
+                    }
+                  />
+                </AnimatedListItem>
+              );
+            })}
         </AnimatePresence>
       ) : null}
 
       <div className="h-4" />
 
       {showLoadMore && (
-        <div ref={loadMoreContainerRef}>
+        <div>
           <Button
             className="h-[30px] w-full items-center justify-center whitespace-nowrap rounded-lg border bg-white px-3 text-xs font-medium shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 disabled:pointer-events-none disabled:opacity-50"
             disabled={isLoadingOrValidating}

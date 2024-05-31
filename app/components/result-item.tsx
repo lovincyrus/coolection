@@ -1,9 +1,10 @@
 import { LinkIcon } from "lucide-react";
 import { useSearchParams } from "next/navigation";
-import React from "react";
+import React, { useRef } from "react";
 import { toast } from "sonner";
 
 import { useIsInList } from "../hooks/use-is-in-list";
+import { useOnVisible } from "../hooks/use-on-visible";
 import { Item, ItemType, List } from "../types";
 import { HighlightChars } from "./highlight-chars";
 import { useGlobals } from "./provider/globals-provider";
@@ -28,17 +29,24 @@ export function ResultItem({
   onRemove,
   lists,
   listId,
+  isLastItem,
+  onLoadMore,
 }: {
   item: Item & { similarity?: number };
   onArchive?: (_itemId: string) => void;
   onRemove?: (_itemId: string) => void;
   lists: List[];
   listId?: string;
+  isLastItem?: boolean;
+  onLoadMore?: () => void;
 }) {
   const searchParams = useSearchParams();
   const querySearchParam = searchParams.get("q")?.toString() ?? "";
   const { setOpenEditItemDialog, setCurrentItem } = useGlobals();
   const isInList = useIsInList();
+
+  const lastItemRef = useRef<HTMLAnchorElement>(null);
+  useOnVisible(lastItemRef, onLoadMore);
 
   const handleAddToList = (listId: string) => {
     function getListName() {
@@ -173,6 +181,7 @@ export function ResultItem({
           onPointerOver={() => {
             setCurrentItem(item);
           }}
+          ref={isLastItem ? lastItemRef : null}
         >
           <div className="flex select-none flex-col py-4 hover:rounded-lg hover:bg-gray-50 hover:shadow">
             <div className="flex flex-col gap-1 px-4">
