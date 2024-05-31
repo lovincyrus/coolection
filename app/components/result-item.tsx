@@ -176,7 +176,7 @@ export function ResultItem({
         >
           <div className="flex select-none flex-col py-4 hover:rounded-lg hover:bg-gray-50 hover:shadow">
             <div className="flex flex-col gap-1 px-4">
-              <h3 className="text-sm font-medium">
+              <h3 className="line-clamp-1 text-sm font-medium">
                 <HighlightChars
                   text={item.title}
                   searchTerm={querySearchParam}
