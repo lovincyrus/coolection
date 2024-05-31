@@ -54,20 +54,13 @@ export function isTwitterAccountUrl(href: string) {
 }
 
 export function normalizeLink(input: string) {
-  const disallowParams = [
-    "utm_source",
-    "utm_medium",
-    "utm_campaign",
-    "utm_content",
-    "utm_term",
-    "gclid",
-    "fbclid",
-  ];
+  const isYoutubeLink = input.startsWith("https://www.youtube.com");
 
   return normalizeUrl(input, {
     removeTrailingSlash: true,
     stripWWW: false,
-    removeQueryParameters: disallowParams,
+    keepQueryParameters: isYoutubeLink ? ["list", "index", "v"] : ["ref"],
+    removeQueryParameters: true,
     forceHttps: true,
   });
 }
