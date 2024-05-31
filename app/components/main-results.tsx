@@ -144,7 +144,9 @@ export default function MainResults(
 
       {isLoadingOrValidating || isSearchingResultsWithTimeout ? (
         <ResultItemSkeletons />
-      ) : (
+      ) : null}
+
+      {results && results.length > 0 ? (
         <AnimatePresence initial={false} key="results">
           {Array.isArray(results) &&
             results.map((item: Item) => (
@@ -157,7 +159,7 @@ export default function MainResults(
               </AnimatedListItem>
             ))}
         </AnimatePresence>
-      )}
+      ) : null}
 
       <div className="h-4" />
 

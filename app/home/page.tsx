@@ -37,7 +37,6 @@ export default async function HomePage() {
 
           <div className="h-4" />
 
-          {/* https://nextjs.org/docs/messages/missing-suspense-with-csr-bailout */}
           <Suspense fallback={null}>
             <SearchBar />
           </Suspense>
