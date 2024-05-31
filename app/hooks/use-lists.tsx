@@ -1,25 +1,25 @@
 "use client";
 
+import { List } from "@prisma/client";
 import useSWR from "swr";
 
-import { fetcher } from "@/lib/fetcher";
+import { getLists } from "../data";
 
-import { List } from "../types";
+export function useLists() {
+  // const { data, isLoading, mutate, error } = useSWR<List[]>(
+  //   "/api/lists",
+  //   fetcher,
+  //   {
+  //     suspense: true,
+  //   },
+  // );
 
-export function useLists(listsServerData: any) {
-  const { data, isLoading, mutate, error } = useSWR<List[]>(
-    "/api/lists",
-    fetcher,
-    {
-      suspense: true,
-      fallbackData: listsServerData,
-    },
-  );
+  const { data } = useSWR<List[]>("lists", getLists);
 
   return {
     data: data ?? [],
-    loading: isLoading,
-    mutate,
-    error,
+    // loading: isLoading,
+    // mutate,
+    // error,
   };
 }

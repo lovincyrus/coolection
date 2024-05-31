@@ -9,8 +9,8 @@ import { useGlobals } from "./provider/globals-provider";
 import { Button } from "./ui/button";
 import { ScrollArea, ScrollBar } from "./ui/scroll-area";
 
-export default function ListNavigation(listsServerData: any) {
-  const { data: lists } = useLists(listsServerData);
+export default function ListNavigation() {
+  const { data: lists } = useLists();
   const { setOpenNewListDialog } = useGlobals();
 
   return (

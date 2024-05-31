@@ -3,22 +3,34 @@
 import { empty } from "@/lib/constants";
 
 // See: https://x.com/shuding_/status/1794462595719848408
-export function getAllLists() {
-  // const url = new URL(
-  //   "/api/lists",
-  //   process.env.NODE_ENV === "development"
-  //     ? "http://localhost:3000"
-  //     : "https://coolection.co",
-  // );
+// export function getAllLists() {
+// const url = new URL(
+//   "/api/lists",
+//   process.env.NODE_ENV === "development"
+//     ? "http://localhost:3000"
+//     : "https://coolection.co",
+// );
 
-  // fetcher(url.href);
+//   // fetcher(url.href);
 
-  return [
-    {
-      id: empty(),
-      name: "",
-    },
-  ];
+//   return [
+//     {
+//       id: empty(),
+//       name: "",
+//     },
+//   ];
+// }
+
+export async function getLists() {
+  const url = new URL(
+    "/api/lists",
+    process.env.NODE_ENV === "development"
+      ? "http://localhost:3000"
+      : "https://coolection.co",
+  );
+  const res = await fetch(url.href);
+  const json = await res.json();
+  return json;
 }
 
 export function getItems(_page: number, _limit: number) {

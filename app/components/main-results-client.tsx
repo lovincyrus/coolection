@@ -25,7 +25,7 @@ function Fallback({ resetErrorBoundary }: any) {
   );
 }
 
-export function MainResultsClient(listsServerData: any, itemsServerData: any) {
+export function MainResultsClient(itemsServerData: any) {
   return (
     <ErrorBoundary
       FallbackComponent={Fallback}
@@ -34,10 +34,7 @@ export function MainResultsClient(listsServerData: any, itemsServerData: any) {
       }}
     >
       <Suspense fallback={<ResultItemSkeletons />}>
-        <MainResults
-          listsServerData={listsServerData}
-          itemsServerData={itemsServerData}
-        />
+        <MainResults itemsServerData={itemsServerData} />
       </Suspense>
     </ErrorBoundary>
   );

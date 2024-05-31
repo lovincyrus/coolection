@@ -20,14 +20,8 @@ const buttonCopy = {
   loading: <LoaderIcon className="h-4 w-4 animate-spin" />,
 };
 
-export function GoBackNavigation({
-  listId,
-  listsServerData,
-}: {
-  listId: string;
-  listsServerData: any;
-}) {
-  const { data: lists } = useLists(listsServerData);
+export function GoBackNavigation({ listId }: { listId: string }) {
+  const { data: lists } = useLists();
   const { mutate, cache } = useSWRConfig();
   const { replace } = useRouter();
 

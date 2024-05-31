@@ -17,14 +17,11 @@ import { ResultItem } from "./result-item";
 import { ResultItemSkeletons } from "./result-item-skeletons";
 import { Button } from "./ui/button";
 
-export default function MainResults(
-  listsServerData: any,
-  itemsServerData: any,
-) {
+export default function MainResults(itemsServerData: any) {
   const isInList = useIsInList();
   const { mutate } = useSWRConfig();
   const searchParams = useSearchParams();
-  const { data: lists } = useLists(listsServerData);
+  const { data: lists } = useLists();
   const { setOpenNewItemDialog } = useGlobals();
 
   const {

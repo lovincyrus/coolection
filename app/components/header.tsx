@@ -13,16 +13,14 @@ import { Button } from "./ui/button";
 export function Header({
   heading,
   listId,
-  listsServerData,
   itemsServerData,
 }: {
   heading?: string;
   listId?: string;
-  listsServerData?: any;
   itemsServerData?: any;
 }) {
   const { signOut } = useClerk();
-  const { data: lists } = useLists(listsServerData);
+  const { data: lists } = useLists();
 
   function getListName(listId: string) {
     const list = lists.find((list) => list.id === listId);

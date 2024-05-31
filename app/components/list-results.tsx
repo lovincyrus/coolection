@@ -12,15 +12,9 @@ import { AnimatedListItem } from "./animated-list-item";
 import { ResultItem } from "./result-item";
 import { ResultItemSkeletons } from "./result-item-skeletons";
 
-export function ListResults({
-  listId,
-  listsServerData,
-}: {
-  listId: string;
-  listsServerData: any;
-}) {
+export function ListResults({ listId }: { listId: string }) {
   const isInList = useIsInList();
-  const { data: lists } = useLists(listsServerData);
+  const { data: lists } = useLists();
   const {
     data: itemsFromList,
     loading,

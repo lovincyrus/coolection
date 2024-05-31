@@ -5,6 +5,7 @@ import {
   simpleStorageHandler,
   useCacheProvider,
 } from "@piotr-cz/swr-idb-cache";
+import { SWRConfig } from "swr";
 
 import { GlobalsProvider } from "./components/provider/globals-provider";
 
@@ -31,18 +32,13 @@ export function Providers({ children }: { children: React.ReactNode }) {
 
   return (
     <ClerkProvider>
-      {/* <SWRConfig
+      <SWRConfig
         value={{
           provider: cacheProvider,
-          fallback: {
-            "/api/lists": getAllLists(),
-            "/api/items?page=1&limit=10": getItems(1, 10),
-          },
         }}
-      > */}
-
-      <GlobalsProvider>{children}</GlobalsProvider>
-      {/* </SWRConfig> */}
+      >
+        <GlobalsProvider>{children}</GlobalsProvider>
+      </SWRConfig>
     </ClerkProvider>
   );
 }

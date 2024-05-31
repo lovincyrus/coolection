@@ -24,7 +24,7 @@ function Fallback({ resetErrorBoundary }: any) {
   );
 }
 
-export function ListNavigationClient(listsServerData: any) {
+export function ListNavigationClient() {
   return (
     <ErrorBoundary
       FallbackComponent={Fallback}
@@ -33,7 +33,7 @@ export function ListNavigationClient(listsServerData: any) {
       }}
     >
       <Suspense fallback={<ListNavigationSkeletons />}>
-        <ListNavigation listsServerData={listsServerData} />
+        <ListNavigation />
       </Suspense>
     </ErrorBoundary>
   );
