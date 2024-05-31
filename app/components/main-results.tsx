@@ -1,7 +1,7 @@
 "use client";
 import { AnimatePresence } from "framer-motion";
 import { useSearchParams } from "next/navigation";
-import React, { useEffect, useMemo, useRef } from "react";
+import React, { useMemo, useRef } from "react";
 import { unstable_serialize, useSWRConfig } from "swr";
 import { useThrottledCallback } from "use-debounce";
 
@@ -49,35 +49,30 @@ export default function MainResults(
     }
   }, 100);
 
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          loadMore();
-        }
-      },
-      { root: null, rootMargin: "0px", threshold: 1 },
-    );
+  // useEffect(() => {
+  //   const observer = new IntersectionObserver(
+  //     ([entry]) => {
+  //       if (entry.isIntersecting) {
+  //         loadMore();
+  //       }
+  //     },
+  //     { root: null, rootMargin: "0px", threshold: 1 },
+  //   );
 
-    const currentRef = loadMoreContainerRef.current;
+  //   const currentRef = loadMoreContainerRef.current;
 
-    if (currentRef) {
-      observer.observe(currentRef);
-    }
+  //   if (currentRef) {
+  //     observer.observe(currentRef);
+  //   }
 
-    return () => {
-      if (currentRef) {
-        observer.unobserve(currentRef);
-      }
-    };
-  }, [loadMore]);
+  //   return () => {
+  //     if (currentRef) {
+  //       observer.unobserve(currentRef);
+  //     }
+  //   };
+  // }, [loadMore]);
 
   const querySearchParam = searchParams.get("q")?.toString() ?? "";
-
-  const showLoadMore = useMemo(
-    () => !isFinished && !querySearchParam && !isRefreshing,
-    [isFinished, querySearchParam, isRefreshing],
-  );
 
   const {
     data: searchResults,
@@ -98,7 +93,7 @@ export default function MainResults(
       querySearchParam.length === 0 &&
       Array.isArray(items) &&
       items.length === 0 &&
-      !loadingItems &&
+      !isLoadingOrValidating &&
       !isValidating,
     300,
   );
@@ -107,6 +102,7 @@ export default function MainResults(
     querySearchParam.length > 0 &&
     Array.isArray(searchResults) &&
     searchResults.length === 0;
+  const showLoadMore = !isFinished && !querySearchParam && !isRefreshing;
 
   const handleArchiveItem = (itemId: string) => {
     if (Array.isArray(searchResults)) {
@@ -147,7 +143,7 @@ export default function MainResults(
         </div>
       ) : null}
 
-      {loadingItems || isSearchingResultsWithTimeout ? (
+      {isLoadingOrValidating || isSearchingResultsWithTimeout ? (
         <ResultItemSkeletons />
       ) : (
         <AnimatePresence initial={false} key="results">

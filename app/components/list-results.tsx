@@ -16,7 +16,7 @@ export function ListResults({
   listId,
   listsServerData,
 }: {
-  listId?: string;
+  listId: string;
   listsServerData: any;
 }) {
   const isInList = useIsInList();
@@ -25,7 +25,7 @@ export function ListResults({
     data: itemsFromList,
     loading,
     mutate: mutateItemsFromList,
-  } = useItemsFromList(listId ?? "");
+  } = useItemsFromList(listId);
 
   const showEmptyListItemsCopy = useLoadingWithTimeout(
     isInList && Object.keys(itemsFromList).length === 0 && !loading,
