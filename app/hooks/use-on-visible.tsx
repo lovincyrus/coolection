@@ -14,7 +14,7 @@ export function useOnVisible(
         },
         {
           root: null,
-          rootMargin: "0px",
+          rootMargin: "60px",
           threshold: 0,
         },
       );

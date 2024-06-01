@@ -1,7 +1,8 @@
 "use client";
-import { AnimatePresence } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
+import { CircleArrowUpIcon } from "lucide-react";
 import { useSearchParams } from "next/navigation";
-import React, { useCallback, useMemo } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { unstable_serialize, useSWRConfig } from "swr";
 
 import { useIsInList } from "../hooks/use-is-in-list";
@@ -26,6 +27,8 @@ export default function MainResults(
   const searchParams = useSearchParams();
   const { data: lists } = useLists(listsServerData);
   const { setOpenNewItemDialog } = useGlobals();
+
+  const [showScrollTop, setShowScrollTop] = useState(false);
 
   const {
     data,
@@ -78,6 +81,19 @@ export default function MainResults(
     Array.isArray(searchResults) &&
     searchResults.length === 0;
   const showLoadMore = !isFinished && !querySearchParam && !isRefreshing;
+
+  useEffect(() => {
+    const checkScrollTop = () => {
+      if (!showScrollTop && window.scrollY > 800) {
+        setShowScrollTop(true);
+      } else if (showScrollTop && window.scrollY <= 800) {
+        setShowScrollTop(false);
+      }
+    };
+
+    window.addEventListener("scroll", checkScrollTop);
+    return () => window.removeEventListener("scroll", checkScrollTop);
+  }, [showScrollTop]);
 
   const handleArchiveItem = (itemId: string) => {
     if (Array.isArray(searchResults)) {
@@ -163,6 +179,30 @@ export default function MainResults(
           </Button>
           <div className="h-8" />
         </div>
+      )}
+
+      {showScrollTop && !isInList && (
+        <motion.div
+          className="fixed bottom-3 right-4"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.5, type: "spring" }}
+          whileHover={{
+            scale: 1.1,
+            transition: {
+              duration: 0.2,
+              ease: [0.4, 0, 0.2, 1],
+              stiffness: 300,
+            },
+          }}
+        >
+          <CircleArrowUpIcon
+            strokeWidth={1.5}
+            className="h-6 w-6 cursor-pointer rounded-full text-gray-500 drop-shadow backdrop-blur-sm"
+            onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+          />
+        </motion.div>
       )}
 
       <EditItemDialog itemsServerData={itemsServerData} />
