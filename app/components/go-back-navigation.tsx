@@ -1,7 +1,7 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
-import { ArrowLeftIcon, ChevronRightIcon, LoaderIcon } from "lucide-react";
+import { ArrowLeftIcon, ChevronRightIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { Link } from "next-view-transitions";
 import React, { useCallback, useEffect, useState } from "react";
@@ -11,13 +11,14 @@ import { useSWRConfig } from "swr";
 import { cn } from "@/lib/utils";
 
 import { useLists } from "../hooks/use-lists";
+import { Spinner } from "./icon-spinner";
 import { Button } from "./ui/button";
 
 type ButtonCopyState = "default" | "confirmation" | "loading";
 const buttonCopy = {
   default: "Remove",
   confirmation: "Are you sure?",
-  loading: <LoaderIcon className="h-4 w-4 animate-spin" />,
+  loading: <Spinner size={16} color="rgba(0, 0, 0, 0.85)" />,
 };
 
 export function GoBackNavigation({
@@ -103,7 +104,7 @@ export function GoBackNavigation({
         </div>
         <div className="hidden flex-row items-center gap-x-1 md:flex">
           <Button
-            className="flex h-6 select-none items-center justify-center overflow-hidden rounded-full border bg-gray-50 px-3 text-center text-xs font-medium shadow-sm"
+            className="relative flex h-6 select-none items-center justify-center overflow-hidden rounded-full border bg-gray-50 px-3 text-center text-xs font-medium shadow-sm"
             disabled={buttonState === "loading"}
             onClick={() => {
               setButtonState("loading");
