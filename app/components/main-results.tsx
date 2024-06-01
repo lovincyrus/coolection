@@ -84,8 +84,8 @@ export default function MainResults(
   const showLoadMore = !isFinished && !querySearchParam && !isRefreshing;
 
   useEffect(() => {
-    const unsubscribe = scrollYProgress.onChange((v) => {
-      setShowScrollTop(v > 0.2);
+    const unsubscribe = scrollYProgress.on("change", (latestValue) => {
+      setShowScrollTop(latestValue > 0.2);
     });
 
     return () => {

@@ -82,7 +82,8 @@ export function GoBackNavigation({
   return (
     <div className="relative">
       <div className="mb-4 flex flex-row items-center justify-between gap-x-1">
-        <div className="flex flex-row items-center gap-x-1">
+        {/* p-1 is to make focus ring visible */}
+        <div className="flex flex-row items-center gap-x-1 p-1">
           <Link href="/home">
             <Button className="flex h-6 select-none items-center justify-center rounded-full bg-gray-900 px-3 text-center text-xs font-medium text-white shadow-sm hover:bg-gray-700">
               <ArrowLeftIcon className="mr-1.5 h-3.5 w-3.5" />

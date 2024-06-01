@@ -174,16 +174,16 @@ export function ResultItem({
     <ContextMenu>
       <ContextMenuTrigger>
         <a
+          key={item.id}
+          ref={isLastItem ? lastItemRef : null}
           href={getUrl()}
           target="_blank"
           rel="noreferrer noopener"
-          key={item.id}
           onPointerOver={() => {
             setCurrentItem(item);
           }}
-          ref={isLastItem ? lastItemRef : null}
         >
-          <div className="flex select-none flex-col py-4 hover:rounded-lg hover:bg-gray-50 hover:shadow">
+          <div className="flex select-none flex-col py-4 visited:bg-gray-50 hover:rounded-lg hover:bg-gray-50 hover:shadow">
             <div className="flex flex-col gap-1 px-4">
               <h3 className="line-clamp-1 text-sm font-medium">
                 <HighlightChars
