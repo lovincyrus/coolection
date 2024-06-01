@@ -32,6 +32,16 @@ export function usePaginatedItems(itemsServerData: any) {
     parallel: true,
     suspense: true,
     fallbackData: itemsServerData,
+    onErrorRetry: (error, _key, _config, revalidate, { retryCount }) => {
+      // Never retry on 404.
+      if (error.status === 404) return;
+
+      // Only retry up to 3 times.
+      if (retryCount >= 3) return;
+
+      // Retry after 5 seconds.
+      setTimeout(() => revalidate({ retryCount }), 5_000);
+    },
   });
 
   const isLoadingMore =
