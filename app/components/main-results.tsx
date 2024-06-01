@@ -1,5 +1,5 @@
 "use client";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, motion, useScroll } from "framer-motion";
 import { CircleArrowUpIcon } from "lucide-react";
 import { useSearchParams } from "next/navigation";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
@@ -27,6 +27,7 @@ export default function MainResults(
   const searchParams = useSearchParams();
   const { data: lists } = useLists(listsServerData);
   const { setOpenNewItemDialog } = useGlobals();
+  const { scrollYProgress } = useScroll();
 
   const [showScrollTop, setShowScrollTop] = useState(false);
 
@@ -83,17 +84,14 @@ export default function MainResults(
   const showLoadMore = !isFinished && !querySearchParam && !isRefreshing;
 
   useEffect(() => {
-    const checkScrollTop = () => {
-      if (!showScrollTop && window.scrollY > 800) {
-        setShowScrollTop(true);
-      } else if (showScrollTop && window.scrollY <= 800) {
-        setShowScrollTop(false);
-      }
-    };
+    const unsubscribe = scrollYProgress.onChange((v) => {
+      setShowScrollTop(v > 0.2);
+    });
 
-    window.addEventListener("scroll", checkScrollTop);
-    return () => window.removeEventListener("scroll", checkScrollTop);
-  }, [showScrollTop]);
+    return () => {
+      unsubscribe();
+    };
+  }, [scrollYProgress]);
 
   const handleArchiveItem = (itemId: string) => {
     if (Array.isArray(searchResults)) {
@@ -187,7 +185,12 @@ export default function MainResults(
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          transition={{ duration: 0.5, type: "spring" }}
+          transition={{
+            duration: 0.5,
+            type: "spring",
+            stiffness: 300,
+            damping: 100,
+          }}
           whileHover={{
             scale: 1.1,
             transition: {
