@@ -21,7 +21,7 @@ export default function ListNavigation(listsServerData: any) {
           {Array.isArray(lists) &&
             lists.map((list) => (
               <Link key={list.name} href={`/lists/${list.id}`} tabIndex={-1}>
-                <Button className="flex h-6 select-none items-center justify-center rounded-full bg-gray-100 px-3 text-center text-xs font-medium hover:bg-gray-200 focus-visible:outline-none focus-visible:ring-1">
+                <Button className="flex h-6 select-none items-center justify-center rounded-full border bg-gray-100 px-3 text-center text-xs font-medium hover:bg-gray-200 focus-visible:outline-none focus-visible:ring-1">
                   {list.name}
                 </Button>
               </Link>
