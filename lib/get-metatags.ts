@@ -4,7 +4,7 @@ import fetch from "node-fetch";
 import { isTwitterAccountUrl } from "./url";
 
 function parseTwitterScreenName(url: string) {
-  const match = url.match(/twitter.com\/([a-zA-Z0-9_]+)/);
+  const match = url.match(/x.com\/([a-zA-Z0-9_]+)/);
   return match ? match[1] : null;
 }
 
@@ -23,7 +23,6 @@ export async function getMetatags(url: string) {
     const screenName = parseTwitterScreenName(url);
     return {
       title: screenName,
-      description: `Twitter profile of ${screenName}`,
     };
   }
 

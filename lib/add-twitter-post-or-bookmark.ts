@@ -27,7 +27,7 @@ function isTwitterBookmarkUrl(url: string): boolean {
   try {
     const urlObj = new URL(url);
     return (
-      urlObj.hostname === "twitter.com" &&
+      urlObj.hostname === "x.com" &&
       urlObj.pathname === "/i/bookmarks" &&
       urlObj.searchParams.has("post_id")
     );

@@ -15,10 +15,10 @@ export function isValidUrl(input: string) {
 export function isTwitterPostOrBookmarkUrl(input: string) {
   try {
     const url = new URL(input);
-    const postUrlRegex = /^https:\/\/twitter\.com\/[A-Za-z0-9_]+\/status\/\d+/;
-    const bookmarkUrlRegex = /^https:\/\/twitter\.com\/i\/bookmarks\?post_id=/;
+    const postUrlRegex = /^https:\/\/x\.com\/[A-Za-z0-9_]+\/status\/\d+/;
+    const bookmarkUrlRegex = /^https:\/\/x\.com\/i\/bookmarks\?post_id=/;
 
-    if (url.hostname === "twitter.com") {
+    if (url.hostname === "x.com") {
       const pathSegments = url.pathname
         .split("/")
         .filter((segment) => segment !== "");
@@ -45,7 +45,7 @@ export function isTwitterPostOrBookmarkUrl(input: string) {
 
 export function isTwitterAccountUrl(href: string) {
   const twitterProfileRegex =
-    /^(https?:\/\/)?(www\.)?twitter\.com\/[a-zA-Z0-9_]{1,15}\/?$/;
+    /^(https?:\/\/)?(www\.)?x\.com\/[a-zA-Z0-9_]{1,15}\/?$/;
 
   // Excluding bookmarks and status posts
   const excludeRegex = /(\/i\/bookmarks\?post_id=)|(\/status\/)/;
@@ -54,13 +54,20 @@ export function isTwitterAccountUrl(href: string) {
 }
 
 export function normalizeLink(input: string) {
-  const isYoutubeLink = input.startsWith("https://www.youtube.com");
+  const disallowedParams = [
+    "utm_source",
+    "utm_medium",
+    "utm_campaign",
+    "utm_content",
+    "utm_term",
+    "gclid",
+    "fbclid",
+  ];
 
   return normalizeUrl(input, {
     removeTrailingSlash: true,
     stripWWW: false,
-    keepQueryParameters: isYoutubeLink ? ["list", "index", "v"] : ["ref"],
-    removeQueryParameters: true,
+    removeQueryParameters: disallowedParams,
     forceHttps: true,
   });
 }
