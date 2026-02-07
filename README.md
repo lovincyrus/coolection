@@ -70,6 +70,30 @@ NEXT_PUBLIC_CLERK_SIGN_UP_URL="/sign-up"
 
 You need to set up webhook https://clerk.com/docs/integrations/webhooks/sync-data if you wish to sync user creation from Clerk to your database in development or production.
 
+## Safari Extension (iOS)
+
+Save links to Coolection directly from Safari on your iPhone or iPad.
+
+### Setup
+
+1. Open the Coolection app on your device
+2. Set your server URL (defaults to `https://coolection.co`, change if self-hosting)
+3. Generate an API token at your server's `/settings` page and paste it into the app
+4. Enable the extension in **Settings → Safari → Extensions → Coolection**
+
+Tap the Coolection icon in Safari's toolbar to save the current page.
+
+### Building from source
+
+Requires Xcode 16+ and an Apple Developer account.
+
+```bash
+# Open the project
+open ios/CoolectionSafari/CoolectionSafari.xcodeproj
+```
+
+Build and run the `CoolectionSafari` scheme on your device. The extension is bundled automatically.
+
 <br>
 
 <sup>
