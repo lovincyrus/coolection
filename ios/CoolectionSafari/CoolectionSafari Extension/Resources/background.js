@@ -1,7 +1,3 @@
-// Production default — override by creating _dev.js with: var API_BASE = "http://<your-ip>:3000";
-var API_BASE = "https://coolection.co";
-try { importScripts("_dev.js"); } catch (e) { /* no dev override */ }
-
 function showToast(tabId, message, persistent) {
   browser.scripting.executeScript({
     target: { tabId },
@@ -44,14 +40,16 @@ browser.action.onClicked.addListener(async (tab) => {
   }
 
   if (!response || !response.token) {
-    showToast(tab.id, "Open CoolectionSafari app to set token");
+    showToast(tab.id, "Open Coolection app to set token");
     return;
   }
+
+  const serverURL = response.serverURL || "https://coolection.co";
 
   showToast(tab.id, "Saving...", true);
 
   try {
-    const result = await fetch(`${API_BASE}/api/item/create`, {
+    const result = await fetch(`${serverURL}/api/item/create`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

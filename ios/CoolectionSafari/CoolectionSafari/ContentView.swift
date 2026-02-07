@@ -2,10 +2,14 @@ import SwiftUI
 
 struct ContentView: View {
     @State private var tokenInput: String = ""
+    @State private var serverURL: String = ""
     @State private var hasSavedToken: Bool = false
     @State private var isEditing: Bool = false
     @State private var showDeleteConfirm: Bool = false
     @State private var extensionEnabled: Bool = false
+
+    private static let defaults = UserDefaults(suiteName: "group.coolection.app")
+    private static let defaultServer = "https://coolection.co"
 
     private let gray50 = Color(white: 0.98)
     private let gray100 = Color(white: 0.96)
@@ -31,14 +35,46 @@ struct ContentView: View {
             .padding(.bottom, 24)
 
             VStack(spacing: 0) {
-                stepRow(number: "1", title: "Generate a token",
-                        detail: "Go to coolection.co/settings and tap Generate Token.",
+                // Server URL
+                VStack(alignment: .leading, spacing: 0) {
+                    stepRow(number: "1", title: "Server",
+                            detail: nil, done: !serverURL.isEmpty)
+
+                    HStack(spacing: 8) {
+                        TextField("https://coolection.co", text: $serverURL)
+                            .textFieldStyle(.plain)
+                            .autocapitalization(.none)
+                            .disableAutocorrection(true)
+                            .font(.system(size: 12, design: .monospaced))
+                            .foregroundColor(gray900)
+                            .padding(.horizontal, 12)
+                            .padding(.vertical, 10)
+                            .background(gray50)
+                            .cornerRadius(6)
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 6)
+                                    .stroke(gray200, lineWidth: 1)
+                            )
+                            .onChange(of: serverURL) { newValue in
+                                let trimmed = newValue.trimmingCharacters(in: CharacterSet(charactersIn: "/"))
+                                Self.defaults?.set(trimmed, forKey: "serverURL")
+                            }
+                    }
+                    .padding(.leading, 52)
+                    .padding(.trailing, 20)
+                    .padding(.bottom, 16)
+                }
+
+                Divider().padding(.leading, 52)
+
+                stepRow(number: "2", title: "Generate a token",
+                        detail: "Go to your server's /settings and tap Generate Token.",
                         done: tokenReady)
 
                 Divider().padding(.leading, 52)
 
                 VStack(alignment: .leading, spacing: 0) {
-                    stepRow(number: "2", title: "Paste your token", detail: nil, done: tokenReady)
+                    stepRow(number: "3", title: "Paste your token", detail: nil, done: tokenReady)
 
                     Group {
                         if tokenReady {
@@ -55,7 +91,7 @@ struct ContentView: View {
                 Divider().padding(.leading, 52)
 
                 VStack(alignment: .leading, spacing: 0) {
-                    stepRow(number: "3", title: "Enable the extension",
+                    stepRow(number: "4", title: "Enable the extension",
                             detail: "Settings → Safari → Extensions → Coolection",
                             done: extensionEnabled)
 
@@ -85,11 +121,12 @@ struct ContentView: View {
             Button("Delete", role: .destructive, action: deleteToken)
             Button("Cancel", role: .cancel) {}
         } message: {
-            Text("You'll need to generate a new token from coolection.co/settings.")
+            Text("You'll need to generate a new token from your server's /settings.")
         }
         .onAppear {
             hasSavedToken = KeychainHelper.read() != nil
             extensionEnabled = UserDefaults.standard.bool(forKey: "extensionEnabled")
+            serverURL = Self.defaults?.string(forKey: "serverURL") ?? Self.defaultServer
         }
     }
 
