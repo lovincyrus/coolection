@@ -1,4 +1,4 @@
-import { auth } from "@clerk/nextjs/server";
+import { auth, currentUser } from "@clerk/nextjs/server";
 import crypto from "crypto";
 import { NextResponse } from "next/server";
 
@@ -16,6 +16,19 @@ export async function POST() {
   const tokenHash = crypto.createHash("sha256").update(token).digest("hex");
 
   try {
+    const user = await currentUser();
+    await prisma.user.upsert({
+      where: { id: userId },
+      update: {},
+      create: {
+        id: userId,
+        email: user?.emailAddresses[0]?.emailAddress ?? "",
+        firstName: user?.firstName,
+        lastName: user?.lastName,
+        imageUrl: user?.imageUrl,
+      },
+    });
+
     await prisma.apiToken.upsert({
       where: { userId },
       update: { tokenHash },
