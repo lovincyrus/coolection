@@ -1,13 +1,14 @@
 "use client";
 
 import { useClerk } from "@clerk/clerk-react";
-import { LogOutIcon } from "lucide-react";
+import { LogOutIcon, PanelLeftIcon } from "lucide-react";
 import { Link } from "next-view-transitions";
 import React from "react";
 
 import { useLists } from "../hooks/use-lists";
 import { NewItemDialog } from "./new-item-dialog";
 import { NewListDialog } from "./new-list-dialog";
+import { useGlobals } from "./provider/globals-provider";
 import { Button } from "./ui/button";
 
 export function Header({
@@ -23,6 +24,7 @@ export function Header({
 }) {
   const { signOut } = useClerk();
   const { data: lists } = useLists(listsServerData);
+  const { sidebarOpen, setSidebarOpen } = useGlobals();
 
   function getListName(listId: string) {
     const list = lists.find((list) => list.id === listId);
@@ -33,6 +35,13 @@ export function Header({
     <div className="mx-auto w-full max-w-2xl xl:max-w-4xl 2xl:max-w-6xl">
       <div className="flex flex-row items-center justify-between gap-2">
         <div className="flex flex-row items-center space-x-1">
+          <Button
+            className="border-input bg-background hover:bg-accent hover:text-accent-foreground h-[30px] items-center justify-center whitespace-nowrap rounded-lg border bg-white px-2 text-xs font-medium shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1"
+            onClick={() => setSidebarOpen((prev) => !prev)}
+            aria-label={sidebarOpen ? "Close sidebar" : "Open sidebar"}
+          >
+            <PanelLeftIcon className="h-4 w-4" />
+          </Button>
           <div className="flex h-8 w-8 items-center justify-center text-2xl">
             <Link href="/home">🍵</Link>
             <span className="sr-only">Coolection</span>

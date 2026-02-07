@@ -1,4 +1,9 @@
-import React, { createContext, useContext, useState } from "react";
+import React, {
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 import { useHotkeys } from "reakeys";
 
 import { Item } from "../../types";
@@ -12,6 +17,8 @@ interface GlobalsContextType {
   setOpenEditItemDialog: (_openEditItemDialog: boolean) => void;
   currentItem: Item | null;
   setCurrentItem: (_currentItem: Item | null) => void;
+  sidebarOpen: boolean;
+  setSidebarOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const GlobalsContext = createContext<GlobalsContextType | undefined>(undefined);
@@ -23,6 +30,14 @@ export const GlobalsProvider: React.FC<{ children: React.ReactNode }> = ({
   const [openNewListDialog, setOpenNewListDialog] = useState<boolean>(false);
   const [openEditItemDialog, setOpenEditItemDialog] = useState<boolean>(false);
   const [currentItem, setCurrentItem] = useState<Item | null>(null);
+  const [sidebarOpen, setSidebarOpen] = useState<boolean>(() => {
+    if (typeof window === "undefined") return true;
+    return localStorage.getItem("coolection:sidebar") !== "closed";
+  });
+
+  useEffect(() => {
+    localStorage.setItem("coolection:sidebar", sidebarOpen ? "open" : "closed");
+  }, [sidebarOpen]);
 
   useHotkeys([
     {
@@ -54,6 +69,8 @@ export const GlobalsProvider: React.FC<{ children: React.ReactNode }> = ({
         setOpenEditItemDialog,
         currentItem,
         setCurrentItem,
+        sidebarOpen,
+        setSidebarOpen,
       }}
     >
       {children}

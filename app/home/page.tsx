@@ -4,8 +4,6 @@ import React, { Suspense } from "react";
 
 import { Footer } from "../components/footer";
 import { Header } from "../components/header";
-import ListNavigation from "../components/list-navigation";
-import { ListNavigationSkeletons } from "../components/list-navigation-skeletons";
 import MainResults from "../components/main-results";
 import { ResultItemSkeletons } from "../components/result-item-skeletons";
 import { SearchBar } from "../components/search-bar";
@@ -31,12 +29,6 @@ export default async function HomePage() {
         />
 
         <div className="mt-14 flex flex-col">
-          <Suspense fallback={<ListNavigationSkeletons />}>
-            <ListNavigation listsServerData={listsServerData} />
-          </Suspense>
-
-          <div className="h-4" />
-
           <Suspense fallback={null}>
             <SearchBar />
           </Suspense>
