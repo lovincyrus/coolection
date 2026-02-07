@@ -32,6 +32,16 @@ enum KeychainHelper {
         return status == errSecSuccess
     }
 
+    static func delete() {
+        let query: [String: Any] = [
+            kSecClass as String: kSecClassGenericPassword,
+            kSecAttrService as String: service,
+            kSecAttrAccount as String: account,
+            kSecAttrAccessGroup as String: accessGroup,
+        ]
+        SecItemDelete(query as CFDictionary)
+    }
+
     static func read() -> String? {
         let query: [String: Any] = [
             kSecClass as String: kSecClassGenericPassword,

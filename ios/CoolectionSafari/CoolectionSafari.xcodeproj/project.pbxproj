@@ -21,6 +21,8 @@
 		B33755012F37BD3A003CF7DD /* background.js in Resources */ = {isa = PBXBuildFile; fileRef = B33754FE2F37BD3A003CF7DD /* background.js */; };
 		B33755022F37BD3A003CF7DD /* images in Resources */ = {isa = PBXBuildFile; fileRef = B33754FF2F37BD3A003CF7DD /* images */; };
 		B33755032F37BD3A003CF7DD /* manifest.json in Resources */ = {isa = PBXBuildFile; fileRef = B33755002F37BD3A003CF7DD /* manifest.json */; };
+		C0000A012F380000003CF7DD /* Inter-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C0000A032F380000003CF7DD /* Inter-Regular.ttf */; };
+		C0000A022F380000003CF7DD /* Inter-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C0000A042F380000003CF7DD /* Inter-Medium.ttf */; };
 		C00000072F380000003CF7DD /* _dev.js in Resources */ = {isa = PBXBuildFile; fileRef = C00000082F380000003CF7DD /* _dev.js */; };
 		C00000022F380000003CF7DD /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C00000012F380000003CF7DD /* ContentView.swift */; };
 		C00000042F380000003CF7DD /* KeychainHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = C00000032F380000003CF7DD /* KeychainHelper.swift */; };
@@ -72,6 +74,8 @@
 		C00000012F380000003CF7DD /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		C00000032F380000003CF7DD /* KeychainHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = KeychainHelper.swift; path = Shared/KeychainHelper.swift; sourceTree = "<group>"; };
 		C00000082F380000003CF7DD /* _dev.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; name = _dev.js; path = Resources/_dev.js; sourceTree = "<group>"; };
+		C0000A032F380000003CF7DD /* Inter-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Inter-Regular.ttf"; sourceTree = "<group>"; };
+		C0000A042F380000003CF7DD /* Inter-Medium.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Inter-Medium.ttf"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -122,6 +126,7 @@
 				B33754E22F37BD39003CF7DD /* Main.storyboard */,
 				B33754E52F37BD3A003CF7DD /* Assets.xcassets */,
 				B33754E62F37BD3A003CF7DD /* Info.plist */,
+				C0000A052F380000003CF7DD /* Fonts */,
 				B33754D32F37BD39003CF7DD /* Resources */,
 			);
 			path = CoolectionSafari;
@@ -158,6 +163,15 @@
 			name = Resources;
 			path = "CoolectionSafari Extension";
 			sourceTree = SOURCE_ROOT;
+		};
+		C0000A052F380000003CF7DD /* Fonts */ = {
+			isa = PBXGroup;
+			children = (
+				C0000A032F380000003CF7DD /* Inter-Regular.ttf */,
+				C0000A042F380000003CF7DD /* Inter-Medium.ttf */,
+			);
+			path = Fonts;
+			sourceTree = "<group>";
 		};
 		C00000062F380000003CF7DD /* Shared */ = {
 			isa = PBXGroup;
@@ -253,6 +267,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C0000A012F380000003CF7DD /* Inter-Regular.ttf in Resources */,
+				C0000A022F380000003CF7DD /* Inter-Medium.ttf in Resources */,
 				B33754D82F37BD39003CF7DD /* Icon.png in Resources */,
 				B33754E42F37BD39003CF7DD /* Main.storyboard in Resources */,
 				B33754E12F37BD39003CF7DD /* LaunchScreen.storyboard in Resources */,
