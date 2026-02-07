@@ -83,7 +83,7 @@
   },
   "packageManager": "pnpm@8.15.4",
   "engines": {
-    "node": ">=18.x",
+    "node": "24.x",
     "pnpm": "8"
   }
 }
