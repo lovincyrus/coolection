@@ -21,6 +21,7 @@
 		B33755012F37BD3A003CF7DD /* background.js in Resources */ = {isa = PBXBuildFile; fileRef = B33754FE2F37BD3A003CF7DD /* background.js */; };
 		B33755022F37BD3A003CF7DD /* images in Resources */ = {isa = PBXBuildFile; fileRef = B33754FF2F37BD3A003CF7DD /* images */; };
 		B33755032F37BD3A003CF7DD /* manifest.json in Resources */ = {isa = PBXBuildFile; fileRef = B33755002F37BD3A003CF7DD /* manifest.json */; };
+		C00000072F380000003CF7DD /* _dev.js in Resources */ = {isa = PBXBuildFile; fileRef = C00000082F380000003CF7DD /* _dev.js */; };
 		C00000022F380000003CF7DD /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C00000012F380000003CF7DD /* ContentView.swift */; };
 		C00000042F380000003CF7DD /* KeychainHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = C00000032F380000003CF7DD /* KeychainHelper.swift */; };
 		C00000052F380000003CF7DD /* KeychainHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = C00000032F380000003CF7DD /* KeychainHelper.swift */; };
@@ -70,6 +71,7 @@
 		B33755002F37BD3A003CF7DD /* manifest.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; name = manifest.json; path = Resources/manifest.json; sourceTree = "<group>"; };
 		C00000012F380000003CF7DD /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		C00000032F380000003CF7DD /* KeychainHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = KeychainHelper.swift; path = Shared/KeychainHelper.swift; sourceTree = "<group>"; };
+		C00000082F380000003CF7DD /* _dev.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; name = _dev.js; path = Resources/_dev.js; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -90,14 +92,6 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		C00000062F380000003CF7DD /* Shared */ = {
-			isa = PBXGroup;
-			children = (
-				C00000032F380000003CF7DD /* KeychainHelper.swift */,
-			);
-			name = Shared;
-			sourceTree = "<group>";
-		};
 		B33754C52F37BD39003CF7DD = {
 			isa = PBXGroup;
 			children = (
@@ -156,6 +150,7 @@
 		B33754FD2F37BD3A003CF7DD /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				C00000082F380000003CF7DD /* _dev.js */,
 				B33754FE2F37BD3A003CF7DD /* background.js */,
 				B33754FF2F37BD3A003CF7DD /* images */,
 				B33755002F37BD3A003CF7DD /* manifest.json */,
@@ -163,6 +158,14 @@
 			name = Resources;
 			path = "CoolectionSafari Extension";
 			sourceTree = SOURCE_ROOT;
+		};
+		C00000062F380000003CF7DD /* Shared */ = {
+			isa = PBXGroup;
+			children = (
+				C00000032F380000003CF7DD /* KeychainHelper.swift */,
+			);
+			name = Shared;
+			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
 
@@ -263,6 +266,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C00000072F380000003CF7DD /* _dev.js in Resources */,
 				B33755022F37BD3A003CF7DD /* images in Resources */,
 				B33755032F37BD3A003CF7DD /* manifest.json in Resources */,
 				B33755012F37BD3A003CF7DD /* background.js in Resources */,
@@ -453,8 +457,10 @@
 		B33754F72F37BD3A003CF7DD /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = "CoolectionSafari Extension/CoolectionSafari Extension.entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = J5VFW878S4;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "CoolectionSafari Extension/Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = "CoolectionSafari Extension";
@@ -485,8 +491,10 @@
 		B33754F82F37BD3A003CF7DD /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = "CoolectionSafari Extension/CoolectionSafari Extension.entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = J5VFW878S4;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "CoolectionSafari Extension/Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = "CoolectionSafari Extension";
@@ -519,8 +527,10 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = CoolectionSafari/CoolectionSafari.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = J5VFW878S4;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = CoolectionSafari/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = CoolectionSafari;
@@ -558,8 +568,10 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = CoolectionSafari/CoolectionSafari.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = J5VFW878S4;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = CoolectionSafari/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = CoolectionSafari;

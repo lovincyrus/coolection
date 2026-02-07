@@ -1,15 +1,57 @@
+// Production default — override by creating _dev.js with: var API_BASE = "http://<your-ip>:3000";
+var API_BASE = "https://coolection.co";
+try { importScripts("_dev.js"); } catch (e) { /* no dev override */ }
+
+function showToast(tabId, message, persistent) {
+  browser.scripting.executeScript({
+    target: { tabId },
+    func: (msg, stay) => {
+      let t = document.getElementById("coolection-toast");
+      if (t) {
+        t.textContent = msg;
+      } else {
+        t = document.createElement("div");
+        t.id = "coolection-toast";
+        t.textContent = msg;
+        t.style.cssText = "position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#000;color:#fff;padding:10px 20px;border-radius:8px;font:14px -apple-system,sans-serif;z-index:2147483647;opacity:0;transition:opacity .2s";
+        document.body.appendChild(t);
+        requestAnimationFrame(() => (t.style.opacity = "1"));
+      }
+      if (!stay) {
+        setTimeout(() => {
+          t.style.opacity = "0";
+          setTimeout(() => t.remove(), 200);
+        }, 2000);
+      }
+    },
+    args: [message, !!persistent],
+  });
+}
+
 browser.action.onClicked.addListener(async (tab) => {
   const url = tab.url;
   if (!url || !/^https?:\/\//.test(url)) return;
 
-  const response = await browser.runtime.sendNativeMessage(
-    "co.coolection.safari",
-    { action: "getToken" }
-  );
-  if (!response.token) return;
+  let response;
+  try {
+    response = await browser.runtime.sendNativeMessage(
+      "co.coolection.safari",
+      { action: "getToken" }
+    );
+  } catch (e) {
+    showToast(tab.id, "Extension error: no token");
+    return;
+  }
+
+  if (!response || !response.token) {
+    showToast(tab.id, "Open CoolectionSafari app to set token");
+    return;
+  }
+
+  showToast(tab.id, "Saving...", true);
 
   try {
-    const result = await fetch("https://coolection.co/api/item/create", {
+    const result = await fetch(`${API_BASE}/api/item/create`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -18,11 +60,14 @@ browser.action.onClicked.addListener(async (tab) => {
       body: JSON.stringify({ url }),
     });
 
-    if (result.ok || result.status === 409) {
-      browser.action.setBadgeText({ text: "\u2713" });
-      setTimeout(() => browser.action.setBadgeText({ text: "" }), 2000);
+    if (result.ok) {
+      showToast(tab.id, "Saved to Coolection");
+    } else if (result.status === 409) {
+      showToast(tab.id, "Already saved");
+    } else {
+      showToast(tab.id, "Failed to save (" + result.status + ")");
     }
-  } catch {
-    // Silent failure
+  } catch (e) {
+    showToast(tab.id, "Network error — check connection");
   }
 });

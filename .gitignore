@@ -28,6 +28,9 @@ yarn-error.log*
 # local env files
 .env*
 
+# safari extension dev override
+ios/**/Resources/_dev.js
+
 # vercel
 .vercel
 
