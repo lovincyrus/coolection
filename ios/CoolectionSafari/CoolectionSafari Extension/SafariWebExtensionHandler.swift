@@ -1,14 +1,11 @@
 import SafariServices
-import os.log
 
 class SafariWebExtensionHandler: NSObject, NSExtensionRequestHandling {
     func beginRequest(with context: NSExtensionContext) {
         let request = context.inputItems.first as? NSExtensionItem
+        let message = request?.userInfo?[SFExtensionMessageKey] as? [String: Any]
 
-        let message: Any? = request?.userInfo?[SFExtensionMessageKey]
-
-        guard let body = message as? [String: Any],
-              let action = body["action"] as? String else {
+        guard let action = message?["action"] as? String else {
             context.completeRequest(returningItems: nil)
             return
         }

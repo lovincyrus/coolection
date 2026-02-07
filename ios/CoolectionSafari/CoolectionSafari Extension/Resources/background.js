@@ -3,7 +3,7 @@ browser.action.onClicked.addListener(async (tab) => {
   if (!url || !/^https?:\/\//.test(url)) return;
 
   const response = await browser.runtime.sendNativeMessage(
-    "application.id",
+    "co.coolection.safari",
     { action: "getToken" }
   );
   if (!response.token) return;

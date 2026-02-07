@@ -14,7 +14,6 @@
     "default_title": "Save to Coolection"
   },
   "background": {
-    "service_worker": "background.js",
-    "persistent": false
+    "service_worker": "background.js"
   }
 }
