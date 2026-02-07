@@ -1,15 +1,31 @@
 "use server";
 
 import { auth } from "@clerk/nextjs/server";
+import crypto from "crypto";
+import { headers } from "next/headers";
 import { NextResponse } from "next/server";
 
 import { addTwitterPostOrBookmark } from "@/lib/add-twitter-post-or-bookmark";
 import { addWebsite } from "@/lib/add-website";
 import { checkDuplicateItem } from "@/lib/check-duplicate-item";
+import prisma from "@/lib/prisma";
 import { isTwitterPostOrBookmarkUrl, normalizeLink } from "@/lib/url";
 
 export async function POST(req: Request) {
-  const { userId } = auth();
+  let userId: string | null = null;
+  const authorization = headers().get("authorization");
+
+  if (authorization?.startsWith("Bearer coolection_")) {
+    const token = authorization.substring(7);
+    const tokenHash = crypto.createHash("sha256").update(token).digest("hex");
+    const apiToken = await prisma.apiToken.findUnique({
+      where: { tokenHash },
+      select: { userId: true },
+    });
+    userId = apiToken?.userId ?? null;
+  } else {
+    userId = auth().userId;
+  }
 
   const body = await req.json();
   const { url } = body;

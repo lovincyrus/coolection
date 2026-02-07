@@ -1,0 +1,20 @@
+{
+  "manifest_version": 3,
+  "name": "Coolection",
+  "version": "1.0",
+  "description": "Save the current page to Coolection",
+  "permissions": ["tabs", "nativeMessaging"],
+  "action": {
+    "default_icon": {
+      "48": "images/icon-48.png",
+      "96": "images/icon-96.png",
+      "128": "images/icon-128.png",
+      "144": "images/icon-144.png"
+    },
+    "default_title": "Save to Coolection"
+  },
+  "background": {
+    "service_worker": "background.js",
+    "persistent": false
+  }
+}

@@ -5,7 +5,11 @@ import {
 } from "@clerk/nextjs/server";
 import { NextRequest, NextResponse } from "next/server";
 
-const isProtectedRoute = createRouteMatcher(["/home(.*)", "/lists(.*)"]);
+const isProtectedRoute = createRouteMatcher([
+  "/home(.*)",
+  "/lists(.*)",
+  "/settings(.*)",
+]);
 
 // See: https://clerk.com/docs/references/nextjs/clerk-middleware
 export default clerkMiddleware(

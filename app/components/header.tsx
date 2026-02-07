@@ -1,7 +1,7 @@
 "use client";
 
 import { useClerk } from "@clerk/clerk-react";
-import { LogOutIcon, PanelLeftIcon } from "lucide-react";
+import { LogOutIcon, PanelLeftIcon, SettingsIcon } from "lucide-react";
 import { Link } from "next-view-transitions";
 import React from "react";
 
@@ -63,8 +63,14 @@ export function Header({
             <NewListDialog />
             <NewItemDialog itemsServerData={itemsServerData} />
 
+            <Link href="/settings">
+              <Button className="border-input bg-background hover:bg-accent hover:text-accent-foreground h-[30px] items-center justify-center whitespace-nowrap rounded-lg border bg-white px-3 text-xs font-medium shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 disabled:pointer-events-none disabled:opacity-50">
+                <SettingsIcon className="h-4 w-4" />
+              </Button>
+            </Link>
+
             <Button
-              className="border-input bg-background hover:bg-accent hover:text-accent-foreground ml-auto h-[30px] items-center justify-center whitespace-nowrap rounded-lg border bg-white px-3 text-xs font-medium shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 disabled:pointer-events-none disabled:opacity-50"
+              className="border-input bg-background hover:bg-accent hover:text-accent-foreground h-[30px] items-center justify-center whitespace-nowrap rounded-lg border bg-white px-3 text-xs font-medium shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 disabled:pointer-events-none disabled:opacity-50"
               onClick={() => signOut()}
             >
               <LogOutIcon className="h-4 w-4" />
