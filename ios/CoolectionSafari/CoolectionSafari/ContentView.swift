@@ -14,9 +14,10 @@ struct ContentView: View {
     private let gray800 = Color(red: 0.15, green: 0.16, blue: 0.18)
     private let gray900 = Color(red: 0.07, green: 0.07, blue: 0.08)
 
+    private var tokenReady: Bool { hasSavedToken && !isEditing }
+
     var body: some View {
         VStack(spacing: 0) {
-            // Header
             HStack {
                 Text("🍵")
                     .font(.system(size: 24))
@@ -29,69 +30,40 @@ struct ContentView: View {
             .padding(.top, 16)
             .padding(.bottom, 24)
 
-            // Setup steps
             VStack(spacing: 0) {
-                // Step 1
-                stepRow(
-                    number: "1",
-                    title: "Generate a token",
-                    detail: "Go to coolection.co/settings and tap Generate Token.",
-                    done: hasSavedToken && !isEditing
-                )
+                stepRow(number: "1", title: "Generate a token",
+                        detail: "Go to coolection.co/settings and tap Generate Token.",
+                        done: tokenReady)
 
                 Divider().padding(.leading, 52)
 
-                // Step 2 — Token input
                 VStack(alignment: .leading, spacing: 0) {
-                    stepRow(
-                        number: "2",
-                        title: "Paste your token",
-                        detail: nil,
-                        done: hasSavedToken && !isEditing
-                    )
+                    stepRow(number: "2", title: "Paste your token", detail: nil, done: tokenReady)
 
-                    if hasSavedToken && !isEditing {
-                        savedTokenView
-                            .padding(.leading, 52)
-                            .padding(.trailing, 20)
-                            .padding(.bottom, 16)
-                    } else {
-                        tokenInputView
-                            .padding(.leading, 52)
-                            .padding(.trailing, 20)
-                            .padding(.bottom, 16)
+                    Group {
+                        if tokenReady {
+                            savedTokenView
+                        } else {
+                            tokenInputView
+                        }
                     }
+                    .padding(.leading, 52)
+                    .padding(.trailing, 20)
+                    .padding(.bottom, 16)
                 }
 
                 Divider().padding(.leading, 52)
 
-                // Step 3
                 VStack(alignment: .leading, spacing: 0) {
-                    stepRow(
-                        number: "3",
-                        title: "Enable the extension",
-                        detail: "Settings → Safari → Extensions → Coolection",
-                        done: extensionEnabled
-                    )
+                    stepRow(number: "3", title: "Enable the extension",
+                            detail: "Settings → Safari → Extensions → Coolection",
+                            done: extensionEnabled)
 
                     if !extensionEnabled {
-                        Button(action: {
+                        outlineButton("I've enabled it", tint: gray500) {
                             extensionEnabled = true
                             UserDefaults.standard.set(true, forKey: "extensionEnabled")
-                        }) {
-                            Text("I've enabled it")
-                                .font(.custom("Inter-Medium", size: 13))
-                                .foregroundColor(gray500)
-                                .padding(.horizontal, 16)
-                                .padding(.vertical, 8)
-                                .background(Color.white)
-                                .cornerRadius(6)
-                                .overlay(
-                                    RoundedRectangle(cornerRadius: 6)
-                                        .stroke(gray200, lineWidth: 1)
-                                )
                         }
-                        .buttonStyle(.plain)
                         .padding(.leading, 52)
                         .padding(.trailing, 20)
                         .padding(.bottom, 16)
@@ -157,8 +129,8 @@ struct ContentView: View {
 
     private var savedTokenView: some View {
         HStack(spacing: 8) {
-            outlineButton("Replace", action: { isEditing = true })
-            outlineButton("Delete", tint: Color(red: 0.70, green: 0.21, blue: 0.04), action: { showDeleteConfirm = true })
+            outlineButton("Replace") { isEditing = true }
+            outlineButton("Delete", tint: Color(red: 0.70, green: 0.21, blue: 0.04)) { showDeleteConfirm = true }
         }
     }
 
@@ -180,9 +152,10 @@ struct ContentView: View {
                 )
 
             HStack(spacing: 8) {
+                let valid = tokenInput.hasPrefix("coolection_")
                 outlineButton("Save", action: saveToken)
-                    .opacity(tokenInput.isEmpty || !tokenInput.hasPrefix("coolection_") ? 0.4 : 1.0)
-                    .disabled(tokenInput.isEmpty || !tokenInput.hasPrefix("coolection_"))
+                    .opacity(valid ? 1.0 : 0.4)
+                    .disabled(!valid)
 
                 if hasSavedToken {
                     outlineButton("Cancel", action: cancelEditing)
@@ -210,12 +183,10 @@ struct ContentView: View {
     }
 
     private func saveToken() {
-        let success = KeychainHelper.save(token: tokenInput)
-        if success {
-            tokenInput = ""
-            hasSavedToken = true
-            isEditing = false
-        }
+        guard KeychainHelper.save(token: tokenInput) else { return }
+        tokenInput = ""
+        hasSavedToken = true
+        isEditing = false
     }
 
     private func deleteToken() {

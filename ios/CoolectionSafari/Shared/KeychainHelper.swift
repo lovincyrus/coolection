@@ -9,16 +9,8 @@ enum KeychainHelper {
     static func save(token: String) -> Bool {
         guard let data = token.data(using: .utf8) else { return false }
 
-        // Delete any existing token first
-        let deleteQuery: [String: Any] = [
-            kSecClass as String: kSecClassGenericPassword,
-            kSecAttrService as String: service,
-            kSecAttrAccount as String: account,
-            kSecAttrAccessGroup as String: accessGroup,
-        ]
-        SecItemDelete(deleteQuery as CFDictionary)
+        delete()
 
-        // Add new token
         let addQuery: [String: Any] = [
             kSecClass as String: kSecClassGenericPassword,
             kSecAttrService as String: service,
