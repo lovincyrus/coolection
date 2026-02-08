@@ -1,25 +1,25 @@
 "use server";
 
-import { auth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 
 import { addTwitterPostOrBookmark } from "@/lib/add-twitter-post-or-bookmark";
 import { addWebsite } from "@/lib/add-website";
 import { checkDuplicateItem } from "@/lib/check-duplicate-item";
+import { resolveUserId } from "@/lib/resolve-user-id";
 import { isTwitterPostOrBookmarkUrl, normalizeLink } from "@/lib/url";
 
 export async function POST(req: Request) {
-  const { userId } = auth();
+  const userId = await resolveUserId();
+
+  if (!userId) {
+    return new NextResponse("Unauthorized", { status: 401 });
+  }
 
   const body = await req.json();
   const { url } = body;
 
   if (!url) {
     return NextResponse.json({ message: "URL is required" }, { status: 400 });
-  }
-
-  if (!userId) {
-    return new NextResponse("Unauthorized", { status: 401 });
   }
 
   const normalizedLink = normalizeLink(url);
@@ -48,14 +48,12 @@ export async function POST(req: Request) {
       { status: 200 },
     );
   } catch (error) {
-    if (error instanceof Error) {
-      return NextResponse.json(
-        {
-          message: "Failed to add the link",
-          error: error instanceof Error ? error.message : "Unknown error",
-        },
-        { status: 500 },
-      );
-    }
+    return NextResponse.json(
+      {
+        message: "Failed to add the link",
+        error: error instanceof Error ? error.message : "Unknown error",
+      },
+      { status: 500 },
+    );
   }
 }

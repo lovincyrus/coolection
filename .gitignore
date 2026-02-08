@@ -28,6 +28,9 @@ yarn-error.log*
 # local env files
 .env*
 
+# xcode user data
+ios/**/xcuserdata/
+
 # vercel
 .vercel
 
