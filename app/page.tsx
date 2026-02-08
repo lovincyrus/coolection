@@ -97,12 +97,12 @@ export default async function RootPage() {
 
         <div className="relative z-20 mx-auto w-full max-w-2xl px-4 text-center">
           <h1 className="font-serif text-4xl font-extrabold tracking-tight text-gray-900 sm:text-5xl lg:text-6xl">
-            Superhuman for bookmarking
+            Your bookmarks, everywhere
           </h1>
 
           <p className="mx-auto mt-6 max-w-lg text-lg text-gray-600">
             <Balancer>
-              Save, organize, and retrieve your bookmarks from anywhere.
+              Save from Chrome, Safari, or the web. Find anything instantly.
             </Balancer>
           </p>
 
