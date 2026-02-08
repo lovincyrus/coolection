@@ -28,6 +28,8 @@
 		C00000052F380000003CF7DD /* KeychainHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = C00000032F380000003CF7DD /* KeychainHelper.swift */; };
 		C00000072F380000003CF7DD /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = C00000092F380000003CF7DD /* Constants.swift */; };
 		C00000082F380000003CF7DD /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = C00000092F380000003CF7DD /* Constants.swift */; };
+		D00000012F400000003CF7DD /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = D00000032F400000003CF7DD /* PrivacyInfo.xcprivacy */; };
+		D00000022F400000003CF7DD /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = D00000042F400000003CF7DD /* PrivacyInfo.xcprivacy */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -77,6 +79,8 @@
 		C00000092F380000003CF7DD /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = Constants.swift; path = Shared/Constants.swift; sourceTree = "<group>"; };
 		C0000A032F380000003CF7DD /* Inter-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Inter-Regular.ttf"; sourceTree = "<group>"; };
 		C0000A042F380000003CF7DD /* Inter-Medium.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Inter-Medium.ttf"; sourceTree = "<group>"; };
+		D00000032F400000003CF7DD /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
+		D00000042F400000003CF7DD /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -127,6 +131,7 @@
 				B33754E22F37BD39003CF7DD /* Main.storyboard */,
 				B33754E52F37BD3A003CF7DD /* Assets.xcassets */,
 				B33754E62F37BD3A003CF7DD /* Info.plist */,
+				D00000032F400000003CF7DD /* PrivacyInfo.xcprivacy */,
 				C0000A052F380000003CF7DD /* Fonts */,
 				B33754D32F37BD39003CF7DD /* Resources */,
 			);
@@ -149,6 +154,7 @@
 				B33754FD2F37BD3A003CF7DD /* Resources */,
 				B33754F02F37BD3A003CF7DD /* SafariWebExtensionHandler.swift */,
 				B33754F22F37BD3A003CF7DD /* Info.plist */,
+				D00000042F400000003CF7DD /* PrivacyInfo.xcprivacy */,
 			);
 			path = "CoolectionSafari Extension";
 			sourceTree = "<group>";
@@ -276,6 +282,7 @@
 				B33754D62F37BD39003CF7DD /* Main.html in Resources */,
 				B33754F32F37BD3A003CF7DD /* Assets.xcassets in Resources */,
 				B33754DA2F37BD39003CF7DD /* Style.css in Resources */,
+				D00000012F400000003CF7DD /* PrivacyInfo.xcprivacy in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -286,6 +293,7 @@
 				B33755022F37BD3A003CF7DD /* images in Resources */,
 				B33755032F37BD3A003CF7DD /* manifest.json in Resources */,
 				B33755012F37BD3A003CF7DD /* background.js in Resources */,
+				D00000022F400000003CF7DD /* PrivacyInfo.xcprivacy in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
