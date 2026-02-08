@@ -42,9 +42,14 @@ export function Header({
           >
             <PanelLeftIcon className="h-4 w-4" />
           </Button>
-          <div className="flex h-8 w-8 items-center justify-center text-2xl">
-            <Link href="/home">🍵</Link>
-            <span className="sr-only">Coolection</span>
+          <div className="flex h-8 w-8 items-center justify-center">
+            <Link href="/home">
+              <img
+                src="/favicon.ico"
+                alt="Coolection"
+                className="h-5 w-5"
+              />
+            </Link>
           </div>
           {heading && (
             <span className="ml-1 max-w-[120px] truncate text-xs font-medium text-gray-800">

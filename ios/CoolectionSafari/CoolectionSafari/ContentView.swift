@@ -23,8 +23,9 @@ struct ContentView: View {
     var body: some View {
         VStack(spacing: 0) {
             HStack {
-                Text("🍵")
-                    .font(.system(size: 24))
+                Image("LargeIcon")
+                    .resizable()
+                    .frame(width: 24, height: 24)
                 Text("Coolection")
                     .font(.custom("Inter-Medium", size: 16))
                     .foregroundColor(gray900)
