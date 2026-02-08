@@ -1,13 +1,17 @@
 const DEFAULT_SERVER = "https://www.coolection.co";
 
+let loaded = false;
+
 document.addEventListener("DOMContentLoaded", async () => {
   const { token, serverUrl } = await chrome.storage.local.get(["token", "serverUrl"]);
   document.getElementById("token").value = token || "";
   document.getElementById("serverUrl").value = serverUrl || DEFAULT_SERVER;
+  loaded = true;
 });
 
 document.getElementById("form").addEventListener("submit", async (e) => {
   e.preventDefault();
+  if (!loaded) return;
 
   const token = document.getElementById("token").value.trim();
   const serverUrl = document.getElementById("serverUrl").value.trim().replace(/\/+$/, "") || DEFAULT_SERVER;
@@ -38,11 +42,13 @@ document.getElementById("form").addEventListener("submit", async (e) => {
   showStatus("Settings saved", "success");
 });
 
+let statusTimeout;
 function showStatus(message, type) {
+  clearTimeout(statusTimeout);
   const el = document.getElementById("status");
   el.textContent = message;
   el.className = `status ${type}`;
   if (type === "success") {
-    setTimeout(() => { el.textContent = ""; el.className = "status"; }, 3000);
+    statusTimeout = setTimeout(() => { el.textContent = ""; el.className = "status"; }, 3000);
   }
 }

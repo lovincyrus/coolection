@@ -29,8 +29,10 @@ chrome.contextMenus.onClicked.addListener((info, tab) => {
 });
 
 // 4. Shared save function — handles token check, API call, and feedback
+let saving = false;
 async function saveUrl(tabId, url) {
   if (!url || !/^https?:\/\//.test(url)) return;
+  if (saving) return;
 
   const { token, serverUrl } = await chrome.storage.local.get(["token", "serverUrl"]);
   if (!token) {
@@ -40,7 +42,11 @@ async function saveUrl(tabId, url) {
 
   const server = (serverUrl || "https://www.coolection.co").replace(/\/+$/, "");
 
+  saving = true;
   showToast(tabId, "Saving...", true);
+
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 10000);
 
   try {
     const response = await fetch(`${server}/api/item/create`, {
@@ -50,6 +56,7 @@ async function saveUrl(tabId, url) {
         Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify({ url }),
+      signal: controller.signal,
     });
 
     if (response.ok) {
@@ -63,7 +70,14 @@ async function saveUrl(tabId, url) {
       showToast(tabId, `Failed to save (${response.status})`);
     }
   } catch (e) {
-    showToast(tabId, "Network error — check connection");
+    if (e.name === "AbortError") {
+      showToast(tabId, "Request timed out — try again");
+    } else {
+      showToast(tabId, "Network error — check connection");
+    }
+  } finally {
+    clearTimeout(timeout);
+    saving = false;
   }
 }
 
@@ -75,6 +89,7 @@ function showToast(tabId, message, persistent) {
       let t = document.getElementById("coolection-toast");
       if (t) {
         clearTimeout(t._coolectionTimeout);
+        clearTimeout(t._coolectionRemoveTimeout);
         t.textContent = msg;
         t.style.opacity = "1";
       } else {
@@ -92,7 +107,7 @@ function showToast(tabId, message, persistent) {
       if (!stay) {
         t._coolectionTimeout = setTimeout(() => {
           t.style.opacity = "0";
-          setTimeout(() => t.remove(), 200);
+          t._coolectionRemoveTimeout = setTimeout(() => t.remove(), 200);
         }, 2000);
       }
     },
