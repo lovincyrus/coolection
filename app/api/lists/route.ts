@@ -18,6 +18,7 @@ export async function GET() {
         userId: userId,
         isDeleted: false,
       },
+      orderBy: { name: "asc" },
     });
 
     return NextResponse.json(lists);

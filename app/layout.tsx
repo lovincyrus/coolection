@@ -8,6 +8,7 @@ import { Toaster } from "sonner";
 
 import { fontSans } from "@/lib/fonts";
 
+import { Sidebar } from "./components/sidebar";
 import { TailwindIndicator } from "./components/tailwind-indicator";
 import { Providers } from "./providers";
 
@@ -50,7 +51,10 @@ export default function RootLayout({
           <Providers>
             <Toaster />
             <Analytics />
-            {children}
+            <div className="flex">
+              <Sidebar />
+              <div className="flex-1">{children}</div>
+            </div>
             <TailwindIndicator />
             <SpeedInsights />
           </Providers>
