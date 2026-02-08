@@ -70,6 +70,29 @@ NEXT_PUBLIC_CLERK_SIGN_UP_URL="/sign-up"
 
 You need to set up webhook https://clerk.com/docs/integrations/webhooks/sync-data if you wish to sync user creation from Clerk to your database in development or production.
 
+## Chrome Extension
+
+Save links to Coolection from Chrome (or any Chromium-based browser).
+
+### Install
+
+1. Download or clone this repo
+2. Open `chrome://extensions` and enable **Developer mode**
+3. Click **Load unpacked** and select the `chrome-extension/` folder
+4. Generate an API token at your server's `/settings` page
+
+### Usage
+
+- **Toolbar icon** — click the Coolection icon to save the current page
+- **Right-click** — select "Add to Coolection" from the context menu
+
+### Configuration
+
+Right-click the extension icon → **Options** to set:
+
+- **Server URL** — defaults to `https://www.coolection.co` (change if self-hosting)
+- **API Token** — paste the token from your `/settings` page
+
 ## Safari Extension (iOS)
 
 Save links to Coolection directly from Safari on your iPhone or iPad.
