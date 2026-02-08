@@ -14,6 +14,12 @@ const isProtectedRoute = createRouteMatcher([
 // See: https://clerk.com/docs/references/nextjs/clerk-middleware
 export default clerkMiddleware(
   (auth: ClerkMiddlewareAuth, req: NextRequest) => {
+    // Skip Clerk auth for requests using API token auth
+    const authorization = req.headers.get("authorization");
+    if (authorization?.startsWith("Bearer coolection_")) {
+      return NextResponse.next();
+    }
+
     const homeUrl = new URL("/home", req.url);
 
     // Redirect to /home if user is signed in
