@@ -9,7 +9,8 @@ function showToast(tabId, message, persistent) {
         t = document.createElement("div");
         t.id = "coolection-toast";
         t.textContent = msg;
-        t.style.cssText = "position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#000;color:#fff;padding:10px 20px;border-radius:8px;font:14px -apple-system,sans-serif;z-index:2147483647;opacity:0;transition:opacity .2s";
+        var d = window.matchMedia("(prefers-color-scheme:dark)").matches;
+        t.style.cssText = "position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:" + (d ? "#fff" : "#000") + ";color:" + (d ? "#000" : "#fff") + ";padding:10px 20px;border-radius:8px;border:1px solid " + (d ? "rgba(0,0,0,0.1)" : "rgba(255,255,255,0.15)") + ";font:14px -apple-system,sans-serif;z-index:2147483647;opacity:0;transition:opacity .2s";
         document.body.appendChild(t);
         requestAnimationFrame(() => (t.style.opacity = "1"));
       }
