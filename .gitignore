@@ -31,6 +31,10 @@ yarn-error.log*
 # xcode user data
 ios/**/xcuserdata/
 
+# remotion video project
+video/node_modules
+video/out/
+
 # vercel
 .vercel
 

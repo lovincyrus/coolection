@@ -7,7 +7,6 @@ import {
   PuzzleIcon,
   SearchIcon,
 } from "lucide-react";
-import Image from "next/image";
 import { Link } from "next-view-transitions";
 import Balancer from "react-wrap-balancer";
 
@@ -176,15 +175,16 @@ export default async function RootPage() {
               <span className="h-2.5 w-2.5 rounded-full bg-gray-300" />
               <span className="h-2.5 w-2.5 rounded-full bg-gray-300" />
             </div>
-            {/* Screenshot */}
+            {/* Demo video */}
             <div className="relative aspect-[16/10] w-full bg-white">
-              <Image
-                src="/screenshot-dashboard.png"
-                alt="Coolection dashboard showing saved bookmarks organized in collections"
-                fill
-                className="object-cover object-top"
-                loading="lazy"
-                sizes="(max-width: 896px) 100vw, 896px"
+              <video
+                src="/demo-dashboard.mp4"
+                autoPlay
+                loop
+                muted
+                playsInline
+                className="h-full w-full object-cover object-top"
+                aria-label="Coolection dashboard demo showing bookmarks being searched and organized"
               />
             </div>
           </div>
