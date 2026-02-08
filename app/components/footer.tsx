@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "next-view-transitions";
 
 import { cn } from "@/lib/utils";
 
@@ -12,8 +13,14 @@ export function Footer({ type = "root" }: { type?: "home" | "root" }) {
         )}
       >
         <div>&#169; {new Date().getFullYear()} Coolection</div>
-        <div>
-          Available on{" "}
+        <div className="flex items-center gap-3">
+          <Link
+            href="/privacy"
+            className="font-medium no-underline hover:underline"
+          >
+            Privacy
+          </Link>
+          <span aria-hidden="true">&middot;</span>
           <a
             href="https://github.com/lovincyrus/coolection"
             target="_blank"
