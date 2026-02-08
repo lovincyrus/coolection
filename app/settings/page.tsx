@@ -60,8 +60,7 @@ export default function SettingsPage() {
           <div>
             <h2 className="text-sm font-medium text-gray-900">API Token</h2>
             <p className="mt-1 text-xs text-gray-500">
-              Generate a token to use with the Coolection Safari extension for
-              iOS.
+              Generate a token to use with the Coolection browser extension.
             </p>
           </div>
 
@@ -120,8 +119,7 @@ export default function SettingsPage() {
           </div>
 
           <p className="text-xs text-gray-500">
-            Install the Coolection iOS app and paste this token to start saving
-            links from Safari.
+            Paste this token into your browser extension to start saving links.
           </p>
         </div>
       </div>

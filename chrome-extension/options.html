@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Coolection Settings</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: Inter, -apple-system, system-ui, sans-serif;
+      font-size: 13px;
+      color: #111827;
+      background: #fff;
+      padding: 20px 24px;
+      min-width: 420px;
+      max-width: 520px;
+    }
+    .header { display: flex; align-items: center; gap: 6px; margin-bottom: 20px; }
+    .header span:first-child { font-size: 20px; }
+    .header span:last-child { font-size: 13px; font-weight: 500; color: #1f2937; }
+    .field { margin-bottom: 16px; }
+    label { display: block; font-size: 13px; font-weight: 500; margin-bottom: 4px; }
+    input {
+      width: 100%;
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 12px;
+      color: #111827;
+      background: #fafafa;
+      border: 1px solid #e5e7eb;
+      border-radius: 6px;
+      padding: 8px 12px;
+    }
+    input:focus { outline: none; border-color: #9ca3af; }
+    input:focus-visible { outline: 2px solid #6b7280; outline-offset: 1px; }
+    .hint { font-size: 11px; color: #6b7280; margin-top: 4px; }
+    .actions { display: flex; align-items: center; gap: 12px; margin-top: 20px; }
+    button[type="submit"] {
+      font-family: Inter, sans-serif; font-size: 13px; font-weight: 500;
+      color: #1f2937; background: #fff;
+      border: 1px solid #e5e7eb; border-radius: 6px;
+      padding: 6px 16px; cursor: pointer;
+    }
+    button[type="submit"]:hover { background: #f9fafb; }
+    .status { font-size: 12px; min-height: 16px; }
+    .status.success { color: #2f855a; }
+    .status.error { color: #c53030; }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <span>🍵</span>
+    <span>Coolection</span>
+  </div>
+
+  <form id="form" novalidate>
+    <div class="field">
+      <label for="serverUrl">Server URL</label>
+      <input id="serverUrl" type="url" placeholder="https://www.coolection.co"
+        autocomplete="off" spellcheck="false" aria-describedby="serverUrl-hint" />
+      <div id="serverUrl-hint" class="hint">Leave default unless self-hosting.</div>
+    </div>
+
+    <div class="field">
+      <label for="token">API Token</label>
+      <input id="token" type="password" placeholder="coolection_..."
+        autocomplete="off" spellcheck="false" aria-describedby="token-hint" />
+      <div id="token-hint" class="hint">Generate at your server's /settings page.</div>
+    </div>
+
+    <div class="actions">
+      <button type="submit">Save</button>
+      <span id="status" class="status" role="status"></span>
+    </div>
+  </form>
+
+  <script>
+    const DEFAULT_SERVER = "https://www.coolection.co";
+
+    document.addEventListener("DOMContentLoaded", async () => {
+      const { token, serverUrl } = await chrome.storage.local.get(["token", "serverUrl"]);
+      document.getElementById("token").value = token || "";
+      document.getElementById("serverUrl").value = serverUrl || DEFAULT_SERVER;
+    });
+
+    document.getElementById("form").addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const token = document.getElementById("token").value.trim();
+      const serverUrl = document.getElementById("serverUrl").value.trim().replace(/\/+$/, "") || DEFAULT_SERVER;
+
+      // Validate server URL
+      try {
+        const parsed = new URL(serverUrl);
+        if (parsed.protocol !== "https:" && parsed.hostname !== "localhost") {
+          showStatus("Server URL must use https:// (except localhost)", "error");
+          return;
+        }
+      } catch {
+        showStatus("Invalid URL", "error");
+        return;
+      }
+
+      // Request host permission for non-default server
+      if (serverUrl !== DEFAULT_SERVER) {
+        const origin = new URL(serverUrl).origin + "/*";
+        const granted = await chrome.permissions.request({ origins: [origin] });
+        if (!granted) {
+          showStatus("Permission denied — cannot reach this server", "error");
+          return;
+        }
+      }
+
+      await chrome.storage.local.set({ token, serverUrl });
+      showStatus("Settings saved", "success");
+    });
+
+    function showStatus(message, type) {
+      const el = document.getElementById("status");
+      el.textContent = message;
+      el.className = `status ${type}`;
+      if (type === "success") {
+        setTimeout(() => { el.textContent = ""; el.className = "status"; }, 3000);
+      }
+    }
+  </script>
+</body>
+</html>
