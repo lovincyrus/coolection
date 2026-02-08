@@ -1,41 +1,115 @@
 "use client";
 
-import { ClipboardCopyIcon, KeyIcon, RefreshCwIcon } from "lucide-react";
+import { ClipboardCopyIcon, KeyIcon, TrashIcon } from "lucide-react";
 import { Link } from "next-view-transitions";
-import React, { useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
 
 import { Button } from "@/app/components/ui/button";
+import { Input } from "@/app/components/ui/input";
+
+interface TokenInfo {
+  id: string;
+  name: string;
+  tokenPrefix: string;
+  createdAt: string;
+  lastUsedAt: string | null;
+}
+
+function formatDate(iso: string) {
+  return new Date(iso).toLocaleDateString("en-US", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+  });
+}
+
+function formatLastUsed(iso: string | null) {
+  if (!iso) return "Never used";
+  const diff = Date.now() - new Date(iso).getTime();
+  const mins = Math.floor(diff / 60000);
+  if (mins < 1) return "Just now";
+  if (mins < 60) return `${mins}m ago`;
+  const hours = Math.floor(mins / 60);
+  if (hours < 24) return `${hours}h ago`;
+  const days = Math.floor(hours / 24);
+  if (days < 7) return `${days}d ago`;
+  return formatDate(iso);
+}
 
 export default function SettingsPage() {
-  const [token, setToken] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false);
-  const [hasToken, setHasToken] = useState(false);
+  const [tokens, setTokens] = useState<TokenInfo[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [newToken, setNewToken] = useState<string | null>(null);
+  const [creating, setCreating] = useState(false);
+  const [tokenName, setTokenName] = useState("");
+  const [showForm, setShowForm] = useState(false);
 
-  async function generateToken() {
-    setLoading(true);
+  const fetchTokens = useCallback(async () => {
     try {
-      const response = await fetch("/api/token/generate", {
+      const res = await fetch("/api/token/list");
+      if (res.ok) {
+        const data = await res.json();
+        setTokens(data.tokens);
+      }
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchTokens();
+  }, [fetchTokens]);
+
+  async function createToken() {
+    setCreating(true);
+    try {
+      const res = await fetch("/api/token/generate", {
         method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name: tokenName }),
       });
-      if (!response.ok) {
+      if (res.status === 409) {
+        toast.error("Token limit reached (max 5)");
+        return;
+      }
+      if (!res.ok) {
         toast.error("Failed to generate token");
         return;
       }
-      const data = await response.json();
-      setToken(data.token);
-      setHasToken(true);
+      const data = await res.json();
+      setNewToken(data.token);
+      setTokenName("");
+      setShowForm(false);
       toast.success("Token generated");
+      fetchTokens();
     } catch {
       toast.error("Failed to generate token");
     } finally {
-      setLoading(false);
+      setCreating(false);
+    }
+  }
+
+  async function revokeToken(id: string, name: string) {
+    if (!window.confirm(`Revoke token "${name || "Unnamed token"}"? Any extension using it will stop working.`)) {
+      return;
+    }
+    try {
+      const res = await fetch(`/api/token/${id}`, { method: "DELETE" });
+      if (!res.ok) {
+        toast.error("Failed to revoke token");
+        return;
+      }
+      toast.success("Token revoked");
+      fetchTokens();
+    } catch {
+      toast.error("Failed to revoke token");
     }
   }
 
   function copyToken() {
-    if (token) {
-      navigator.clipboard.writeText(token);
+    if (newToken) {
+      navigator.clipboard.writeText(newToken);
       toast.success("Copied to clipboard");
     }
   }
@@ -57,18 +131,72 @@ export default function SettingsPage() {
         </div>
 
         <div className="mt-14 flex flex-col gap-6">
-          <div>
-            <h2 className="text-sm font-medium text-gray-900">API Token</h2>
-            <p className="mt-1 text-xs text-gray-500">
-              Generate a token to use with the Coolection browser extension.
-            </p>
+          <div className="flex items-start justify-between">
+            <div>
+              <h2 className="text-sm font-medium text-gray-900">API Tokens</h2>
+              <p className="mt-1 text-xs text-gray-500">
+                Generate tokens to use with the Coolection browser extensions.
+              </p>
+            </div>
+            {!showForm && (
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setShowForm(true)}
+              >
+                <KeyIcon className="mr-1 h-3 w-3" />
+                New Token
+              </Button>
+            )}
           </div>
 
-          {token && (
+          {showForm && (
+            <div className="flex flex-col gap-3 rounded-md border border-dashed p-4">
+              <label className="text-xs font-medium text-gray-700">
+                Token name
+              </label>
+              <Input
+                placeholder='e.g. "Chrome Desktop" or "Safari iPhone"'
+                value={tokenName}
+                onChange={(e) => setTokenName(e.target.value)}
+                className="h-9 text-xs"
+                autoFocus
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    e.preventDefault();
+                    createToken();
+                  }
+                }}
+              />
+              <div className="flex items-center gap-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={createToken}
+                  disabled={creating}
+                >
+                  <KeyIcon className="mr-1 h-3 w-3" />
+                  Generate
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => {
+                    setShowForm(false);
+                    setTokenName("");
+                  }}
+                >
+                  Cancel
+                </Button>
+              </div>
+            </div>
+          )}
+
+          {newToken && (
             <div className="flex flex-col gap-2">
               <div className="flex items-center gap-2">
                 <code className="flex-1 break-all rounded-md border bg-gray-50 px-3 py-2 text-xs">
-                  {token}
+                  {newToken}
                 </code>
                 <Button
                   variant="outline"
@@ -86,41 +214,49 @@ export default function SettingsPage() {
             </div>
           )}
 
-          <div className="flex items-center gap-2">
-            {!hasToken ? (
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={generateToken}
-                disabled={loading}
-              >
-                <KeyIcon className="mr-1 h-3 w-3" />
-                Generate Token
-              </Button>
-            ) : (
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => {
-                  if (
-                    window.confirm(
-                      "This will replace your existing token. Continue?",
-                    )
-                  ) {
-                    generateToken();
-                  }
-                }}
-                disabled={loading}
-              >
-                <RefreshCwIcon className="mr-1 h-3 w-3" />
-                Regenerate Token
-              </Button>
-            )}
-          </div>
-
-          <p className="text-xs text-gray-500">
-            Paste this token into your browser extension to start saving links.
-          </p>
+          {loading ? (
+            <div className="py-8 text-center text-xs text-gray-400">
+              Loading...
+            </div>
+          ) : tokens.length === 0 ? (
+            <div className="rounded-md border border-dashed py-8 text-center text-xs text-gray-400">
+              No tokens yet. Create one to start using extensions.
+            </div>
+          ) : (
+            <div className="flex flex-col gap-2">
+              {tokens.map((t) => (
+                <div
+                  key={t.id}
+                  className="flex items-center justify-between rounded-md border bg-gray-50 px-4 py-3"
+                >
+                  <div className="flex flex-col gap-0.5">
+                    <div className="flex items-center gap-2">
+                      <span className="text-sm font-medium text-gray-900">
+                        {t.name || "Unnamed token"}
+                      </span>
+                      <span className="font-mono text-xs text-gray-400">
+                        ...{t.tokenPrefix}
+                      </span>
+                    </div>
+                    <span className="text-xs text-gray-500">
+                      Created {formatDate(t.createdAt)}
+                      {" · "}
+                      {formatLastUsed(t.lastUsedAt)}
+                    </span>
+                  </div>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => revokeToken(t.id, t.name)}
+                    className="shrink-0 text-xs text-gray-500 hover:text-red-600"
+                  >
+                    <TrashIcon className="mr-1 h-3 w-3" />
+                    Revoke
+                  </Button>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       </div>
     </main>

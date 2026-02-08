@@ -19,18 +19,21 @@ model User {
   updatedAt DateTime  @updatedAt
   items     Item[]
   lists     List[]
-  apiToken  ApiToken?
+  apiTokens ApiToken[]
 
   @@map("user")
 }
 
 model ApiToken {
-  id        String   @id @default(uuid())
-  userId    String   @unique
-  tokenHash String   @unique
-  createdAt DateTime @default(now())
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id         String    @id @default(uuid())
+  userId     String
+  tokenHash  String    @unique
+  name       String    @default("")
+  lastUsedAt DateTime?
+  createdAt  DateTime  @default(now())
+  user       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
 
+  @@index([userId])
   @@map("api_token")
 }
 
