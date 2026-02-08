@@ -12,9 +12,15 @@ export async function resolveUserId(): Promise<string | null> {
     const tokenHash = crypto.createHash("sha256").update(token).digest("hex");
     const apiToken = await prisma.apiToken.findUnique({
       where: { tokenHash },
-      select: { userId: true },
+      select: { id: true, userId: true },
     });
-    return apiToken?.userId ?? null;
+    if (apiToken) {
+      prisma.apiToken
+        .update({ where: { id: apiToken.id }, data: { lastUsedAt: new Date() } })
+        .catch(() => {});
+      return apiToken.userId;
+    }
+    return null;
   }
 
   return auth().userId;
