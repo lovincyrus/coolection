@@ -44,7 +44,7 @@ browser.action.onClicked.addListener(async (tab) => {
     return;
   }
 
-  const serverURL = response.serverURL || "https://coolection.co";
+  const serverURL = response.serverURL || "https://www.coolection.co";
 
   showToast(tab.id, "Saving...", true);
 
