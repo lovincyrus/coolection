@@ -8,8 +8,8 @@ struct ContentView: View {
     @State private var showDeleteConfirm: Bool = false
     @State private var extensionEnabled: Bool = false
 
-    private static let defaults = UserDefaults(suiteName: "group.coolection.app")
-    private static let defaultServer = "https://coolection.co"
+    private static let defaults = AppConstants.defaults
+    private static let defaultServer = AppConstants.defaultServer
 
     private let gray50 = Color(white: 0.98)
     private let gray100 = Color(white: 0.96)

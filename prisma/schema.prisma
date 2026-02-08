@@ -53,6 +53,7 @@ model Item {
   lists       ItemList[]
 
   @@index([userId])
+  @@index([userId, url, isDeleted])
   @@map("item")
 }
 

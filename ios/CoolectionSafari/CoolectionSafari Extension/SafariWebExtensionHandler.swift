@@ -1,8 +1,8 @@
 import SafariServices
 
 class SafariWebExtensionHandler: NSObject, NSExtensionRequestHandling {
-    private static let defaults = UserDefaults(suiteName: "group.coolection.app")
-    private static let defaultServer = "https://coolection.co"
+    private static let defaults = AppConstants.defaults
+    private static let defaultServer = AppConstants.defaultServer
 
     func beginRequest(with context: NSExtensionContext) {
         let request = context.inputItems.first as? NSExtensionItem

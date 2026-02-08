@@ -17,22 +17,24 @@ export async function POST() {
 
   try {
     const user = await currentUser();
-    await prisma.user.upsert({
-      where: { id: userId },
-      update: {},
-      create: {
-        id: userId,
-        email: user?.emailAddresses[0]?.emailAddress ?? "",
-        firstName: user?.firstName,
-        lastName: user?.lastName,
-        imageUrl: user?.imageUrl,
-      },
-    });
+    await prisma.$transaction(async (tx) => {
+      await tx.user.upsert({
+        where: { id: userId },
+        update: {},
+        create: {
+          id: userId,
+          email: user?.emailAddresses[0]?.emailAddress ?? "",
+          firstName: user?.firstName,
+          lastName: user?.lastName,
+          imageUrl: user?.imageUrl,
+        },
+      });
 
-    await prisma.apiToken.upsert({
-      where: { userId },
-      update: { tokenHash },
-      create: { userId, tokenHash },
+      await tx.apiToken.upsert({
+        where: { userId },
+        update: { tokenHash },
+        create: { userId, tokenHash },
+      });
     });
 
     return NextResponse.json({ token });

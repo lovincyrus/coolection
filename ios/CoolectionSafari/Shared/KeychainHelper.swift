@@ -4,7 +4,7 @@ import Security
 enum KeychainHelper {
     private static let service = "com.coolection.api-token"
     private static let account = "api_token"
-    private static let accessGroup = "group.coolection.app"
+    private static let accessGroup = AppConstants.appGroup
 
     static func save(token: String) -> Bool {
         guard let data = token.data(using: .utf8) else { return false }

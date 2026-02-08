@@ -26,6 +26,8 @@
 		C00000022F380000003CF7DD /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C00000012F380000003CF7DD /* ContentView.swift */; };
 		C00000042F380000003CF7DD /* KeychainHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = C00000032F380000003CF7DD /* KeychainHelper.swift */; };
 		C00000052F380000003CF7DD /* KeychainHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = C00000032F380000003CF7DD /* KeychainHelper.swift */; };
+		C00000072F380000003CF7DD /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = C00000092F380000003CF7DD /* Constants.swift */; };
+		C00000082F380000003CF7DD /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = C00000092F380000003CF7DD /* Constants.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -72,6 +74,7 @@
 		B33755002F37BD3A003CF7DD /* manifest.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; name = manifest.json; path = Resources/manifest.json; sourceTree = "<group>"; };
 		C00000012F380000003CF7DD /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		C00000032F380000003CF7DD /* KeychainHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = KeychainHelper.swift; path = Shared/KeychainHelper.swift; sourceTree = "<group>"; };
+		C00000092F380000003CF7DD /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = Constants.swift; path = Shared/Constants.swift; sourceTree = "<group>"; };
 		C0000A032F380000003CF7DD /* Inter-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Inter-Regular.ttf"; sourceTree = "<group>"; };
 		C0000A042F380000003CF7DD /* Inter-Medium.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Inter-Medium.ttf"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -173,6 +176,7 @@
 		C00000062F380000003CF7DD /* Shared */ = {
 			isa = PBXGroup;
 			children = (
+				C00000092F380000003CF7DD /* Constants.swift */,
 				C00000032F380000003CF7DD /* KeychainHelper.swift */,
 			);
 			name = Shared;
@@ -295,6 +299,7 @@
 				B33754DE2F37BD39003CF7DD /* ViewController.swift in Sources */,
 				C00000022F380000003CF7DD /* ContentView.swift in Sources */,
 				C00000042F380000003CF7DD /* KeychainHelper.swift in Sources */,
+				C00000072F380000003CF7DD /* Constants.swift in Sources */,
 				B33754D22F37BD39003CF7DD /* AppDelegate.swift in Sources */,
 				B33754DC2F37BD39003CF7DD /* SceneDelegate.swift in Sources */,
 			);
@@ -306,6 +311,7 @@
 			files = (
 				B33754F12F37BD3A003CF7DD /* SafariWebExtensionHandler.swift in Sources */,
 				C00000052F380000003CF7DD /* KeychainHelper.swift in Sources */,
+				C00000082F380000003CF7DD /* Constants.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
