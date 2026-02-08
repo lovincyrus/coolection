@@ -3,7 +3,7 @@
   "name": "Coolection",
   "version": "1.0",
   "description": "Save the current page to Coolection",
-  "permissions": ["tabs", "nativeMessaging", "activeTab", "scripting"],
+  "permissions": ["nativeMessaging", "activeTab", "scripting"],
   "action": {
     "default_icon": {
       "48": "images/icon-48.png",
