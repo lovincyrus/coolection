@@ -50,7 +50,9 @@ export function Sidebar() {
           <nav className="flex flex-col gap-0.5 p-2">
             <Link
               href="/home"
-              onClick={() => setSidebarOpen(false)}
+              onClick={() => {
+                if (window.innerWidth < 768) setSidebarOpen(false);
+              }}
               className={`flex items-center gap-2 rounded-lg px-2.5 py-1.5 text-xs font-medium transition-colors ${
                 isHome
                   ? "bg-gray-100 text-gray-900"
@@ -67,7 +69,9 @@ export function Sidebar() {
                 <Link
                   key={list.id}
                   href={`/lists/${list.id}`}
-                  onClick={() => setSidebarOpen(false)}
+                  onClick={() => {
+                    if (window.innerWidth < 768) setSidebarOpen(false);
+                  }}
                   title={list.name}
                   className={`truncate rounded-lg px-2.5 py-1.5 text-xs font-medium transition-colors ${
                     isActive
