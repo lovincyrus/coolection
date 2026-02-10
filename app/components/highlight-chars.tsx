@@ -11,7 +11,8 @@ export function HighlightChars({
     return <>{text}</>;
   }
 
-  const parts = text.split(new RegExp(`(${searchTerm})`, "gi"));
+  const escaped = searchTerm.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  const parts = text.split(new RegExp(`(${escaped})`, "gi"));
 
   return (
     <span>
