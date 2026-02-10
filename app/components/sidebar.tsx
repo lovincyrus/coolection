@@ -82,7 +82,7 @@ export function Sidebar() {
           </nav>
         </ScrollArea>
 
-        <div className="border-t border-dashed p-2">
+        <div className="border-t border-dashed p-2 h-[49px] flex items-center">
           <Button
             className="flex w-full items-center gap-2 rounded-lg px-2.5 py-1.5 text-xs font-medium text-gray-500 transition-colors hover:bg-gray-50 hover:text-gray-900"
             onClick={() => setOpenNewListDialog(true)}
