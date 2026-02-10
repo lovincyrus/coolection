@@ -33,7 +33,7 @@ export function Sidebar() {
       )}
 
       <aside
-        className={`fixed left-0 top-0 z-50 flex h-dvh w-64 flex-col border-r border-dashed bg-white transition-transform duration-200 ease-out md:relative md:z-0 md:transition-[width,min-width] md:duration-200 ${sidebarOpen ? "translate-x-0 md:min-w-[256px]" : "-translate-x-full md:min-w-0 md:w-0 md:translate-x-0 md:overflow-hidden md:border-0"}`}
+        className={`fixed left-0 top-0 z-50 flex h-dvh w-64 flex-col border-r border-dashed bg-white transition-transform duration-200 ease-out md:sticky md:z-0 md:transition-[width,min-width] md:duration-200 ${sidebarOpen ? "translate-x-0 md:min-w-[256px]" : "-translate-x-full md:min-w-0 md:w-0 md:translate-x-0 md:overflow-hidden md:border-0"}`}
       >
         <div className="flex items-center justify-between border-b border-dashed px-3 py-3">
           <span className="text-xs font-medium text-gray-500">Lists</span>
