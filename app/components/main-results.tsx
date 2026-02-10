@@ -81,7 +81,8 @@ export default function MainResults(
     querySearchParam.length > 0 &&
     Array.isArray(searchResults) &&
     searchResults.length === 0;
-  const showLoadMore = !isFinished && !querySearchParam && !isRefreshing;
+  const showLoadMore =
+    !isFinished && !querySearchParam && !isRefreshing && (!!error || !isLoadingOrValidating);
 
   useEffect(() => {
     const unsubscribe = scrollYProgress.on("change", (latestValue) => {
