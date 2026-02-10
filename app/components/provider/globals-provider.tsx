@@ -2,6 +2,7 @@ import React, {
   createContext,
   useContext,
   useEffect,
+  useMemo,
   useState,
 } from "react";
 import { useHotkeys } from "reakeys";
@@ -58,21 +59,24 @@ export const GlobalsProvider: React.FC<{ children: React.ReactNode }> = ({
     },
   ]);
 
+  const contextValue = useMemo(
+    () => ({
+      openNewItemDialog,
+      setOpenNewItemDialog,
+      openNewListDialog,
+      setOpenNewListDialog,
+      openEditItemDialog,
+      setOpenEditItemDialog,
+      currentItem,
+      setCurrentItem,
+      sidebarOpen,
+      setSidebarOpen,
+    }),
+    [openNewItemDialog, openNewListDialog, openEditItemDialog, currentItem, sidebarOpen],
+  );
+
   return (
-    <GlobalsContext.Provider
-      value={{
-        openNewItemDialog,
-        setOpenNewItemDialog,
-        openNewListDialog,
-        setOpenNewListDialog,
-        openEditItemDialog,
-        setOpenEditItemDialog,
-        currentItem,
-        setCurrentItem,
-        sidebarOpen,
-        setSidebarOpen,
-      }}
-    >
+    <GlobalsContext.Provider value={contextValue}>
       {children}
     </GlobalsContext.Provider>
   );

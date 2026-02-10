@@ -23,7 +23,7 @@ function extractDomain(url: string) {
   return domain.split("/")[0];
 }
 
-export function ResultItem({
+export const ResultItem = React.memo(function ResultItem({
   item,
   onArchive,
   onRemove,
@@ -257,4 +257,4 @@ export function ResultItem({
       )}
     </ContextMenu>
   );
-}
+});

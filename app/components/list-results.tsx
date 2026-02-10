@@ -1,7 +1,7 @@
 "use client";
 
 import { AnimatePresence } from "framer-motion";
-import React from "react";
+import React, { useCallback } from "react";
 
 import { useIsInList } from "../hooks/use-is-in-list";
 import { useItemsFromList } from "../hooks/use-items-from-list";
@@ -32,6 +32,16 @@ export function ListResults({
     300,
   );
 
+  const handleRemoveItem = useCallback(
+    (itemId: string) => {
+      mutateItemsFromList(
+        itemsFromList.filter((result: Item) => result.id !== itemId),
+        false,
+      );
+    },
+    [itemsFromList, mutateItemsFromList],
+  );
+
   return (
     <div className="mb-8">
       {showEmptyListItemsCopy ? (
@@ -42,28 +52,22 @@ export function ListResults({
         </div>
       ) : null}
 
-      {loading ? (
-        <ResultItemSkeletons />
-      ) : (
-        <AnimatePresence initial={false}>
-          {Array.isArray(itemsFromList) &&
-            itemsFromList.map((item: Item) => (
-              <AnimatedListItem key={item.id}>
-                <ResultItem
-                  item={item}
-                  onRemove={() => {
-                    mutateItemsFromList(
-                      itemsFromList.filter((result) => result.id !== item.id),
-                      false,
-                    );
-                  }}
-                  lists={lists}
-                  listId={listId}
-                />
-              </AnimatedListItem>
-            ))}
-        </AnimatePresence>
-      )}
+      {loading && <ResultItemSkeletons />}
+
+      <AnimatePresence initial={false}>
+        {!loading &&
+          Array.isArray(itemsFromList) &&
+          itemsFromList.map((item: Item) => (
+            <AnimatedListItem key={item.id}>
+              <ResultItem
+                item={item}
+                onRemove={handleRemoveItem}
+                lists={lists}
+                listId={listId}
+              />
+            </AnimatedListItem>
+          ))}
+      </AnimatePresence>
     </div>
   );
 }

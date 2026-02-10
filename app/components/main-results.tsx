@@ -86,7 +86,10 @@ export default function MainResults(
 
   useEffect(() => {
     const unsubscribe = scrollYProgress.on("change", (latestValue) => {
-      setShowScrollTop(latestValue > 0.2);
+      setShowScrollTop((prev) => {
+        const next = latestValue > 0.2;
+        return prev === next ? prev : next;
+      });
     });
 
     return () => {
@@ -94,21 +97,24 @@ export default function MainResults(
     };
   }, [scrollYProgress]);
 
-  const handleArchiveItem = (itemId: string) => {
-    if (Array.isArray(searchResults)) {
-      const updatedSearchResults = searchResults.filter(
-        (item) => item.id !== itemId,
-      );
-      mutateSearchResults(updatedSearchResults, false);
-    }
+  const handleArchiveItem = useCallback(
+    (itemId: string) => {
+      if (Array.isArray(searchResults)) {
+        const updatedSearchResults = searchResults.filter(
+          (item) => item.id !== itemId,
+        );
+        mutateSearchResults(updatedSearchResults, false);
+      }
 
-    if (Array.isArray(items)) {
-      const updatedData = items.filter((item) => item.id !== itemId);
-      mutateItems(updatedData, false);
-    }
+      if (Array.isArray(items)) {
+        const updatedData = items.filter((item) => item.id !== itemId);
+        mutateItems(updatedData, false);
+      }
 
-    mutate(unstable_serialize(getKey));
-  };
+      mutate(unstable_serialize(getKey));
+    },
+    [searchResults, mutateSearchResults, items, mutateItems, mutate],
+  );
 
   return (
     <div>
@@ -138,7 +144,7 @@ export default function MainResults(
       ) : null}
 
       {results && results.length > 0 ? (
-        <AnimatePresence initial={false} key="results">
+        <AnimatePresence initial={false} mode="popLayout" key="results">
           {Array.isArray(results) &&
             results.map((item: Item, idx: number) => {
               return (
@@ -180,34 +186,37 @@ export default function MainResults(
         </div>
       )}
 
-      {showScrollTop && !isInList && (
-        <motion.div
-          className="fixed bottom-3 right-4"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{
-            duration: 0.5,
-            type: "spring",
-            stiffness: 300,
-            damping: 100,
-          }}
-          whileHover={{
-            scale: 1.1,
-            transition: {
-              duration: 0.2,
-              ease: [0.4, 0, 0.2, 1],
+      <AnimatePresence>
+        {showScrollTop && !isInList && (
+          <motion.div
+            key="scroll-top"
+            className="fixed bottom-3 right-4"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{
+              duration: 0.5,
+              type: "spring",
               stiffness: 300,
-            },
-          }}
-        >
-          <CircleArrowUpIcon
-            strokeWidth={1.5}
-            className="h-6 w-6 cursor-pointer rounded-full text-gray-500 drop-shadow backdrop-blur-sm"
-            onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-          />
-        </motion.div>
-      )}
+              damping: 100,
+            }}
+            whileHover={{
+              scale: 1.1,
+              transition: {
+                duration: 0.2,
+                ease: [0.4, 0, 0.2, 1],
+                stiffness: 300,
+              },
+            }}
+          >
+            <CircleArrowUpIcon
+              strokeWidth={1.5}
+              className="h-6 w-6 cursor-pointer rounded-full text-gray-500 drop-shadow backdrop-blur-sm"
+              onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+            />
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       <EditItemDialog itemsServerData={itemsServerData} />
     </div>
