@@ -246,7 +246,7 @@ export const ResultItem = React.memo(function ResultItem({
                       key={list.id}
                       onClick={() => handleAddToList(list.id)}
                     >
-                      Add to {list.name}
+                      {list.name}
                     </ContextMenuItem>
                   ))}
               </ContextMenuSubContent>
