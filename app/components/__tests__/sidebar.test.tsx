@@ -19,10 +19,17 @@ vi.mock("next-view-transitions", () => ({
   }: {
     href: string;
     children: React.ReactNode;
-    onClick?: () => void;
+    onClick?: (e: React.MouseEvent) => void;
     [key: string]: any;
   }) => (
-    <a href={href} onClick={onClick} {...props}>
+    <a
+      href={href}
+      onClick={(e: React.MouseEvent) => {
+        e.preventDefault();
+        onClick?.(e);
+      }}
+      {...props}
+    >
       {children}
     </a>
   ),
@@ -189,10 +196,12 @@ describe("Sidebar", () => {
       expect(mockSetSidebarOpen).toHaveBeenCalledWith(false);
     });
 
-    it("closes sidebar when a link is clicked", () => {
+    it("closes sidebar when a link is clicked on mobile", () => {
+      Object.defineProperty(window, "innerWidth", { value: 500, writable: true });
       render(<Sidebar />);
       fireEvent.click(screen.getByText("Design"));
       expect(mockSetSidebarOpen).toHaveBeenCalledWith(false);
+      Object.defineProperty(window, "innerWidth", { value: 1024, writable: true });
     });
   });
 
