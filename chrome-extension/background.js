@@ -81,6 +81,193 @@ async function saveUrl(tabId, url) {
   }
 }
 
+// ── X Bookmark Sync ──────────────────────────────────────────────────
+
+const SYNC_ALARM_NAME = "coolection-x-bookmark-sync";
+const BOOKMARKS_URL = "https://x.com/i/bookmarks";
+
+// Re-arm the alarm on install/update if sync was previously enabled
+chrome.runtime.onInstalled.addListener(async () => {
+  const { syncEnabled, syncInterval } = await chrome.storage.local.get([
+    "syncEnabled",
+    "syncInterval",
+  ]);
+  if (syncEnabled) {
+    scheduleSync(syncInterval || 60);
+  }
+});
+
+// Listen for alarm fires
+chrome.alarms.onAlarm.addListener((alarm) => {
+  if (alarm.name === SYNC_ALARM_NAME) {
+    runBookmarkSync();
+  }
+});
+
+// Listen for manual sync trigger from options page
+chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
+  if (message.type === "TRIGGER_BOOKMARK_SYNC") {
+    runBookmarkSync().then((result) => sendResponse(result));
+    return true; // async response
+  }
+  if (message.type === "UPDATE_SYNC_SCHEDULE") {
+    if (message.enabled) {
+      scheduleSync(message.interval || 60);
+    } else {
+      chrome.alarms.clear(SYNC_ALARM_NAME);
+    }
+  }
+});
+
+function scheduleSync(intervalMinutes) {
+  chrome.alarms.create(SYNC_ALARM_NAME, {
+    delayInMinutes: intervalMinutes,
+    periodInMinutes: intervalMinutes,
+  });
+}
+
+let syncing = false;
+async function runBookmarkSync() {
+  if (syncing) return { success: false, reason: "already_syncing" };
+  syncing = true;
+
+  try {
+    const { token, serverUrl, syncEnabled } = await chrome.storage.local.get([
+      "token",
+      "serverUrl",
+      "syncEnabled",
+    ]);
+
+    // Alarm-triggered syncs respect the enabled flag; manual triggers always run
+    if (!token) return { success: false, reason: "no_token" };
+
+    const server = (serverUrl || "https://www.coolection.co").replace(/\/+$/, "");
+
+    // Find an existing x.com/i/bookmarks tab or create one
+    const tabs = await chrome.tabs.query({ url: "https://x.com/i/bookmarks*" });
+    let tab;
+    let createdTab = false;
+
+    if (tabs.length > 0) {
+      tab = tabs[0];
+      // Make sure it's fully loaded
+      if (tab.status !== "complete") {
+        await waitForTabLoad(tab.id);
+      }
+    } else {
+      tab = await chrome.tabs.create({ url: BOOKMARKS_URL, active: false });
+      createdTab = true;
+      await waitForTabLoad(tab.id);
+      // Give X's JS extra time to render the timeline
+      await sleep(3000);
+    }
+
+    // Ask the content script to scan visible bookmarks (with scrolling)
+    let urls;
+    try {
+      const response = await chrome.tabs.sendMessage(tab.id, {
+        type: "SCAN_BOOKMARKS",
+        maxScrolls: 20,
+        scrollDelay: 1500,
+      });
+      urls = response?.urls || [];
+    } catch (e) {
+      // Content script not ready — inject it manually and retry
+      await chrome.scripting.executeScript({
+        target: { tabId: tab.id },
+        files: ["bookmarks-content.js"],
+      });
+      await sleep(500);
+      const response = await chrome.tabs.sendMessage(tab.id, {
+        type: "SCAN_BOOKMARKS",
+        maxScrolls: 20,
+        scrollDelay: 1500,
+      });
+      urls = response?.urls || [];
+    }
+
+    // Clean up the tab we created
+    if (createdTab) {
+      chrome.tabs.remove(tab.id).catch(() => {});
+    }
+
+    if (urls.length === 0) {
+      await updateSyncStatus({ lastSync: Date.now(), added: 0, skipped: 0, failed: 0 });
+      return { success: true, added: 0, skipped: 0, total: 0 };
+    }
+
+    // Send each URL to the Coolection API
+    let added = 0;
+    let skipped = 0;
+    let failed = 0;
+
+    for (const url of urls) {
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 10000);
+
+      try {
+        const res = await fetch(`${server}/api/item/create`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({ url }),
+          signal: controller.signal,
+        });
+
+        if (res.ok) {
+          added++;
+        } else if (res.status === 409) {
+          skipped++; // duplicate
+        } else {
+          failed++;
+        }
+      } catch {
+        failed++;
+      } finally {
+        clearTimeout(timeout);
+      }
+
+      // Small delay between requests to avoid overwhelming the server
+      await sleep(200);
+    }
+
+    const status = { lastSync: Date.now(), added, skipped, failed };
+    await updateSyncStatus(status);
+    return { success: true, ...status, total: urls.length };
+  } finally {
+    syncing = false;
+  }
+}
+
+function waitForTabLoad(tabId, timeoutMs = 30000) {
+  return new Promise((resolve, reject) => {
+    const timeout = setTimeout(() => {
+      chrome.tabs.onUpdated.removeListener(listener);
+      reject(new Error("Tab load timeout"));
+    }, timeoutMs);
+
+    function listener(id, changeInfo) {
+      if (id === tabId && changeInfo.status === "complete") {
+        clearTimeout(timeout);
+        chrome.tabs.onUpdated.removeListener(listener);
+        resolve();
+      }
+    }
+
+    chrome.tabs.onUpdated.addListener(listener);
+  });
+}
+
+function sleep(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+async function updateSyncStatus(status) {
+  await chrome.storage.local.set({ syncStatus: status });
+}
+
 // 5. Toast injection (adapted from Safari extension background.js)
 function showToast(tabId, message, persistent) {
   chrome.scripting.executeScript({
