@@ -43,6 +43,40 @@
     .status { font-size: 12px; min-height: 16px; }
     .status.success { color: #2f855a; }
     .status.error { color: #c53030; }
+
+    .divider { border: none; border-top: 1px solid #e5e7eb; margin: 24px 0 20px; }
+
+    .section-title { font-size: 13px; font-weight: 600; color: #111827; margin-bottom: 4px; }
+    .section-desc { font-size: 11px; color: #6b7280; margin-bottom: 16px; }
+
+    .toggle-row { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+    .toggle-row label { margin-bottom: 0; font-weight: 400; }
+
+    input[type="checkbox"] { width: auto; accent-color: #111827; }
+
+    select {
+      font-family: Inter, -apple-system, system-ui, sans-serif;
+      font-size: 12px;
+      color: #111827;
+      background: #fafafa;
+      border: 1px solid #e5e7eb;
+      border-radius: 6px;
+      padding: 6px 10px;
+    }
+    select:focus { outline: none; border-color: #9ca3af; }
+    select:focus-visible { outline: 2px solid #6b7280; outline-offset: 1px; }
+
+    .sync-actions { display: flex; align-items: center; gap: 10px; margin-top: 12px; }
+    .btn {
+      font-family: Inter, sans-serif; font-size: 12px; font-weight: 500;
+      color: #1f2937; background: #fff;
+      border: 1px solid #e5e7eb; border-radius: 6px;
+      padding: 5px 14px; cursor: pointer;
+    }
+    .btn:hover { background: #f9fafb; }
+    .btn:disabled { opacity: 0.5; cursor: default; }
+
+    .sync-status { font-size: 11px; color: #6b7280; margin-top: 8px; min-height: 14px; }
   </style>
 </head>
 <body>
@@ -71,6 +105,37 @@
       <span id="status" class="status" role="status"></span>
     </div>
   </form>
+
+  <hr class="divider" />
+
+  <div class="section-title">X Bookmark Sync</div>
+  <div class="section-desc">
+    Periodically scan your X bookmarks and save them to Coolection.
+    You must be logged in to X in this browser.
+  </div>
+
+  <div class="toggle-row">
+    <input type="checkbox" id="syncEnabled" />
+    <label for="syncEnabled">Enable automatic sync</label>
+  </div>
+
+  <div class="field">
+    <label for="syncInterval">Sync every</label>
+    <select id="syncInterval" aria-describedby="syncInterval-hint">
+      <option value="30">30 minutes</option>
+      <option value="60" selected>1 hour</option>
+      <option value="120">2 hours</option>
+      <option value="360">6 hours</option>
+      <option value="720">12 hours</option>
+      <option value="1440">24 hours</option>
+    </select>
+    <div id="syncInterval-hint" class="hint">How often to check for new X bookmarks.</div>
+  </div>
+
+  <div class="sync-actions">
+    <button type="button" id="syncNow" class="btn">Sync Now</button>
+    <span id="syncStatusText" class="sync-status" role="status"></span>
+  </div>
 
   <script src="options.js"></script>
 </body>
