@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-// Mock dependencies before importing the route
+// Mock dependencies before importing the route — vi.mock is hoisted by vitest
 vi.mock("@/lib/resolve-user-id", () => ({
   resolveUserId: vi.fn(),
 }));
@@ -17,12 +17,14 @@ vi.mock("@/lib/add-twitter-post-or-bookmark", () => ({
   addTwitterPostOrBookmark: vi.fn(),
 }));
 
+/* eslint-disable import/first */
 import { addTwitterPostOrBookmark } from "@/lib/add-twitter-post-or-bookmark";
 import { addWebsite } from "@/lib/add-website";
 import { checkDuplicateItem } from "@/lib/check-duplicate-item";
 import { resolveUserId } from "@/lib/resolve-user-id";
 
 import { POST } from "../route";
+/* eslint-enable import/first */
 
 const mockResolveUserId = vi.mocked(resolveUserId);
 const mockCheckDuplicate = vi.mocked(checkDuplicateItem);
