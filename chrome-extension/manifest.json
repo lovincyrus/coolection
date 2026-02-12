@@ -1,10 +1,10 @@
 {
   "manifest_version": 3,
   "name": "Coolection",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Save the current page to Coolection",
-  "permissions": ["activeTab", "scripting", "contextMenus", "storage"],
-  "host_permissions": ["https://www.coolection.co/*"],
+  "permissions": ["activeTab", "scripting", "contextMenus", "storage", "alarms", "tabs"],
+  "host_permissions": ["https://www.coolection.co/*", "https://x.com/*"],
   "optional_host_permissions": ["https://*/*"],
   "action": {
     "default_icon": {
@@ -21,6 +21,13 @@
   "background": {
     "service_worker": "background.js"
   },
+  "content_scripts": [
+    {
+      "matches": ["https://x.com/i/bookmarks*"],
+      "js": ["bookmarks-content.js"],
+      "run_at": "document_idle"
+    }
+  ],
   "icons": {
     "16": "icons/icon-16.png",
     "48": "icons/icon-48.png",
