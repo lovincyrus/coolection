@@ -10,16 +10,17 @@ datasource db {
 }
 
 model User {
-  id        String    @id @default(uuid())
-  email     String    @unique
-  firstName String?
-  lastName  String?
-  imageUrl  String?
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  items     Item[]
-  lists     List[]
-  apiTokens ApiToken[]
+  id              String            @id @default(uuid())
+  email           String            @unique
+  firstName       String?
+  lastName        String?
+  imageUrl        String?
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+  items           Item[]
+  lists           List[]
+  apiTokens       ApiToken[]
+  githubStarsSync GitHubStarsSync?
 
   @@map("user")
 }
@@ -88,4 +89,17 @@ model ItemList {
   @@index([itemId])
   @@index([listId])
   @@map("item_list")
+}
+
+model GitHubStarsSync {
+  id             String    @id @default(uuid())
+  userId         String    @unique
+  githubUsername  String
+  etag           String?
+  lastSyncedAt   DateTime?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+  user           User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("github_stars_sync")
 }

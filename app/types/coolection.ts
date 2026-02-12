@@ -32,4 +32,5 @@ export interface List {
 export enum ItemType {
   _WEBSITE = "website",
   _TWEET = "tweet",
+  _GITHUB_STAR = "github_star",
 }
