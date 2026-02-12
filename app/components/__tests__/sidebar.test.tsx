@@ -206,6 +206,7 @@ describe("Sidebar", () => {
       render(<Sidebar />);
       fireEvent.click(screen.getByText("Design"));
       expect(mockSetSidebarOpen).toHaveBeenCalledWith(false);
+      Object.defineProperty(window, "innerWidth", { value: 1024, writable: true });
     });
   });
 
