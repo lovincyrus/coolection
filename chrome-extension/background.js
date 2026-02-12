@@ -100,7 +100,7 @@ chrome.runtime.onInstalled.addListener(async () => {
 // Listen for alarm fires
 chrome.alarms.onAlarm.addListener((alarm) => {
   if (alarm.name === SYNC_ALARM_NAME) {
-    runBookmarkSync();
+    runBookmarkSync().catch(() => {});
   }
 });
 
@@ -126,10 +126,11 @@ function scheduleSync(intervalMinutes) {
   });
 }
 
-let syncing = false;
 async function runBookmarkSync() {
-  if (syncing) return { success: false, reason: "already_syncing" };
-  syncing = true;
+  // Use storage-backed flag so service worker termination doesn't lose state
+  const { _syncInProgress } = await chrome.storage.local.get("_syncInProgress");
+  if (_syncInProgress) return { success: false, reason: "already_syncing" };
+  await chrome.storage.local.set({ _syncInProgress: true });
 
   try {
     const { token, serverUrl, syncEnabled } = await chrome.storage.local.get([
@@ -138,7 +139,6 @@ async function runBookmarkSync() {
       "syncEnabled",
     ]);
 
-    // Alarm-triggered syncs respect the enabled flag; manual triggers always run
     if (!token) return { success: false, reason: "no_token" };
 
     const server = (serverUrl || "https://www.coolection.co").replace(/\/+$/, "");
@@ -236,8 +236,12 @@ async function runBookmarkSync() {
     const status = { lastSync: Date.now(), added, skipped, failed };
     await updateSyncStatus(status);
     return { success: true, ...status, total: urls.length };
+  } catch (e) {
+    const errorStatus = { lastSync: Date.now(), added: 0, skipped: 0, failed: 0, error: e?.message || "Sync failed" };
+    await updateSyncStatus(errorStatus);
+    return { success: false, reason: e?.message || "unknown_error" };
   } finally {
-    syncing = false;
+    await chrome.storage.local.remove("_syncInProgress");
   }
 }
 

@@ -4,7 +4,7 @@
   "version": "1.1.0",
   "description": "Save the current page to Coolection",
   "permissions": ["activeTab", "scripting", "contextMenus", "storage", "alarms", "tabs"],
-  "host_permissions": ["https://www.coolection.co/*", "https://x.com/*"],
+  "host_permissions": ["https://www.coolection.co/*", "https://x.com/i/bookmarks*"],
   "optional_host_permissions": ["https://*/*"],
   "action": {
     "default_icon": {

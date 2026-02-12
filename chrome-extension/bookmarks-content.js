@@ -84,11 +84,5 @@
       // Return true to indicate async response
       return true;
     }
-
-    if (message.type === "SCAN_BOOKMARKS_VISIBLE") {
-      // Quick scan — only what's currently visible, no scrolling
-      sendResponse({ urls: extractBookmarkUrls() });
-      return false;
-    }
   });
 })();

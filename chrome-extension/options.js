@@ -136,11 +136,12 @@ document.getElementById("syncNow").addEventListener("click", async () => {
 });
 
 let syncTextTimeout;
-function showSyncText(message) {
+function showSyncText(message, type) {
   clearTimeout(syncTextTimeout);
   const el = document.getElementById("syncStatusText");
   el.textContent = message;
-  syncTextTimeout = setTimeout(() => { el.textContent = ""; }, 8000);
+  el.style.color = type === "error" ? "#c53030" : "";
+  syncTextTimeout = setTimeout(() => { el.textContent = ""; el.style.color = ""; }, 8000);
 }
 
 function showSyncStatus(status) {

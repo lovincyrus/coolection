@@ -1,5 +1,3 @@
-"use server";
-
 import { NextResponse } from "next/server";
 
 import { addTwitterPostOrBookmark } from "@/lib/add-twitter-post-or-bookmark";
@@ -9,6 +7,7 @@ import { resolveUserId } from "@/lib/resolve-user-id";
 import { isTwitterPostOrBookmarkUrl, normalizeLink } from "@/lib/url";
 
 const MAX_URLS_PER_REQUEST = 100;
+const URL_PATTERN = /^https?:\/\//;
 
 export async function POST(req: Request) {
   const userId = await resolveUserId();
@@ -17,7 +16,15 @@ export async function POST(req: Request) {
     return new NextResponse("Unauthorized", { status: 401 });
   }
 
-  const body = await req.json();
+  let body: { urls?: unknown };
+  try {
+    body = await req.json();
+  } catch {
+    return NextResponse.json(
+      { message: "Invalid JSON body" },
+      { status: 400 },
+    );
+  }
   const { urls } = body;
 
   if (!Array.isArray(urls) || urls.length === 0) {
@@ -37,7 +44,7 @@ export async function POST(req: Request) {
   const results: { url: string; status: "created" | "duplicate" | "failed"; error?: string }[] = [];
 
   for (const url of urls) {
-    if (!url || typeof url !== "string") {
+    if (!url || typeof url !== "string" || !URL_PATTERN.test(url)) {
       results.push({ url: url ?? "", status: "failed", error: "Invalid URL" });
       continue;
     }
