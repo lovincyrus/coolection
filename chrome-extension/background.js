@@ -196,41 +196,41 @@ async function runBookmarkSync() {
       return { success: true, added: 0, skipped: 0, total: 0 };
     }
 
-    // Send each URL to the Coolection API
+    // Send URLs to the bulk-create endpoint in batches of 100
     let added = 0;
     let skipped = 0;
     let failed = 0;
 
-    for (const url of urls) {
+    const BATCH_SIZE = 100;
+    for (let i = 0; i < urls.length; i += BATCH_SIZE) {
+      const batch = urls.slice(i, i + BATCH_SIZE);
       const controller = new AbortController();
-      const timeout = setTimeout(() => controller.abort(), 10000);
+      const timeout = setTimeout(() => controller.abort(), 60000);
 
       try {
-        const res = await fetch(`${server}/api/item/create`, {
+        const res = await fetch(`${server}/api/item/bulk-create`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
           },
-          body: JSON.stringify({ url }),
+          body: JSON.stringify({ urls: batch }),
           signal: controller.signal,
         });
 
         if (res.ok) {
-          added++;
-        } else if (res.status === 409) {
-          skipped++; // duplicate
+          const data = await res.json();
+          added += data.created || 0;
+          skipped += data.duplicates || 0;
+          failed += data.failed || 0;
         } else {
-          failed++;
+          failed += batch.length;
         }
       } catch {
-        failed++;
+        failed += batch.length;
       } finally {
         clearTimeout(timeout);
       }
-
-      // Small delay between requests to avoid overwhelming the server
-      await sleep(200);
     }
 
     const status = { lastSync: Date.now(), added, skipped, failed };
