@@ -19,7 +19,7 @@ vi.mock("next-view-transitions", () => ({
   }: {
     href: string;
     children: React.ReactNode;
-    onClick?: (e: React.MouseEvent) => void;
+    onClick?: (_e: React.MouseEvent) => void;
     [key: string]: any;
   }) => (
     <a

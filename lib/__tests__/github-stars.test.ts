@@ -13,7 +13,9 @@ const mockPrisma = vi.hoisted(() => ({
 
 vi.mock("@/lib/prisma", () => ({ default: mockPrisma }));
 
+/* eslint-disable import/first */
 import { syncGitHubStars } from "../github-stars";
+/* eslint-enable import/first */
 
 function makeStarResponse(
   fullName: string,

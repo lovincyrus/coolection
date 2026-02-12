@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 
-import { resolveUserId } from "@/lib/resolve-user-id";
 import { syncGitHubStars } from "@/lib/github-stars";
+import { resolveUserId } from "@/lib/resolve-user-id";
 
 export async function POST(req: Request) {
   const userId = await resolveUserId();

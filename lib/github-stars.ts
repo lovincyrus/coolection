@@ -59,7 +59,7 @@ async function fetchStarsPage(
   );
 
   if (res.status === 304) {
-    return { stars: [], etag, notModified: true };
+    return { stars: [], etag: etag ?? null, notModified: true };
   }
 
   if (res.status === 404) {
