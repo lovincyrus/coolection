@@ -1,5 +1,3 @@
-"use server";
-
 import { NextResponse } from "next/server";
 
 import { resolveUserId } from "@/lib/resolve-user-id";
@@ -12,7 +10,15 @@ export async function POST(req: Request) {
     return new NextResponse("Unauthorized", { status: 401 });
   }
 
-  const body = await req.json();
+  let body: { githubUsername?: unknown };
+  try {
+    body = await req.json();
+  } catch {
+    return NextResponse.json(
+      { message: "Invalid JSON body" },
+      { status: 400 },
+    );
+  }
   const { githubUsername } = body;
 
   if (!githubUsername || typeof githubUsername !== "string") {

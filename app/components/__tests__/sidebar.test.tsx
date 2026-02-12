@@ -1,5 +1,5 @@
 import { fireEvent, render, screen } from "@testing-library/react";
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { Sidebar } from "../sidebar";
 
@@ -79,6 +79,11 @@ describe("Sidebar", () => {
     mockSidebarOpen = true;
     mockSetSidebarOpen.mockReset();
     mockSetOpenNewListDialog.mockReset();
+  });
+
+  afterEach(() => {
+    // Restore viewport width in case a test overrode it
+    Object.defineProperty(window, "innerWidth", { value: 1024, writable: true });
   });
 
   describe("route visibility", () => {
@@ -201,7 +206,6 @@ describe("Sidebar", () => {
       render(<Sidebar />);
       fireEvent.click(screen.getByText("Design"));
       expect(mockSetSidebarOpen).toHaveBeenCalledWith(false);
-      Object.defineProperty(window, "innerWidth", { value: 1024, writable: true });
     });
   });
 

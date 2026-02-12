@@ -24,6 +24,7 @@ export interface SyncResult {
 }
 
 const PER_PAGE = 100;
+const MAX_PAGES = 50; // Cap at 5,000 stars to avoid rate limit exhaustion
 const GITHUB_API = "https://api.github.com";
 
 /**
@@ -40,6 +41,12 @@ async function fetchStarsPage(
     Accept: "application/vnd.github.star+json",
     "User-Agent": "Coolection",
   };
+
+  // Use auth token if available (5,000 req/hr vs 60 req/hr)
+  const githubToken = process.env.GITHUB_TOKEN;
+  if (githubToken) {
+    headers["Authorization"] = `Bearer ${githubToken}`;
+  }
 
   // Only send If-None-Match on the first page to check if anything changed
   if (etag && page === 1) {
@@ -103,13 +110,13 @@ export async function syncGitHubStars(
   // Collect all stars across pages
   let allStars = [...firstPage.stars];
   let page = 2;
+  let lastPageLength = firstPage.stars.length;
 
-  // If we got a full page, there are likely more
-  while (firstPage.stars.length === PER_PAGE) {
+  while (lastPageLength === PER_PAGE && page <= MAX_PAGES) {
     const nextPage = await fetchStarsPage(githubUsername, page);
     if (nextPage.stars.length === 0) break;
     allStars = allStars.concat(nextPage.stars);
-    if (nextPage.stars.length < PER_PAGE) break;
+    lastPageLength = nextPage.stars.length;
     page++;
   }
 
@@ -125,18 +132,15 @@ export async function syncGitHubStars(
       .filter(Boolean),
   );
 
+  // Separate new stars from duplicates
+  const newStars = allStars.filter((star) => !existingUrls.has(star.repo.html_url));
+  const skipped = allStars.length - newStars.length;
+
+  // Batch insert new stars
   let added = 0;
-  let skipped = 0;
-
-  // Create items for new stars
-  for (const star of allStars) {
-    if (existingUrls.has(star.repo.html_url)) {
-      skipped++;
-      continue;
-    }
-
-    await prisma.item.create({
-      data: {
+  if (newStars.length > 0) {
+    const result = await prisma.item.createMany({
+      data: newStars.map((star) => ({
         url: star.repo.html_url,
         title: star.repo.full_name,
         description: star.repo.description,
@@ -150,9 +154,10 @@ export async function syncGitHubStars(
         },
         userId,
         createdAt: new Date(star.starred_at),
-      },
+      })),
+      skipDuplicates: true,
     });
-    added++;
+    added = result.count;
   }
 
   // Update sync state
