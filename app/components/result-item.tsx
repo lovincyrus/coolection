@@ -1,4 +1,4 @@
-import { LinkIcon } from "lucide-react";
+import { LinkIcon, StarIcon } from "lucide-react";
 import { useSearchParams } from "next/navigation";
 import React, { useRef } from "react";
 import { toast } from "sonner";
@@ -153,7 +153,7 @@ export const ResultItem = React.memo(function ResultItem({
   };
 
   function getDescription() {
-    if (item.type === ItemType._WEBSITE) {
+    if (item.type === ItemType._WEBSITE || item.type === ItemType._GITHUB_STAR) {
       return item.description;
     } else if (item.type === ItemType._TWEET) {
       return item.content;
@@ -162,7 +162,7 @@ export const ResultItem = React.memo(function ResultItem({
   }
 
   function getUrl() {
-    if (item.type === ItemType._WEBSITE) {
+    if (item.type === ItemType._WEBSITE || item.type === ItemType._GITHUB_STAR) {
       return item.url;
     } else if (item.type === ItemType._TWEET) {
       return item.metadata?.tweet_url;
@@ -193,13 +193,22 @@ export const ResultItem = React.memo(function ResultItem({
               </h3>
               {/* <code className="text-[12px]">{item.similarity}</code> */}
               <div className="flex flex-row items-center space-x-2">
-                <LinkIcon className="h-3 w-3 text-gray-400" />
+                {item.type === ItemType._GITHUB_STAR ? (
+                  <StarIcon className="h-3 w-3 text-amber-400" />
+                ) : (
+                  <LinkIcon className="h-3 w-3 text-gray-400" />
+                )}
                 <p className="text-sm text-gray-400">
                   <HighlightChars
                     text={extractDomain(String(item.url))}
                     searchTerm={querySearchParam}
                   />
                 </p>
+                {item.type === ItemType._GITHUB_STAR && item.metadata?.language && (
+                  <span className="text-xs text-gray-400">
+                    {item.metadata.language}
+                  </span>
+                )}
               </div>
               <p className="line-clamp-3 text-sm text-gray-600">
                 <HighlightChars
