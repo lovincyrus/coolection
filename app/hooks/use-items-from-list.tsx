@@ -1,15 +1,26 @@
 "use client";
 
-import useSWR from "swr";
+import useSWR, { preload } from "swr";
 
 import { fetcher } from "@/lib/fetcher";
 
 import { Item } from "../types/coolection";
 
-export function useItemsFromList(listId: string) {
+export function getListItemsKey(listId: string) {
+  return `/api/lists/${listId}/items`;
+}
+
+export function preloadListItems(listId: string) {
+  preload(getListItemsKey(listId), fetcher);
+}
+
+export function useItemsFromList(listId: string, fallbackData?: Item[]) {
   const { data, isLoading, mutate, error } = useSWR<Item[]>(
-    listId ? `/api/lists/${listId}/items` : null,
+    listId ? getListItemsKey(listId) : null,
     fetcher,
+    {
+      ...(fallbackData ? { fallbackData } : {}),
+    },
   );
 
   return {

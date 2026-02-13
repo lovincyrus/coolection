@@ -4,6 +4,7 @@ import { HomeIcon, ListPlusIcon, StarIcon, Twitter, XIcon } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { Link } from "next-view-transitions";
 
+import { preloadListItems } from "../hooks/use-items-from-list";
 import { useLists } from "../hooks/use-lists";
 import { useGlobals } from "./provider/globals-provider";
 import { Button } from "./ui/button";
@@ -69,6 +70,8 @@ export function Sidebar() {
                 <Link
                   key={list.id}
                   href={`/lists/${list.id}`}
+                  onMouseEnter={() => preloadListItems(list.id)}
+                  onFocus={() => preloadListItems(list.id)}
                   onClick={() => {
                     if (window.innerWidth < 768) setSidebarOpen(false);
                   }}

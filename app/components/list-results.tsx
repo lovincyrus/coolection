@@ -15,9 +15,11 @@ import { ResultItemSkeletons } from "./result-item-skeletons";
 export function ListResults({
   listId,
   listsServerData,
+  listItemsServerData,
 }: {
   listId: string;
   listsServerData: any;
+  listItemsServerData?: any;
 }) {
   const isInList = useIsInList();
   const { data: lists } = useLists(listsServerData);
@@ -25,8 +27,9 @@ export function ListResults({
     data: itemsFromList,
     loading,
     mutate: mutateItemsFromList,
-  } = useItemsFromList(listId);
+  } = useItemsFromList(listId, listItemsServerData);
 
+  const showSkeleton = useLoadingWithTimeout(loading, 100);
   const showEmptyListItemsCopy = useLoadingWithTimeout(
     isInList && Object.keys(itemsFromList).length === 0 && !loading,
     300,
@@ -52,7 +55,7 @@ export function ListResults({
         </div>
       ) : null}
 
-      {loading && <ResultItemSkeletons />}
+      {showSkeleton && <ResultItemSkeletons />}
 
       <AnimatePresence initial={false}>
         {!loading &&
