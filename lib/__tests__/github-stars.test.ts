@@ -7,7 +7,7 @@ const mockPrisma = vi.hoisted(() => ({
   },
   item: {
     findMany: vi.fn(),
-    create: vi.fn(),
+    createMany: vi.fn(),
   },
 }));
 
@@ -60,12 +60,12 @@ describe("syncGitHubStars", () => {
     mockPrisma.gitHubStarsSync.findUnique.mockReset();
     mockPrisma.gitHubStarsSync.upsert.mockReset();
     mockPrisma.item.findMany.mockReset();
-    mockPrisma.item.create.mockReset();
+    mockPrisma.item.createMany.mockReset();
 
     mockPrisma.gitHubStarsSync.findUnique.mockResolvedValue(null);
     mockPrisma.gitHubStarsSync.upsert.mockResolvedValue({});
     mockPrisma.item.findMany.mockResolvedValue([]);
-    mockPrisma.item.create.mockResolvedValue({});
+    mockPrisma.item.createMany.mockResolvedValue({ count: 0 });
   });
 
   it("fetches stars and creates items on first sync", async () => {
@@ -73,6 +73,8 @@ describe("syncGitHubStars", () => {
       makeStarResponse("user/repo1", "https://github.com/user/repo1", "2024-01-01T00:00:00Z"),
       makeStarResponse("user/repo2", "https://github.com/user/repo2", "2024-01-02T00:00:00Z"),
     ];
+
+    mockPrisma.item.createMany.mockResolvedValue({ count: 2 });
 
     vi.stubGlobal(
       "fetch",
@@ -84,14 +86,17 @@ describe("syncGitHubStars", () => {
     expect(result.added).toBe(2);
     expect(result.skipped).toBe(0);
     expect(result.total).toBe(2);
-    expect(mockPrisma.item.create).toHaveBeenCalledTimes(2);
-    expect(mockPrisma.item.create).toHaveBeenCalledWith({
-      data: expect.objectContaining({
-        url: "https://github.com/user/repo1",
-        title: "user/repo1",
-        type: "github_star",
-        userId: "user-1",
-      }),
+    expect(mockPrisma.item.createMany).toHaveBeenCalledTimes(1);
+    expect(mockPrisma.item.createMany).toHaveBeenCalledWith({
+      data: expect.arrayContaining([
+        expect.objectContaining({
+          url: "https://github.com/user/repo1",
+          title: "user/repo1",
+          type: "github_star",
+          userId: "user-1",
+        }),
+      ]),
+      skipDuplicates: true,
     });
     expect(mockPrisma.gitHubStarsSync.upsert).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -120,7 +125,7 @@ describe("syncGitHubStars", () => {
     expect(result.added).toBe(0);
     expect(result.skipped).toBe(0);
     expect(result.total).toBe(0);
-    expect(mockPrisma.item.create).not.toHaveBeenCalled();
+    expect(mockPrisma.item.createMany).not.toHaveBeenCalled();
     expect(mockPrisma.gitHubStarsSync.upsert).not.toHaveBeenCalled();
   });
 
@@ -154,6 +159,7 @@ describe("syncGitHubStars", () => {
     mockPrisma.item.findMany.mockResolvedValue([
       { url: "https://github.com/user/repo1" },
     ]);
+    mockPrisma.item.createMany.mockResolvedValue({ count: 1 });
 
     vi.stubGlobal(
       "fetch",
@@ -165,11 +171,14 @@ describe("syncGitHubStars", () => {
     expect(result.added).toBe(1);
     expect(result.skipped).toBe(1);
     expect(result.total).toBe(2);
-    expect(mockPrisma.item.create).toHaveBeenCalledTimes(1);
-    expect(mockPrisma.item.create).toHaveBeenCalledWith({
-      data: expect.objectContaining({
-        url: "https://github.com/user/repo2",
-      }),
+    expect(mockPrisma.item.createMany).toHaveBeenCalledTimes(1);
+    expect(mockPrisma.item.createMany).toHaveBeenCalledWith({
+      data: [
+        expect.objectContaining({
+          url: "https://github.com/user/repo2",
+        }),
+      ],
+      skipDuplicates: true,
     });
   });
 
@@ -209,6 +218,8 @@ describe("syncGitHubStars", () => {
       }),
     ];
 
+    mockPrisma.item.createMany.mockResolvedValue({ count: 1 });
+
     vi.stubGlobal(
       "fetch",
       vi.fn().mockResolvedValueOnce(mockFetchResponse(stars, 200, { etag: '"v1"' })),
@@ -216,15 +227,18 @@ describe("syncGitHubStars", () => {
 
     await syncGitHubStars("user-1", "testuser");
 
-    expect(mockPrisma.item.create).toHaveBeenCalledWith({
-      data: expect.objectContaining({
-        metadata: expect.objectContaining({
-          language: "Rust",
-          stars: 5000,
-          topics: ["cli", "rust"],
-          starred_at: "2024-06-15T10:30:00Z",
+    expect(mockPrisma.item.createMany).toHaveBeenCalledWith({
+      data: [
+        expect.objectContaining({
+          metadata: expect.objectContaining({
+            language: "Rust",
+            stars: 5000,
+            topics: ["cli", "rust"],
+            starred_at: "2024-06-15T10:30:00Z",
+          }),
         }),
-      }),
+      ],
+      skipDuplicates: true,
     });
   });
 
@@ -233,6 +247,8 @@ describe("syncGitHubStars", () => {
       makeStarResponse("user/repo1", "https://github.com/user/repo1", "2024-03-15T12:00:00Z"),
     ];
 
+    mockPrisma.item.createMany.mockResolvedValue({ count: 1 });
+
     vi.stubGlobal(
       "fetch",
       vi.fn().mockResolvedValueOnce(mockFetchResponse(stars, 200, { etag: '"v1"' })),
@@ -240,10 +256,13 @@ describe("syncGitHubStars", () => {
 
     await syncGitHubStars("user-1", "testuser");
 
-    expect(mockPrisma.item.create).toHaveBeenCalledWith({
-      data: expect.objectContaining({
-        createdAt: new Date("2024-03-15T12:00:00Z"),
-      }),
+    expect(mockPrisma.item.createMany).toHaveBeenCalledWith({
+      data: [
+        expect.objectContaining({
+          createdAt: new Date("2024-03-15T12:00:00Z"),
+        }),
+      ],
+      skipDuplicates: true,
     });
   });
 });
