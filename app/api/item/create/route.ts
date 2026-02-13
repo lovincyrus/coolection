@@ -2,9 +2,12 @@
 
 import { NextResponse } from "next/server";
 
+import { ListSource } from "@/app/types/coolection";
 import { addTwitterPostOrBookmark } from "@/lib/add-twitter-post-or-bookmark";
 import { addWebsite } from "@/lib/add-website";
 import { checkDuplicateItem } from "@/lib/check-duplicate-item";
+import { ensureSourceList } from "@/lib/ensure-source-list";
+import prisma from "@/lib/prisma";
 import { resolveUserId } from "@/lib/resolve-user-id";
 import { isTwitterPostOrBookmarkUrl, normalizeLink } from "@/lib/url";
 
@@ -38,6 +41,12 @@ export async function POST(req: Request) {
     if (isTwitterPostOrBookmarkUrl(normalizedLink)) {
       const newTweet = await addTwitterPostOrBookmark(normalizedLink, userId);
       newItem = newTweet;
+
+      // Auto-group into X Bookmarks list
+      const listId = await ensureSourceList(userId, ListSource.X);
+      await prisma.itemList.create({
+        data: { itemId: newItem.id, listId },
+      });
     } else {
       const newWebsite = await addWebsite(normalizedLink, userId);
       newItem = newWebsite;

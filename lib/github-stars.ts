@@ -1,5 +1,6 @@
-import { ItemType } from "@/app/types/coolection";
+import { ItemType, ListSource } from "@/app/types/coolection";
 
+import { ensureSourceList } from "./ensure-source-list";
 import prisma from "./prisma";
 
 interface GitHubStarResponse {
@@ -136,9 +137,14 @@ export async function syncGitHubStars(
   const newStars = allStars.filter((star) => !existingUrls.has(star.repo.html_url));
   const skipped = allStars.length - newStars.length;
 
+  // Ensure the "GitHub Stars" list exists for auto-grouping
+  const listId = await ensureSourceList(userId, ListSource.GITHUB);
+
   // Batch insert new stars
   let added = 0;
   if (newStars.length > 0) {
+    const newUrls = newStars.map((star) => star.repo.html_url);
+
     const result = await prisma.item.createMany({
       data: newStars.map((star) => ({
         url: star.repo.html_url,
@@ -158,6 +164,22 @@ export async function syncGitHubStars(
       skipDuplicates: true,
     });
     added = result.count;
+
+    // Link newly created items to the GitHub Stars list
+    if (added > 0) {
+      const createdItems = await prisma.item.findMany({
+        where: { userId, url: { in: newUrls }, type: ItemType._GITHUB_STAR },
+        select: { id: true },
+      });
+
+      await prisma.itemList.createMany({
+        data: createdItems.map((item) => ({
+          itemId: item.id,
+          listId,
+        })),
+        skipDuplicates: true,
+      });
+    }
   }
 
   // Update sync state

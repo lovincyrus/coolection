@@ -1,8 +1,11 @@
 import { NextResponse } from "next/server";
 
+import { ListSource } from "@/app/types/coolection";
 import { addTwitterPostOrBookmark } from "@/lib/add-twitter-post-or-bookmark";
 import { addWebsite } from "@/lib/add-website";
 import { checkDuplicateItem } from "@/lib/check-duplicate-item";
+import { ensureSourceList } from "@/lib/ensure-source-list";
+import prisma from "@/lib/prisma";
 import { resolveUserId } from "@/lib/resolve-user-id";
 import { isTwitterPostOrBookmarkUrl, normalizeLink } from "@/lib/url";
 
@@ -42,6 +45,7 @@ export async function POST(req: Request) {
   }
 
   const results: { url: string; status: "created" | "duplicate" | "failed"; error?: string }[] = [];
+  const tweetItemIds: string[] = [];
 
   for (const url of urls) {
     if (!url || typeof url !== "string" || !URL_PATTERN.test(url)) {
@@ -59,7 +63,8 @@ export async function POST(req: Request) {
       }
 
       if (isTwitterPostOrBookmarkUrl(normalizedLink)) {
-        await addTwitterPostOrBookmark(normalizedLink, userId);
+        const item = await addTwitterPostOrBookmark(normalizedLink, userId);
+        tweetItemIds.push(item.id);
       } else {
         await addWebsite(normalizedLink, userId);
       }
@@ -72,6 +77,15 @@ export async function POST(req: Request) {
         error: error instanceof Error ? error.message : "Unknown error",
       });
     }
+  }
+
+  // Auto-group tweets into the X Bookmarks list
+  if (tweetItemIds.length > 0) {
+    const listId = await ensureSourceList(userId, ListSource.X);
+    await prisma.itemList.createMany({
+      data: tweetItemIds.map((itemId) => ({ itemId, listId })),
+      skipDuplicates: true,
+    });
   }
 
   const created = results.filter((r) => r.status === "created").length;
