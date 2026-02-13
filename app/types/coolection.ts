@@ -24,9 +24,15 @@ export interface List {
   name: string;
   slug: string;
   description?: string;
+  source?: string;
   createdAt: string;
   updatedAt: string;
   items: Item[];
+}
+
+export enum ListSource {
+  GITHUB = "gh",
+  X = "x",
 }
 
 export enum ItemType {
