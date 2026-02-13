@@ -14,10 +14,13 @@ export function preloadListItems(listId: string) {
   preload(getListItemsKey(listId), fetcher);
 }
 
-export function useItemsFromList(listId: string) {
+export function useItemsFromList(listId: string, fallbackData?: Item[]) {
   const { data, isLoading, mutate, error } = useSWR<Item[]>(
     listId ? getListItemsKey(listId) : null,
     fetcher,
+    {
+      ...(fallbackData ? { fallbackData } : {}),
+    },
   );
 
   return {
