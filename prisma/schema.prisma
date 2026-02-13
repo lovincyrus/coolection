@@ -66,6 +66,7 @@ model List {
   name        String
   slug        String
   description String?
+  source      String?
   createdAt   DateTime   @default(now())
   updatedAt   DateTime   @updatedAt
   deletedAt   DateTime?
