@@ -18,9 +18,6 @@ export function useItemsFromList(listId: string) {
   const { data, isLoading, mutate, error } = useSWR<Item[]>(
     listId ? getListItemsKey(listId) : null,
     fetcher,
-    {
-      keepPreviousData: true,
-    },
   );
 
   return {

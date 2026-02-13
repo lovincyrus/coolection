@@ -27,6 +27,7 @@ export function ListResults({
     mutate: mutateItemsFromList,
   } = useItemsFromList(listId);
 
+  const showSkeleton = useLoadingWithTimeout(loading, 100);
   const showEmptyListItemsCopy = useLoadingWithTimeout(
     isInList && Object.keys(itemsFromList).length === 0 && !loading,
     300,
@@ -52,7 +53,7 @@ export function ListResults({
         </div>
       ) : null}
 
-      {loading && <ResultItemSkeletons />}
+      {showSkeleton && <ResultItemSkeletons />}
 
       <AnimatePresence initial={false}>
         {!loading &&
