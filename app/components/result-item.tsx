@@ -1,4 +1,4 @@
-import { LinkIcon, StarIcon } from "lucide-react";
+import { LinkIcon, StarIcon, Twitter } from "lucide-react";
 import { useSearchParams } from "next/navigation";
 import React, { useRef } from "react";
 import { toast } from "sonner";
@@ -195,6 +195,8 @@ export const ResultItem = React.memo(function ResultItem({
               <div className="flex flex-row items-center space-x-2">
                 {item.type === ItemType._GITHUB_STAR ? (
                   <StarIcon className="h-3 w-3 text-amber-400" />
+                ) : item.type === ItemType._TWEET ? (
+                  <Twitter className="h-3 w-3 text-sky-400" />
                 ) : (
                   <LinkIcon className="h-3 w-3 text-gray-400" />
                 )}
