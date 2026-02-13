@@ -1,5 +1,5 @@
 import { fireEvent, render, screen } from "@testing-library/react";
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { Sidebar } from "../sidebar";
 
@@ -19,10 +19,17 @@ vi.mock("next-view-transitions", () => ({
   }: {
     href: string;
     children: React.ReactNode;
-    onClick?: () => void;
+    onClick?: (_e: React.MouseEvent) => void;
     [key: string]: any;
   }) => (
-    <a href={href} onClick={onClick} {...props}>
+    <a
+      href={href}
+      onClick={(e: React.MouseEvent) => {
+        e.preventDefault();
+        onClick?.(e);
+      }}
+      {...props}
+    >
       {children}
     </a>
   ),
@@ -72,6 +79,11 @@ describe("Sidebar", () => {
     mockSidebarOpen = true;
     mockSetSidebarOpen.mockReset();
     mockSetOpenNewListDialog.mockReset();
+  });
+
+  afterEach(() => {
+    // Restore viewport width in case a test overrode it
+    Object.defineProperty(window, "innerWidth", { value: 1024, writable: true });
   });
 
   describe("route visibility", () => {
@@ -189,7 +201,8 @@ describe("Sidebar", () => {
       expect(mockSetSidebarOpen).toHaveBeenCalledWith(false);
     });
 
-    it("closes sidebar when a link is clicked", () => {
+    it("closes sidebar when a link is clicked on mobile", () => {
+      Object.defineProperty(window, "innerWidth", { value: 500, writable: true });
       render(<Sidebar />);
       fireEvent.click(screen.getByText("Design"));
       expect(mockSetSidebarOpen).toHaveBeenCalledWith(false);

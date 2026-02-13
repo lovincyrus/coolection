@@ -1,6 +1,6 @@
 "use client";
 
-import { ClipboardCopyIcon, KeyIcon, TrashIcon } from "lucide-react";
+import { ClipboardCopyIcon, KeyIcon, StarIcon, TrashIcon } from "lucide-react";
 import { Link } from "next-view-transitions";
 import React, { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
@@ -45,6 +45,15 @@ export default function SettingsPage() {
   const [tokenName, setTokenName] = useState("");
   const [showForm, setShowForm] = useState(false);
 
+  // GitHub stars sync state
+  const [githubUsername, setGithubUsername] = useState("");
+  const [syncing, setSyncing] = useState(false);
+  const [syncStatus, setSyncStatus] = useState<{
+    configured: boolean;
+    githubUsername: string | null;
+    lastSyncedAt: string | null;
+  } | null>(null);
+
   const fetchTokens = useCallback(async () => {
     try {
       const res = await fetch("/api/token/list");
@@ -57,9 +66,25 @@ export default function SettingsPage() {
     }
   }, []);
 
+  const fetchSyncStatus = useCallback(async () => {
+    try {
+      const res = await fetch("/api/github-stars/status");
+      if (res.ok) {
+        const data = await res.json();
+        setSyncStatus(data);
+        if (data.githubUsername) {
+          setGithubUsername(data.githubUsername);
+        }
+      }
+    } catch {
+      // ignore
+    }
+  }, []);
+
   useEffect(() => {
     fetchTokens();
-  }, [fetchTokens]);
+    fetchSyncStatus();
+  }, [fetchTokens, fetchSyncStatus]);
 
   async function createToken() {
     setCreating(true);
@@ -111,6 +136,32 @@ export default function SettingsPage() {
     if (newToken) {
       navigator.clipboard.writeText(newToken);
       toast.success("Copied to clipboard");
+    }
+  }
+
+  async function syncStars() {
+    if (!githubUsername.trim()) {
+      toast.error("Enter a GitHub username");
+      return;
+    }
+    setSyncing(true);
+    try {
+      const res = await fetch("/api/github-stars/sync", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ githubUsername: githubUsername.trim() }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        toast.error(data.message || "Sync failed");
+        return;
+      }
+      toast.success(data.message);
+      fetchSyncStatus();
+    } catch {
+      toast.error("Sync failed");
+    } finally {
+      setSyncing(false);
     }
   }
 
@@ -257,6 +308,63 @@ export default function SettingsPage() {
               ))}
             </div>
           )}
+
+          <hr className="my-4 border-dashed" />
+
+          <div className="flex items-start justify-between">
+            <div>
+              <h2 className="text-sm font-medium text-gray-900">
+                GitHub Stars
+              </h2>
+              <p className="mt-1 text-xs text-gray-500">
+                Sync your starred repositories into your collection.
+              </p>
+            </div>
+          </div>
+
+          <div className="flex flex-col gap-3 rounded-md border border-dashed p-4">
+            <label className="text-xs font-medium text-gray-700">
+              GitHub username
+            </label>
+            <div className="flex items-center gap-2">
+              <Input
+                placeholder="e.g. octocat"
+                value={githubUsername}
+                onChange={(e) => setGithubUsername(e.target.value)}
+                className="h-9 text-xs"
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    e.preventDefault();
+                    syncStars();
+                  }
+                }}
+              />
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={syncStars}
+                disabled={syncing}
+                className="shrink-0"
+              >
+                <StarIcon className="mr-1 h-3 w-3" />
+                {syncing ? "Syncing..." : "Sync Stars"}
+              </Button>
+            </div>
+            {syncStatus?.configured && (
+              <p className="text-xs text-gray-500">
+                Last synced {syncStatus.lastSyncedAt
+                  ? formatLastUsed(syncStatus.lastSyncedAt)
+                  : "never"}
+                {syncStatus.githubUsername && (
+                  <> as <span className="font-medium">{syncStatus.githubUsername}</span></>
+                )}
+              </p>
+            )}
+            <p className="text-xs text-gray-400">
+              Only public stars are synced. Subsequent syncs skip unchanged
+              stars.
+            </p>
+          </div>
         </div>
       </div>
     </main>
