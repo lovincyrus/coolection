@@ -101,7 +101,7 @@
     });
     overlay.innerHTML =
       '<div style="text-align:center;font-family:Inter,system-ui,sans-serif">' +
-      '<div style="font-size:32px;margin-bottom:12px">🍵</div>' +
+      '<img src="' + chrome.runtime.getURL("icons/icon-48.png") + '" width="32" height="32" style="margin-bottom:12px" />' +
       '<div style="font-size:14px;font-weight:500;color:#111">Syncing bookmarks…</div>' +
       '<div style="font-size:12px;color:#6b7280;margin-top:4px">Don\u2019t close this tab</div>' +
       "</div>";
