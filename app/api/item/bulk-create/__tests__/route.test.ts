@@ -17,6 +17,12 @@ vi.mock("@/lib/add-twitter-post-or-bookmark", () => ({
   addTwitterPostOrBookmark: vi.fn(),
 }));
 
+vi.mock("@/lib/source-lists", () => ({
+  ensureSourceList: vi.fn().mockResolvedValue("source-list-1"),
+  assignItemsToSourceList: vi.fn().mockResolvedValue(0),
+  SOURCE_X: "x",
+}));
+
 /* eslint-disable import/first */
 import { addTwitterPostOrBookmark } from "@/lib/add-twitter-post-or-bookmark";
 import { addWebsite } from "@/lib/add-website";

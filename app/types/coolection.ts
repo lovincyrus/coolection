@@ -24,6 +24,7 @@ export interface List {
   name: string;
   slug: string;
   description?: string;
+  source?: string | null;
   createdAt: string;
   updatedAt: string;
   items: Item[];

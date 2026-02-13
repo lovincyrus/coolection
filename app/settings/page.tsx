@@ -1,6 +1,6 @@
 "use client";
 
-import { ClipboardCopyIcon, KeyIcon, StarIcon, TrashIcon } from "lucide-react";
+import { ClipboardCopyIcon, ExternalLinkIcon, KeyIcon, StarIcon, TrashIcon, Twitter } from "lucide-react";
 import { Link } from "next-view-transitions";
 import React, { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
@@ -370,6 +370,42 @@ export default function SettingsPage() {
               Only public stars are synced. Subsequent syncs skip unchanged
               stars.
             </p>
+          </div>
+
+          <hr className="my-4 border-dashed" />
+
+          <div className="flex items-start justify-between">
+            <div>
+              <h2 className="text-sm font-medium text-gray-900">
+                <Twitter className="mr-1 inline h-3.5 w-3.5 text-sky-400" />
+                X Bookmarks
+              </h2>
+              <p className="mt-1 text-xs text-gray-500">
+                Sync your X (Twitter) bookmarks using the browser extension.
+              </p>
+            </div>
+          </div>
+
+          <div className="flex flex-col gap-3 rounded-md border border-dashed p-4">
+            <p className="text-xs text-gray-600">
+              X bookmarks are synced automatically by the Coolection Chrome
+              extension. To get started:
+            </p>
+            <ol className="list-inside list-decimal text-xs text-gray-600 space-y-1">
+              <li>Install the Chrome extension from the repo</li>
+              <li>Open extension options and paste your API token</li>
+              <li>Enable bookmark sync and set your preferred interval</li>
+              <li>Bookmarks will appear in your <span className="font-medium">X Bookmarks</span> list</li>
+            </ol>
+            <a
+              href="https://github.com/kasper-gb/coolection"
+              target="_blank"
+              rel="noreferrer noopener"
+              className="inline-flex items-center gap-1 text-xs text-gray-500 hover:text-gray-900"
+            >
+              <ExternalLinkIcon className="h-3 w-3" />
+              View setup instructions on GitHub
+            </a>
           </div>
         </div>
       </div>

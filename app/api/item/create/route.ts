@@ -6,6 +6,7 @@ import { addTwitterPostOrBookmark } from "@/lib/add-twitter-post-or-bookmark";
 import { addWebsite } from "@/lib/add-website";
 import { checkDuplicateItem } from "@/lib/check-duplicate-item";
 import { resolveUserId } from "@/lib/resolve-user-id";
+import { assignItemsToSourceList, ensureSourceList, SOURCE_X } from "@/lib/source-lists";
 import { isTwitterPostOrBookmarkUrl, normalizeLink } from "@/lib/url";
 
 export async function POST(req: Request) {
@@ -38,6 +39,14 @@ export async function POST(req: Request) {
     if (isTwitterPostOrBookmarkUrl(normalizedLink)) {
       const newTweet = await addTwitterPostOrBookmark(normalizedLink, userId);
       newItem = newTweet;
+
+      // Assign tweet to the "X Bookmarks" source list
+      try {
+        const listId = await ensureSourceList(userId, SOURCE_X);
+        await assignItemsToSourceList(listId, [newTweet.id]);
+      } catch {
+        // Non-critical
+      }
     } else {
       const newWebsite = await addWebsite(normalizedLink, userId);
       newItem = newWebsite;

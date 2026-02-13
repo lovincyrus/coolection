@@ -1,6 +1,7 @@
 import { ItemType } from "@/app/types/coolection";
 
 import prisma from "./prisma";
+import { assignItemsToSourceList, ensureSourceList, SOURCE_GH } from "./source-lists";
 
 interface GitHubStarResponse {
   starred_at: string;
@@ -136,9 +137,14 @@ export async function syncGitHubStars(
   const newStars = allStars.filter((star) => !existingUrls.has(star.repo.html_url));
   const skipped = allStars.length - newStars.length;
 
+  // Ensure the "GitHub Stars" source list exists
+  const listId = await ensureSourceList(userId, SOURCE_GH);
+
   // Batch insert new stars
   let added = 0;
   if (newStars.length > 0) {
+    const newUrls = newStars.map((star) => star.repo.html_url);
+
     const result = await prisma.item.createMany({
       data: newStars.map((star) => ({
         url: star.repo.html_url,
@@ -158,6 +164,27 @@ export async function syncGitHubStars(
       skipDuplicates: true,
     });
     added = result.count;
+
+    // Assign newly created items to the GitHub Stars list
+    const newItems = await prisma.item.findMany({
+      where: { userId, url: { in: newUrls }, type: ItemType._GITHUB_STAR },
+      select: { id: true },
+    });
+    await assignItemsToSourceList(listId, newItems.map((i) => i.id));
+  }
+
+  // Also backfill: assign any existing GitHub star items not yet in the list
+  const unlinkedStars = await prisma.item.findMany({
+    where: {
+      userId,
+      type: ItemType._GITHUB_STAR,
+      isDeleted: false,
+      lists: { none: { listId } },
+    },
+    select: { id: true },
+  });
+  if (unlinkedStars.length > 0) {
+    await assignItemsToSourceList(listId, unlinkedStars.map((i) => i.id));
   }
 
   // Update sync state
