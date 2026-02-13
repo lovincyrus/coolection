@@ -171,8 +171,14 @@ export default function SettingsPage() {
         <div className="mx-auto w-full max-w-2xl xl:max-w-4xl 2xl:max-w-6xl">
           <div className="flex flex-row items-center justify-between gap-2">
             <div className="flex flex-row items-center space-x-1">
-              <div className="flex h-8 w-8 items-center justify-center text-2xl">
-                <Link href="/home">🍵</Link>
+              <div className="flex h-8 w-8 items-center justify-center">
+                <Link href="/home">
+                  <img
+                    src="/favicon.ico"
+                    alt="Coolection"
+                    className="h-5 w-5"
+                  />
+                </Link>
               </div>
               <span className="ml-1 text-xs font-medium text-gray-800">
                 Settings
