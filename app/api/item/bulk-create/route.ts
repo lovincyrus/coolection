@@ -4,6 +4,7 @@ import { addTwitterPostOrBookmark } from "@/lib/add-twitter-post-or-bookmark";
 import { addWebsite } from "@/lib/add-website";
 import { checkDuplicateItem } from "@/lib/check-duplicate-item";
 import { resolveUserId } from "@/lib/resolve-user-id";
+import { assignItemsToSourceList, ensureSourceList, SOURCE_X } from "@/lib/source-lists";
 import { isTwitterPostOrBookmarkUrl, normalizeLink } from "@/lib/url";
 
 const MAX_URLS_PER_REQUEST = 100;
@@ -42,6 +43,7 @@ export async function POST(req: Request) {
   }
 
   const results: { url: string; status: "created" | "duplicate" | "failed"; error?: string }[] = [];
+  const createdTweetItemIds: string[] = [];
 
   for (const url of urls) {
     if (!url || typeof url !== "string" || !URL_PATTERN.test(url)) {
@@ -59,7 +61,8 @@ export async function POST(req: Request) {
       }
 
       if (isTwitterPostOrBookmarkUrl(normalizedLink)) {
-        await addTwitterPostOrBookmark(normalizedLink, userId);
+        const item = await addTwitterPostOrBookmark(normalizedLink, userId);
+        createdTweetItemIds.push(item.id);
       } else {
         await addWebsite(normalizedLink, userId);
       }
@@ -71,6 +74,16 @@ export async function POST(req: Request) {
         status: "failed",
         error: error instanceof Error ? error.message : "Unknown error",
       });
+    }
+  }
+
+  // Assign created tweet items to the "X Bookmarks" source list
+  if (createdTweetItemIds.length > 0) {
+    try {
+      const listId = await ensureSourceList(userId, SOURCE_X);
+      await assignItemsToSourceList(listId, createdTweetItemIds);
+    } catch {
+      // Non-critical: items are saved even if list assignment fails
     }
   }
 
