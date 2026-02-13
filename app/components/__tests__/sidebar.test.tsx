@@ -39,6 +39,8 @@ const mockLists = [
   { id: "list-1", name: "Design" },
   { id: "list-2", name: "Work" },
   { id: "list-3", name: "Read Later" },
+  { id: "list-4", name: "GitHub Stars", source: "gh" },
+  { id: "list-5", name: "X Bookmarks", source: "x" },
 ];
 
 vi.mock("../../hooks/use-lists", () => ({
@@ -223,6 +225,29 @@ describe("Sidebar", () => {
       render(<Sidebar />);
       const designLink = screen.getByText("Design").closest("a");
       expect(designLink).toHaveAttribute("title", "Design");
+    });
+  });
+
+  describe("source-based list icons", () => {
+    it("renders star icon for GitHub Stars list", () => {
+      render(<Sidebar />);
+      const ghLink = screen.getByText("GitHub Stars").closest("a");
+      const starIcon = ghLink?.querySelector(".text-amber-400");
+      expect(starIcon).toBeInTheDocument();
+    });
+
+    it("renders bird icon for X Bookmarks list", () => {
+      render(<Sidebar />);
+      const xLink = screen.getByText("X Bookmarks").closest("a");
+      const birdIcon = xLink?.querySelector(".text-sky-400");
+      expect(birdIcon).toBeInTheDocument();
+    });
+
+    it("does not render source icon for regular lists", () => {
+      render(<Sidebar />);
+      const designLink = screen.getByText("Design").closest("a");
+      const icon = designLink?.querySelector(".text-amber-400, .text-sky-400");
+      expect(icon).toBeNull();
     });
   });
 });

@@ -17,6 +17,16 @@ vi.mock("@/lib/add-twitter-post-or-bookmark", () => ({
   addTwitterPostOrBookmark: vi.fn(),
 }));
 
+vi.mock("@/lib/ensure-source-list", () => ({
+  ensureSourceList: vi.fn().mockResolvedValue("mock-list-id"),
+}));
+
+vi.mock("@/lib/prisma", () => ({
+  default: {
+    itemList: { createMany: vi.fn().mockResolvedValue({ count: 0 }) },
+  },
+}));
+
 /* eslint-disable import/first */
 import { addTwitterPostOrBookmark } from "@/lib/add-twitter-post-or-bookmark";
 import { addWebsite } from "@/lib/add-website";
