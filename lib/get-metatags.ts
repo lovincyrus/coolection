@@ -2,6 +2,7 @@ import cheerio from "cheerio";
 import fetch from "node-fetch";
 
 import { isTwitterAccountUrl } from "./url";
+import { isValidTitle, titleFromUrl } from "./validate-title";
 
 function parseTwitterScreenName(url: string) {
   const match = url.match(/x.com\/([a-zA-Z0-9_]+)/);
@@ -26,8 +27,11 @@ export async function getMetatags(url: string) {
     };
   }
 
+  const rawTitle = ogTitle || title || headTitle || ogSiteName;
+  const sanitizedTitle = isValidTitle(rawTitle) ? rawTitle : titleFromUrl(url);
+
   return {
-    title: ogTitle || title || headTitle || ogSiteName,
+    title: sanitizedTitle,
     description: ogDescription || description,
   };
 }
