@@ -1,6 +1,6 @@
 "use client";
 
-import { HomeIcon, ListPlusIcon, XIcon } from "lucide-react";
+import { HomeIcon, ListPlusIcon, StarIcon, Twitter, XIcon } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { Link } from "next-view-transitions";
 
@@ -73,13 +73,18 @@ export function Sidebar() {
                     if (window.innerWidth < 768) setSidebarOpen(false);
                   }}
                   title={list.name}
-                  className={`truncate rounded-lg px-2.5 py-1.5 text-xs font-medium transition-colors ${
+                  className={`flex items-center gap-2 truncate rounded-lg px-2.5 py-1.5 text-xs font-medium transition-colors ${
                     isActive
                       ? "bg-gray-100 text-gray-900"
                       : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
                   }`}
                 >
-                  {list.name}
+                  {list.source === "gh" ? (
+                    <StarIcon className="h-3.5 w-3.5 shrink-0 text-amber-400" />
+                  ) : list.source === "x" ? (
+                    <Twitter className="h-3.5 w-3.5 shrink-0 text-sky-400" />
+                  ) : null}
+                  <span className="truncate">{list.name}</span>
                 </Link>
               );
             })}
