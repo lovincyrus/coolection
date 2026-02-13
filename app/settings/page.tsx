@@ -1,6 +1,6 @@
 "use client";
 
-import { ClipboardCopyIcon, KeyIcon, StarIcon, TrashIcon } from "lucide-react";
+import { ClipboardCopyIcon, ExternalLinkIcon, KeyIcon, StarIcon, TrashIcon, Twitter } from "lucide-react";
 import { Link } from "next-view-transitions";
 import React, { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
@@ -362,8 +362,63 @@ export default function SettingsPage() {
             )}
             <p className="text-xs text-gray-400">
               Only public stars are synced. Subsequent syncs skip unchanged
-              stars.
+              stars. Synced repos are automatically grouped into a{" "}
+              <strong>GitHub Stars</strong> list in the sidebar.
             </p>
+          </div>
+
+          <hr className="my-4 border-dashed" />
+
+          <div className="flex items-start justify-between">
+            <div>
+              <h2 className="text-sm font-medium text-gray-900">
+                X Bookmarks
+              </h2>
+              <p className="mt-1 text-xs text-gray-500">
+                Tweets saved via the browser extension are automatically grouped
+                into an <strong>X Bookmarks</strong> list.
+              </p>
+            </div>
+          </div>
+
+          <div className="flex flex-col gap-3 rounded-md border border-dashed p-4">
+            <div className="flex items-center gap-2">
+              <Twitter className="h-4 w-4 text-sky-400" />
+              <span className="text-xs font-medium text-gray-700">
+                How it works
+              </span>
+            </div>
+            <p className="text-xs text-gray-500">
+              When you save a tweet or X bookmark URL through the Coolection
+              browser extension, it is automatically added to your{" "}
+              <strong>X Bookmarks</strong> list. No extra setup needed.
+            </p>
+            <p className="text-xs text-gray-400">
+              Supported URL formats: x.com status links and x.com/i/bookmarks
+              links.
+            </p>
+          </div>
+
+          <hr className="my-4 border-dashed" />
+
+          <div className="flex flex-col gap-3 rounded-md border border-dashed p-4">
+            <span className="text-xs font-medium text-gray-700">
+              Setup &amp; Documentation
+            </span>
+            <p className="text-xs text-gray-500">
+              Coolection is open source. For detailed setup instructions,
+              extension installation, and self-hosting guides, visit the
+              repository.
+            </p>
+            <a
+              href="https://github.com/lovincyrus/coolection"
+              target="_blank"
+              rel="noreferrer noopener"
+              className="flex items-center gap-1.5 text-xs font-medium text-sky-600 hover:text-sky-700"
+            >
+              <ExternalLinkIcon className="h-3 w-3" />
+              View on GitHub
+            </a>
           </div>
         </div>
       </div>
