@@ -4,8 +4,8 @@ import { HomeIcon, ListPlusIcon, StarIcon, Twitter, XIcon } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { Link } from "next-view-transitions";
 
-import { ListSource } from "../types";
 import { useLists } from "../hooks/use-lists";
+import { ListSource } from "../types";
 import { useGlobals } from "./provider/globals-provider";
 import { Button } from "./ui/button";
 import { ScrollArea } from "./ui/scroll-area";
