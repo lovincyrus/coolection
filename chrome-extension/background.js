@@ -100,14 +100,14 @@ chrome.runtime.onInstalled.addListener(async () => {
 // Listen for alarm fires
 chrome.alarms.onAlarm.addListener((alarm) => {
   if (alarm.name === SYNC_ALARM_NAME) {
-    runBookmarkSync().catch(() => {});
+    runBookmarkSync({ manual: false }).catch(() => {});
   }
 });
 
 // Listen for manual sync trigger from options page
 chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
   if (message.type === "TRIGGER_BOOKMARK_SYNC") {
-    runBookmarkSync().then((result) => sendResponse(result));
+    runBookmarkSync({ manual: true }).then((result) => sendResponse(result));
     return true; // async response
   }
   if (message.type === "UPDATE_SYNC_SCHEDULE") {
@@ -126,7 +126,7 @@ function scheduleSync(intervalMinutes) {
   });
 }
 
-async function runBookmarkSync() {
+async function runBookmarkSync({ manual = false } = {}) {
   // Use storage-backed flag so service worker termination doesn't lose state
   const { _syncInProgress } = await chrome.storage.local.get("_syncInProgress");
   if (_syncInProgress) return { success: false, reason: "already_syncing" };
@@ -147,6 +147,7 @@ async function runBookmarkSync() {
     const tabs = await chrome.tabs.query({ url: "https://x.com/i/bookmarks*" });
     let tab;
     let createdTab = false;
+    let groupId = null;
 
     if (tabs.length > 0) {
       tab = tabs[0];
@@ -157,19 +158,37 @@ async function runBookmarkSync() {
     } else {
       tab = await chrome.tabs.create({ url: BOOKMARKS_URL, active: false });
       createdTab = true;
+
+      // Tuck the tab into a collapsed group
+      try {
+        groupId = await chrome.tabs.group({ tabIds: [tab.id] });
+        await chrome.tabGroups.update(groupId, {
+          title: "Coolection Sync",
+          color: "grey",
+          collapsed: true,
+        });
+      } catch {
+        // tabGroups API may not be available — continue without grouping
+      }
+
       await waitForTabLoad(tab.id);
       // Give X's JS extra time to render the timeline
       await sleep(3000);
     }
 
+    // Use locally cached URLs from previous syncs for early stop detection
+    const { syncedUrls: knownUrls = [] } = await chrome.storage.local.get("syncedUrls");
+
     // Ask the content script to scan visible bookmarks (with scrolling)
     let urls;
+    const scanMessage = {
+      type: "SCAN_BOOKMARKS",
+      maxScrolls: 20,
+      scrollDelay: 1500,
+      knownUrls,
+    };
     try {
-      const response = await chrome.tabs.sendMessage(tab.id, {
-        type: "SCAN_BOOKMARKS",
-        maxScrolls: 20,
-        scrollDelay: 1500,
-      });
+      const response = await chrome.tabs.sendMessage(tab.id, scanMessage);
       urls = response?.urls || [];
     } catch (e) {
       // Content script not ready — inject it manually and retry
@@ -178,11 +197,7 @@ async function runBookmarkSync() {
         files: ["bookmarks-content.js"],
       });
       await sleep(500);
-      const response = await chrome.tabs.sendMessage(tab.id, {
-        type: "SCAN_BOOKMARKS",
-        maxScrolls: 20,
-        scrollDelay: 1500,
-      });
+      const response = await chrome.tabs.sendMessage(tab.id, scanMessage);
       urls = response?.urls || [];
     }
 
@@ -232,6 +247,10 @@ async function runBookmarkSync() {
         clearTimeout(timeout);
       }
     }
+
+    // Cache synced URLs locally (keep last 500 for early stop detection)
+    const merged = [...new Set([...urls, ...knownUrls])].slice(0, 500);
+    await chrome.storage.local.set({ syncedUrls: merged });
 
     const status = { lastSync: Date.now(), added, skipped, failed };
     await updateSyncStatus(status);

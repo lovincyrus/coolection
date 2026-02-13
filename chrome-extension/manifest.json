@@ -3,9 +3,9 @@
   "name": "Coolection",
   "version": "1.1.0",
   "description": "Save the current page to Coolection",
-  "permissions": ["activeTab", "scripting", "contextMenus", "storage", "alarms", "tabs"],
+  "permissions": ["activeTab", "scripting", "contextMenus", "storage", "alarms", "tabs", "tabGroups"],
   "host_permissions": ["https://www.coolection.co/*", "https://x.com/i/bookmarks*"],
-  "optional_host_permissions": ["https://*/*"],
+  "optional_host_permissions": ["https://*/*", "http://localhost/*"],
   "action": {
     "default_icon": {
       "16": "icons/icon-16.png",
