@@ -398,7 +398,7 @@ export default function SettingsPage() {
               <li>Bookmarks will appear in your <span className="font-medium">X Bookmarks</span> list</li>
             </ol>
             <a
-              href="https://github.com/kasper-gb/coolection"
+              href="https://github.com/lovincyrus/coolection"
               target="_blank"
               rel="noreferrer noopener"
               className="inline-flex items-center gap-1 text-xs text-gray-500 hover:text-gray-900"
