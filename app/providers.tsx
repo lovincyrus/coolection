@@ -27,15 +27,13 @@ export function Providers({ children }: { children: React.ReactNode }) {
     storageHandler: storageHandler,
   });
 
-  if (!cacheProvider) {
-    return null;
-  }
-
   return (
     <ClerkProvider>
       <SWRConfig
         value={{
-          provider: cacheProvider,
+          ...(cacheProvider ? { provider: cacheProvider } : {}),
+          revalidateOnFocus: false,
+          dedupingInterval: 5_000,
           fallback: {
             "/api/lists": getAllLists(),
             "/api/items?page=1&limit=10": getItems(1, 10),
