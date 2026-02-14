@@ -24,10 +24,13 @@ import { ResultItem } from "./result-item";
 import { ResultItemSkeletons } from "./result-item-skeletons";
 import { Button } from "./ui/button";
 
-export default function MainResults(
-  listsServerData: any,
-  itemsServerData: any,
-) {
+export default function MainResults({
+  listsServerData,
+  itemsServerData,
+}: {
+  listsServerData: any;
+  itemsServerData: any;
+}) {
   const isInList = useIsInList();
   const { mutate } = useSWRConfig();
   const searchParams = useSearchParams();
