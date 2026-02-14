@@ -6,7 +6,7 @@ import { toast } from "sonner";
 import { isValidUrl } from "@/lib/url";
 
 export function useClipboardUrl(
-  onSave: (url: string) => Promise<void>,
+  onSave: (_url: string) => Promise<void>,
   enabled: boolean,
 ) {
   const lastSuggestedUrl = useRef<string | null>(null);
