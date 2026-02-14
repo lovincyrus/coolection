@@ -4,6 +4,7 @@ import React, { Suspense } from "react";
 
 import { DEFAULT_PAGE_SIZE } from "@/lib/constants";
 
+import { ClipboardUrlDetector } from "../components/clipboard-url-detector";
 import { Footer } from "../components/footer";
 import { Header } from "../components/header";
 import MainResults from "../components/main-results";
@@ -46,6 +47,7 @@ export default async function HomePage() {
         </div>
       </div>
 
+      <ClipboardUrlDetector />
       <Footer type="home" />
     </main>
   );
