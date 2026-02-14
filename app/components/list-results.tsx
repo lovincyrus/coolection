@@ -15,11 +15,9 @@ import { ResultItemSkeletons } from "./result-item-skeletons";
 export function ListResults({
   listId,
   listsServerData,
-  listItemsServerData,
 }: {
   listId: string;
   listsServerData: any;
-  listItemsServerData?: any;
 }) {
   const isInList = useIsInList();
   const { data: lists } = useLists(listsServerData);
@@ -27,11 +25,12 @@ export function ListResults({
     data: itemsFromList,
     loading,
     mutate: mutateItemsFromList,
-  } = useItemsFromList(listId, listItemsServerData);
+  } = useItemsFromList(listId);
 
-  const showSkeleton = useLoadingWithTimeout(loading, 100);
+  const hasItems = Array.isArray(itemsFromList) && itemsFromList.length > 0;
+
   const showEmptyListItemsCopy = useLoadingWithTimeout(
-    isInList && Object.keys(itemsFromList).length === 0 && !loading,
+    isInList && !hasItems && !loading,
     300,
   );
 
@@ -55,11 +54,10 @@ export function ListResults({
         </div>
       ) : null}
 
-      {showSkeleton && <ResultItemSkeletons />}
+      {loading && !hasItems && <ResultItemSkeletons />}
 
       <AnimatePresence initial={false}>
-        {!loading &&
-          Array.isArray(itemsFromList) &&
+        {Array.isArray(itemsFromList) &&
           itemsFromList.map((item: Item) => (
             <AnimatedListItem key={item.id}>
               <ResultItem
