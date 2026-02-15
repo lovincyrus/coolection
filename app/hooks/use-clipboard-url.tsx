@@ -25,8 +25,11 @@ export function useClipboardUrl(
 
       toast("URL found in clipboard", {
         description: trimmed,
+        classNames: {
+          description: "!text-sm !text-gray-400 line-clamp-2 break-all",
+        },
         action: {
-          label: "Save to Coolection",
+          label: "Save",
           onClick: () => onSave(trimmed),
         },
         duration: 8000,
