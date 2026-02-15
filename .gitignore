@@ -40,3 +40,8 @@ video/
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# playwright
+e2e/.auth/
+test-results/
+playwright-report/
