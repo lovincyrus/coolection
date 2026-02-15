@@ -2,6 +2,8 @@
 
 import React, { Suspense } from "react";
 
+import { DEFAULT_PAGE_SIZE } from "@/lib/constants";
+
 import { Footer } from "../components/footer";
 import { Header } from "../components/header";
 import MainResults from "../components/main-results";
@@ -16,7 +18,7 @@ export async function generateMetadata() {
 }
 
 const listsServerData = getAllLists();
-const itemsServerData = getItems(1, 10);
+const itemsServerData = getItems(1, DEFAULT_PAGE_SIZE);
 
 export default async function HomePage() {
   return (

@@ -46,29 +46,29 @@ export function ListResults({
 
   return (
     <div className="mb-8">
-      {showEmptyListItemsCopy ? (
-        <div className="mt-4 flex min-h-48 w-full items-center justify-center">
-          <p className="max-w-[80%] truncate text-center text-sm font-medium text-gray-700">
-            There is nothing in this list yet.
-          </p>
-        </div>
-      ) : null}
+        {showEmptyListItemsCopy ? (
+          <div className="mt-4 flex min-h-48 w-full items-center justify-center">
+            <p className="max-w-[80%] truncate text-center text-sm font-medium text-gray-700">
+              There is nothing in this list yet.
+            </p>
+          </div>
+        ) : null}
 
-      {loading && !hasItems && <ResultItemSkeletons />}
+        {loading && !hasItems && <ResultItemSkeletons />}
 
-      <AnimatePresence initial={false}>
-        {Array.isArray(itemsFromList) &&
-          itemsFromList.map((item: Item) => (
-            <AnimatedListItem key={item.id}>
-              <ResultItem
-                item={item}
-                onRemove={handleRemoveItem}
-                lists={lists}
-                listId={listId}
-              />
-            </AnimatedListItem>
-          ))}
-      </AnimatePresence>
+        <AnimatePresence initial={false}>
+          {Array.isArray(itemsFromList) &&
+            itemsFromList.map((item: Item) => (
+              <AnimatedListItem key={item.id}>
+                <ResultItem
+                  item={item}
+                  onRemove={handleRemoveItem}
+                  lists={lists}
+                  listId={listId}
+                />
+              </AnimatedListItem>
+            ))}
+        </AnimatePresence>
     </div>
   );
 }

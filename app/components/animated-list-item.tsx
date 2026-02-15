@@ -5,6 +5,13 @@ interface AnimatedListItemProps {
   children: ReactNode;
 }
 
+const transition = {
+  type: "spring" as const,
+  duration: 0.25,
+  bounce: 0,
+  opacity: { duration: 0.15 },
+};
+
 export const AnimatedListItem: React.FC<AnimatedListItemProps> = ({
   children,
 }) => {
@@ -14,12 +21,7 @@ export const AnimatedListItem: React.FC<AnimatedListItemProps> = ({
       initial={{ height: 0, opacity: 0 }}
       animate={{ height: "auto", opacity: 1 }}
       exit={{ height: 0, opacity: 0 }}
-      transition={{
-        type: "spring",
-        duration: 0.25,
-        bounce: 0,
-        opacity: { duration: 0.15 },
-      }}
+      transition={transition}
     >
       {children}
     </motion.div>

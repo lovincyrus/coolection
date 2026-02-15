@@ -6,8 +6,8 @@ import React, { useRef } from "react";
 import { useHotkeys } from "reakeys";
 import { useDebouncedCallback } from "use-debounce";
 
-// After user stops typing for 300ms, update the URL with the new search query
-const DEBOUNCE_TIME = 300;
+// After user stops typing for 150ms, update the URL with the new search query
+const DEBOUNCE_TIME = 150;
 
 export function SearchBar() {
   const inputRef = useRef<HTMLInputElement>(null);
