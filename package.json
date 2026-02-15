@@ -11,6 +11,9 @@
     "lint": "next lint",
     "test": "vitest run",
     "test:watch": "vitest",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui",
+    "test:e2e:headed": "playwright test --headed",
     "db:seed": "prisma generate && prisma db seed",
     "db:push": "prisma db push --accept-data-loss",
     "db:pull": "prisma db pull",
@@ -60,6 +63,8 @@
     "uuidv4": "^6.2.13"
   },
   "devDependencies": {
+    "@clerk/testing": "^1.13.36",
+    "@playwright/test": "^1.58.2",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.2",
     "@types/jsdom": "^21.1.6",

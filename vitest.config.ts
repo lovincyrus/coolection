@@ -1,5 +1,5 @@
 import path from "path";
-import { defineConfig } from "vitest/config";
+import { configDefaults, defineConfig } from "vitest/config";
 
 export default defineConfig({
   esbuild: {
@@ -9,6 +9,7 @@ export default defineConfig({
     environment: "jsdom",
     setupFiles: ["./vitest.setup.ts"],
     globals: true,
+    exclude: [...configDefaults.exclude, "e2e/**"],
   },
   resolve: {
     alias: {
