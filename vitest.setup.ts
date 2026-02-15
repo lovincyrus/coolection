@@ -10,14 +10,14 @@ beforeEach(() => {
 
 afterEach(() => {
   const reactWarnings = consoleErrorSpy.mock.calls.filter(
-    (args) =>
+    (args: unknown[]) =>
       typeof args[0] === "string" &&
       (args[0].includes("Warning:") || args[0].includes("Encountered two children with the same key")),
   );
   consoleErrorSpy.mockRestore();
   if (reactWarnings.length > 0) {
     expect.fail(
-      `React warning detected:\n${reactWarnings.map((args) => args.join(" ")).join("\n")}`,
+      `React warning detected:\n${reactWarnings.map((args: unknown[]) => args.join(" ")).join("\n")}`,
     );
   }
 });
