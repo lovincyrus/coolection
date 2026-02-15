@@ -8,6 +8,7 @@ import { Toaster } from "sonner";
 
 import { fontSans } from "@/lib/fonts";
 
+import { ClipboardUrlSuggestion } from "./components/clipboard-url-suggestion";
 import { Sidebar } from "./components/sidebar";
 import { TailwindIndicator } from "./components/tailwind-indicator";
 import { Providers } from "./providers";
@@ -50,6 +51,7 @@ export default function RootLayout({
         <body className={fontSans.className}>
           <Providers>
             <Toaster />
+            <ClipboardUrlSuggestion />
             <Analytics />
             <div className="flex">
               <Sidebar />
