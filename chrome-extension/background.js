@@ -9,6 +9,12 @@ chrome.runtime.onInstalled.addListener((details) => {
       contexts: ["page"],
       documentUrlPatterns: ["http://*/*", "https://*/*"],
     });
+    chrome.contextMenus.create({
+      id: "save-link-to-coolection",
+      title: "Save to Coolection",
+      contexts: ["link"],
+      targetUrlPatterns: ["http://*/*", "https://*/*"],
+    });
   });
 
   if (details.reason === "install") {
@@ -25,6 +31,9 @@ chrome.action.onClicked.addListener((tab) => {
 chrome.contextMenus.onClicked.addListener((info, tab) => {
   if (info.menuItemId === "add-to-coolection" && tab?.id != null) {
     saveUrl(tab.id, tab.url);
+  }
+  if (info.menuItemId === "save-link-to-coolection" && tab?.id != null) {
+    saveUrl(tab.id, info.linkUrl);
   }
 });
 
