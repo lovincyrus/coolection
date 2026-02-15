@@ -49,22 +49,5 @@ export function getItems(_page: number, _limit: number) {
         userId: empty(),
       },
     ],
-    [
-      {
-        id: empty(),
-        url: "",
-        title: "",
-        description: "",
-        content: null,
-        image: null,
-        createdAt: "",
-        updatedAt: "",
-        deletedAt: null,
-        isDeleted: false,
-        type: "website",
-        metadata: null,
-        userId: empty(),
-      },
-    ],
   ];
 }
