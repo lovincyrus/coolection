@@ -183,7 +183,6 @@ export default async function RootPage() {
                 loop
                 muted
                 playsInline
-                preload="none"
                 className="h-full w-full object-cover object-top"
                 aria-label="Coolection dashboard demo showing bookmarks being searched and organized"
               />

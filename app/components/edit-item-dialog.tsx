@@ -21,11 +21,7 @@ import { Input } from "./ui/input";
 import { Label } from "./ui/label";
 import { Textarea } from "./ui/textarea";
 
-export function EditItemDialog({
-  itemsServerData,
-}: {
-  itemsServerData: any;
-}) {
+export function EditItemDialog(itemsServerData: any) {
   const { openEditItemDialog, setOpenEditItemDialog, currentItem } =
     useGlobals();
   const { mutate } = useSWRConfig();

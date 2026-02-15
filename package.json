@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "prisma generate && if [ -n \"$DATABASE_URL\" ]; then prisma db push; fi && NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=${NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY:-pk_test_dGVzdC5jbGVyay5hY2NvdW50cy5kZXYk} next build",
+    "build": "prisma generate && prisma db push && next build",
     "build:dev": "prisma generate && prisma db push && prisma db seed && next build",
     "build:prod": "prisma generate && prisma migrate deploy && next build",
     "start": "next start",

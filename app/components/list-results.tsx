@@ -1,6 +1,6 @@
 "use client";
 
-import { AnimatePresence, domAnimation, LazyMotion } from "framer-motion";
+import { AnimatePresence } from "framer-motion";
 import React, { useCallback } from "react";
 
 import { useIsInList } from "../hooks/use-is-in-list";
@@ -45,32 +45,30 @@ export function ListResults({
   );
 
   return (
-    <LazyMotion features={domAnimation}>
-      <div className="mb-8">
-        {showEmptyListItemsCopy ? (
-          <div className="mt-4 flex min-h-48 w-full items-center justify-center">
-            <p className="max-w-[80%] truncate text-center text-sm font-medium text-gray-700">
-              There is nothing in this list yet.
-            </p>
-          </div>
-        ) : null}
+    <div className="mb-8">
+      {showEmptyListItemsCopy ? (
+        <div className="mt-4 flex min-h-48 w-full items-center justify-center">
+          <p className="max-w-[80%] truncate text-center text-sm font-medium text-gray-700">
+            There is nothing in this list yet.
+          </p>
+        </div>
+      ) : null}
 
-        {loading && !hasItems && <ResultItemSkeletons />}
+      {loading && !hasItems && <ResultItemSkeletons />}
 
-        <AnimatePresence initial={false}>
-          {Array.isArray(itemsFromList) &&
-            itemsFromList.map((item: Item) => (
-              <AnimatedListItem key={item.id}>
-                <ResultItem
-                  item={item}
-                  onRemove={handleRemoveItem}
-                  lists={lists}
-                  listId={listId}
-                />
-              </AnimatedListItem>
-            ))}
-        </AnimatePresence>
-      </div>
-    </LazyMotion>
+      <AnimatePresence initial={false}>
+        {Array.isArray(itemsFromList) &&
+          itemsFromList.map((item: Item) => (
+            <AnimatedListItem key={item.id}>
+              <ResultItem
+                item={item}
+                onRemove={handleRemoveItem}
+                lists={lists}
+                listId={listId}
+              />
+            </AnimatedListItem>
+          ))}
+      </AnimatePresence>
+    </div>
   );
 }

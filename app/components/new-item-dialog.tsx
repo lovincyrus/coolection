@@ -20,11 +20,7 @@ import {
 } from "./ui/dialog";
 import { Input } from "./ui/input";
 
-export function NewItemDialog({
-  itemsServerData,
-}: {
-  itemsServerData: any;
-}) {
+export function NewItemDialog(itemsServerData: any) {
   const [inputText, setInputText] = useState("");
   const { openNewItemDialog, setOpenNewItemDialog } = useGlobals();
   const { data: items, mutate: mutateItems } =

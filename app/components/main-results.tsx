@@ -1,11 +1,5 @@
 "use client";
-import {
-  AnimatePresence,
-  domAnimation,
-  LazyMotion,
-  m,
-  useScroll,
-} from "framer-motion";
+import { AnimatePresence, motion, useScroll } from "framer-motion";
 import { CircleArrowUpIcon } from "lucide-react";
 import { useSearchParams } from "next/navigation";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
@@ -24,13 +18,10 @@ import { ResultItem } from "./result-item";
 import { ResultItemSkeletons } from "./result-item-skeletons";
 import { Button } from "./ui/button";
 
-export default function MainResults({
-  listsServerData,
-  itemsServerData,
-}: {
-  listsServerData: any;
-  itemsServerData: any;
-}) {
+export default function MainResults(
+  listsServerData: any,
+  itemsServerData: any,
+) {
   const isInList = useIsInList();
   const { mutate } = useSWRConfig();
   const searchParams = useSearchParams();
@@ -126,112 +117,108 @@ export default function MainResults({
   );
 
   return (
-    <LazyMotion features={domAnimation}>
-      <div>
-        {showEmptyItemsCopy ? (
-          <p className="mt-4 text-center text-sm font-medium text-gray-700">
-            You have no items in your coolection. Start by{" "}
-            <span
-              className="cursor-pointer text-sky-400 hover:underline"
-              onClick={() => setOpenNewItemDialog(true)}
-            >
-              adding some
-            </span>
-            !
+    <div>
+      {showEmptyItemsCopy ? (
+        <p className="mt-4 text-center text-sm font-medium text-gray-700">
+          You have no items in your coolection. Start by{" "}
+          <span
+            className="cursor-pointer text-sky-400 hover:underline"
+            onClick={() => setOpenNewItemDialog(true)}
+          >
+            adding some
+          </span>
+          !
+        </p>
+      ) : null}
+
+      {showNoResults ? (
+        <div className="mt-4 flex w-full items-center justify-center">
+          <p className="max-w-[80%] truncate text-center text-sm font-medium text-gray-700">
+            No results for <q>{querySearchParam}</q>
           </p>
-        ) : null}
+        </div>
+      ) : null}
 
-        {showNoResults ? (
-          <div className="mt-4 flex w-full items-center justify-center">
-            <p className="max-w-[80%] truncate text-center text-sm font-medium text-gray-700">
-              No results for <q>{querySearchParam}</q>
-            </p>
-          </div>
-        ) : null}
+      {loadingItems || isSearchingResultsWithTimeout ? (
+        <ResultItemSkeletons />
+      ) : null}
 
-        {loadingItems || isSearchingResultsWithTimeout ? (
-          <ResultItemSkeletons />
-        ) : null}
-
-        {results && results.length > 0 ? (
-          <AnimatePresence initial={false} mode="popLayout" key="results">
-            {Array.isArray(results) &&
-              results.map((item: Item, idx: number) => {
-                return (
-                  <AnimatedListItem key={item.id}>
-                    <ResultItem
-                      item={item}
-                      onArchive={handleArchiveItem}
-                      lists={lists}
-                      isLastItem={idx === results.length - 1}
-                      onLoadMore={
-                        idx === results.length - 1 &&
-                        querySearchParam.length === 0
-                          ? loadMore
-                          : undefined
-                      }
-                    />
-                  </AnimatedListItem>
-                );
-              })}
-          </AnimatePresence>
-        ) : null}
-
-        <div className="h-4" />
-
-        {showLoadMore && (
-          <div>
-            <Button
-              className="h-[30px] w-full items-center justify-center whitespace-nowrap rounded-lg border bg-white px-3 text-xs font-medium shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 disabled:pointer-events-none disabled:opacity-50"
-              disabled={isLoadingOrValidating}
-              onClick={() => (error ? mutateItems() : loadMore())}
-            >
-              {error
-                ? "Try Again"
-                : isLoadingOrValidating
-                  ? "Loading..."
-                  : "Load More"}
-            </Button>
-            <div className="h-8" />
-          </div>
-        )}
-
-        <AnimatePresence>
-          {showScrollTop && !isInList && (
-            <m.div
-              key="scroll-top"
-              className="fixed bottom-3 right-4"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{
-                duration: 0.5,
-                type: "spring",
-                stiffness: 300,
-                damping: 100,
-              }}
-              whileHover={{
-                scale: 1.1,
-                transition: {
-                  duration: 0.2,
-                  ease: [0.4, 0, 0.2, 1],
-                  stiffness: 300,
-                },
-              }}
-            >
-              <CircleArrowUpIcon
-                strokeWidth={1.5}
-                className="h-6 w-6 cursor-pointer rounded-full text-gray-500 drop-shadow backdrop-blur-sm"
-                onClick={() =>
-                  window.scrollTo({ top: 0, behavior: "smooth" })
-                }
-              />
-            </m.div>
-          )}
+      {results && results.length > 0 ? (
+        <AnimatePresence initial={false} mode="popLayout" key="results">
+          {Array.isArray(results) &&
+            results.map((item: Item, idx: number) => {
+              return (
+                <AnimatedListItem key={item.id}>
+                  <ResultItem
+                    item={item}
+                    onArchive={handleArchiveItem}
+                    lists={lists}
+                    isLastItem={idx === results.length - 1}
+                    onLoadMore={
+                      idx === results.length - 1 &&
+                      querySearchParam.length === 0
+                        ? loadMore
+                        : undefined
+                    }
+                  />
+                </AnimatedListItem>
+              );
+            })}
         </AnimatePresence>
+      ) : null}
 
-        <EditItemDialog itemsServerData={itemsServerData} />
-      </div>
-    </LazyMotion>
+      <div className="h-4" />
+
+      {showLoadMore && (
+        <div>
+          <Button
+            className="h-[30px] w-full items-center justify-center whitespace-nowrap rounded-lg border bg-white px-3 text-xs font-medium shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 disabled:pointer-events-none disabled:opacity-50"
+            disabled={isLoadingOrValidating}
+            onClick={() => (error ? mutateItems() : loadMore())}
+          >
+            {error
+              ? "Try Again"
+              : isLoadingOrValidating
+                ? "Loading..."
+                : "Load More"}
+          </Button>
+          <div className="h-8" />
+        </div>
+      )}
+
+      <AnimatePresence>
+        {showScrollTop && !isInList && (
+          <motion.div
+            key="scroll-top"
+            className="fixed bottom-3 right-4"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{
+              duration: 0.5,
+              type: "spring",
+              stiffness: 300,
+              damping: 100,
+            }}
+            whileHover={{
+              scale: 1.1,
+              transition: {
+                duration: 0.2,
+                ease: [0.4, 0, 0.2, 1],
+                stiffness: 300,
+              },
+            }}
+          >
+            <CircleArrowUpIcon
+              strokeWidth={1.5}
+              className="h-6 w-6 cursor-pointer rounded-full text-gray-500 drop-shadow backdrop-blur-sm"
+              onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+            />
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      <EditItemDialog itemsServerData={itemsServerData} />
+    </div>
   );
 }

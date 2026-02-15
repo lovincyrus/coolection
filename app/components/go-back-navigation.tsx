@@ -1,6 +1,6 @@
 "use client";
 
-import { AnimatePresence, domAnimation, LazyMotion, m } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import { ArrowLeftIcon, ChevronRightIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { Link } from "next-view-transitions";
@@ -145,19 +145,17 @@ export function GoBackNavigation({
               }
             }}
           >
-            <LazyMotion features={domAnimation}>
-              <AnimatePresence mode="popLayout" initial={false}>
-                <m.span
-                  transition={{ type: "spring", duration: 0.3, bounce: 0 }}
-                  initial={{ opacity: 0, y: -25 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: 25 }}
-                  key={buttonState}
-                >
-                  {buttonCopy[buttonState as ButtonCopyState]}
-                </m.span>
-              </AnimatePresence>
-            </LazyMotion>
+            <AnimatePresence mode="popLayout" initial={false}>
+              <motion.span
+                transition={{ type: "spring", duration: 0.3, bounce: 0 }}
+                initial={{ opacity: 0, y: -25 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: 25 }}
+                key={buttonState}
+              >
+                {buttonCopy[buttonState as ButtonCopyState]}
+              </motion.span>
+            </AnimatePresence>
           </Button>
         </div>
       </div>
