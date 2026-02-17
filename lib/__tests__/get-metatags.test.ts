@@ -4,10 +4,10 @@ vi.mock("node-fetch", () => ({
   default: vi.fn(),
 }));
 
-/* eslint-disable import/first */
+/* eslint-disable import/first, simple-import-sort/imports */
 import fetch from "node-fetch";
 import { getMetatags } from "../get-metatags";
-/* eslint-enable import/first */
+/* eslint-enable import/first, simple-import-sort/imports */
 
 const mockFetch = vi.mocked(fetch);
 
