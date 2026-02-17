@@ -10,8 +10,17 @@ function parseTwitterScreenName(url: string) {
 }
 
 export async function getMetatags(url: string) {
-  const response = await fetch(url);
-  const data = await response.text();
+  let data: string;
+  try {
+    const response = await fetch(url);
+    data = await response.text();
+  } catch {
+    return {
+      title: titleFromUrl(url),
+      description: undefined,
+    };
+  }
+
   const $ = cheerio.load(data);
   const headTitle = $("head > title").text();
   const title = $("title").text();
