@@ -34,6 +34,28 @@ test.describe("Add Item", () => {
     ).toBeVisible({ timeout: 15_000 });
   });
 
+  test("submit a tweet URL with query params", async ({ page }) => {
+    await page.goto("/home");
+
+    await page.locator("button", { hasText: "New Item" }).click();
+
+    const urlInput = page.locator(
+      'input[type="url"][placeholder*="readsomethingwonderful"]',
+    );
+    const tweetUrl =
+      "https://x.com/gunnargray/status/2021273849485005026?s=46&t=-IkwiyXY8CDiVZF0csG4ow";
+    await urlInput.fill(tweetUrl);
+    await page.locator('button[type="submit"]', { hasText: "Submit" }).click();
+
+    // Dialog should close
+    await expect(urlInput).not.toBeVisible({ timeout: 5_000 });
+
+    // Should succeed or show duplicate — never a 500 error
+    const success = page.locator("text=added successfully");
+    const duplicate = page.locator("text=Item already exists");
+    await expect(success.or(duplicate)).toBeVisible({ timeout: 15_000 });
+  });
+
   test("empty URL shows error toast", async ({ page }) => {
     await page.goto("/home");
 

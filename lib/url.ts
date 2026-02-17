@@ -62,6 +62,8 @@ export function normalizeLink(input: string) {
     "utm_term",
     "gclid",
     "fbclid",
+    "s",
+    "t",
   ];
 
   return normalizeUrl(input, {
