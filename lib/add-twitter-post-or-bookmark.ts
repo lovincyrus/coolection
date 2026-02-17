@@ -6,18 +6,23 @@ import { getTweet } from "./get-tweet";
 // https://twitter.com/i/bookmarks?post_id=1784694622566187100
 // https://twitter.com/rauchg/status/1784694622566187100
 function getTweetIdFromUrl(url: string) {
-  const urlParts = url.split("/");
-  const potentialId = urlParts[urlParts.length - 1];
+  try {
+    const urlObj = new URL(url);
 
-  // Check if the potential ID is a number (all tweet IDs are numbers)
-  if (!isNaN(Number(potentialId))) {
-    return potentialId;
-  }
+    // Check if the URL is a bookmark URL with post_id param
+    const postId = urlObj.searchParams.get("post_id");
+    if (postId) {
+      return postId;
+    }
 
-  // If the potential ID is not a number, check if the URL is a bookmark URL
-  const bookmarkPostIdMatch = url.match(/post_id=(\d+)/);
-  if (bookmarkPostIdMatch) {
-    return bookmarkPostIdMatch[1];
+    // Extract tweet ID from pathname: /user/status/1234567890
+    const pathSegments = urlObj.pathname.split("/").filter(Boolean);
+    const statusIndex = pathSegments.indexOf("status");
+    if (statusIndex !== -1 && statusIndex + 1 < pathSegments.length) {
+      return pathSegments[statusIndex + 1];
+    }
+  } catch {
+    // Fall through
   }
 
   return "";
