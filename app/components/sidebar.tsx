@@ -34,12 +34,12 @@ export function Sidebar() {
       )}
 
       <aside
-        className={`fixed left-0 top-0 z-50 flex h-dvh w-64 flex-col border-r border-dashed bg-white transition-transform duration-200 ease-out md:sticky md:z-0 md:transition-[width,min-width] md:duration-200 ${sidebarOpen ? "translate-x-0 md:min-w-[256px]" : "-translate-x-full md:min-w-0 md:w-0 md:translate-x-0 md:overflow-hidden md:border-0"}`}
+        className={`fixed left-0 top-0 z-50 flex h-dvh w-64 flex-col border-r border-dashed bg-bg transition-transform duration-200 ease-out md:sticky md:z-0 md:transition-[width,min-width] md:duration-200 ${sidebarOpen ? "translate-x-0 md:min-w-[256px]" : "-translate-x-full md:min-w-0 md:w-0 md:translate-x-0 md:overflow-hidden md:border-0"}`}
       >
         <div className="flex items-center justify-between border-b border-dashed px-3 py-3">
-          <span className="text-xs font-medium text-gray-500">Lists</span>
+          <span className="text-xs font-medium text-text-tertiary">Lists</span>
           <Button
-            className="flex h-6 w-6 items-center justify-center rounded-md text-gray-400 hover:bg-gray-100 hover:text-gray-600 md:hidden"
+            className="flex h-6 w-6 items-center justify-center rounded-md text-text-quaternary hover:bg-surface-hover hover:text-text-secondary md:hidden"
             onClick={() => setSidebarOpen(false)}
             aria-label="Close sidebar"
           >
@@ -56,8 +56,8 @@ export function Sidebar() {
               }}
               className={`flex items-center gap-2 rounded-lg px-2.5 py-1.5 text-xs font-medium transition-colors ${
                 isHome
-                  ? "bg-gray-100 text-gray-900"
-                  : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
+                  ? "bg-surface-active text-text-primary"
+                  : "text-text-secondary hover:bg-surface hover:text-text-primary"
               }`}
             >
               <HomeIcon className="h-3.5 w-3.5" />
@@ -78,8 +78,8 @@ export function Sidebar() {
                   title={list.name}
                   className={`flex items-center gap-2 truncate rounded-lg px-2.5 py-1.5 text-xs font-medium transition-colors ${
                     isActive
-                      ? "bg-gray-100 text-gray-900"
-                      : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
+                      ? "bg-surface-active text-text-primary"
+                      : "text-text-secondary hover:bg-surface hover:text-text-primary"
                   }`}
                 >
                   {list.source === "gh" ? (
@@ -96,7 +96,7 @@ export function Sidebar() {
 
         <div className="border-t border-dashed p-2 h-[49px] flex items-center">
           <Button
-            className="flex w-full items-center gap-2 rounded-lg px-2.5 py-1.5 text-xs font-medium text-gray-500 transition-colors hover:bg-gray-50 hover:text-gray-900"
+            className="flex w-full items-center gap-2 rounded-lg px-2.5 py-1.5 text-xs font-medium text-text-tertiary transition-colors hover:bg-surface hover:text-text-primary"
             onClick={() => setOpenNewListDialog(true)}
           >
             <ListPlusIcon className="h-3.5 w-3.5" />

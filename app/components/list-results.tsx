@@ -48,7 +48,7 @@ export function ListResults({
     <div className="mb-8">
         {showEmptyListItemsCopy ? (
           <div className="mt-4 flex min-h-48 w-full items-center justify-center">
-            <p className="max-w-[80%] truncate text-center text-sm font-medium text-gray-700">
+            <p className="max-w-[80%] truncate text-center text-sm font-medium text-text-secondary">
               There is nothing in this list yet.
             </p>
           </div>

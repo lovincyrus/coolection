@@ -1,10 +1,12 @@
 "use client";
 
 import { ClerkProvider } from "@clerk/nextjs";
+import { dark } from "@clerk/themes";
 import {
   simpleStorageHandler,
   useCacheProvider,
 } from "@piotr-cz/swr-idb-cache";
+import { ThemeProvider, useTheme } from "next-themes";
 import { SWRConfig } from "swr";
 
 import { DEFAULT_PAGE_SIZE } from "@/lib/constants";
@@ -22,6 +24,17 @@ const storageHandler = {
       : undefined,
 };
 
+function ClerkWithTheme({ children }: { children: React.ReactNode }) {
+  const { resolvedTheme } = useTheme();
+  const isDark = resolvedTheme === "dark" || resolvedTheme === "teal";
+
+  return (
+    <ClerkProvider appearance={isDark ? { baseTheme: dark } : undefined}>
+      {children}
+    </ClerkProvider>
+  );
+}
+
 export function Providers({ children }: { children: React.ReactNode }) {
   const cacheProvider = useCacheProvider({
     dbName: "coolection_db",
@@ -34,21 +47,27 @@ export function Providers({ children }: { children: React.ReactNode }) {
   }
 
   return (
-    <ClerkProvider>
-      <SWRConfig
-        value={{
-          provider: cacheProvider,
-          fallback: {
-            "/api/lists": getAllLists(),
-            [`/api/items?page=1&limit=${DEFAULT_PAGE_SIZE}`]: getItems(
-              1,
-              DEFAULT_PAGE_SIZE,
-            ),
-          },
-        }}
-      >
-        <GlobalsProvider>{children}</GlobalsProvider>
-      </SWRConfig>
-    </ClerkProvider>
+    <ThemeProvider
+      attribute="data-theme"
+      defaultTheme="system"
+      disableTransitionOnChange
+    >
+      <ClerkWithTheme>
+        <SWRConfig
+          value={{
+            provider: cacheProvider,
+            fallback: {
+              "/api/lists": getAllLists(),
+              [`/api/items?page=1&limit=${DEFAULT_PAGE_SIZE}`]: getItems(
+                1,
+                DEFAULT_PAGE_SIZE,
+              ),
+            },
+          }}
+        >
+          <GlobalsProvider>{children}</GlobalsProvider>
+        </SWRConfig>
+      </ClerkWithTheme>
+    </ThemeProvider>
   );
 }

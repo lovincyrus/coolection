@@ -8,13 +8,13 @@ export default function PrivacyPage() {
   return (
     <main className="flex min-h-screen flex-col">
       <div className="mx-auto w-full max-w-2xl flex-1 px-4 py-20">
-        <h1 className="font-serif text-3xl font-bold text-gray-900">
+        <h1 className="font-serif text-3xl font-bold text-text-primary">
           Privacy Policy
         </h1>
 
-        <div className="mt-8 space-y-6 text-sm leading-relaxed text-gray-600">
+        <div className="mt-8 space-y-6 text-sm leading-relaxed text-text-secondary">
           <section>
-            <h2 className="text-sm font-medium text-gray-900">
+            <h2 className="text-sm font-medium text-text-primary">
               How Coolection uses your data
             </h2>
             <p className="mt-2">
@@ -25,7 +25,7 @@ export default function PrivacyPage() {
           </section>
 
           <section>
-            <h2 className="text-sm font-medium text-gray-900">
+            <h2 className="text-sm font-medium text-text-primary">
               Browser extensions
             </h2>
             <p className="mt-2">
@@ -38,7 +38,7 @@ export default function PrivacyPage() {
           </section>
 
           <section>
-            <h2 className="text-sm font-medium text-gray-900">
+            <h2 className="text-sm font-medium text-text-primary">
               What we do not collect
             </h2>
             <p className="mt-2">
@@ -49,12 +49,12 @@ export default function PrivacyPage() {
           </section>
 
           <section>
-            <h2 className="text-sm font-medium text-gray-900">Contact</h2>
+            <h2 className="text-sm font-medium text-text-primary">Contact</h2>
             <p className="mt-2">
               Questions about this policy? Reach out at{" "}
               <a
                 href="mailto:hello@coolection.co"
-                className="font-medium text-gray-900 hover:underline"
+                className="font-medium text-text-primary hover:underline"
               >
                 hello@coolection.co
               </a>

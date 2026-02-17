@@ -17,7 +17,7 @@ type ButtonCopyState = "default" | "confirmation" | "loading";
 const buttonCopy = {
   default: "Remove",
   confirmation: "Are you sure?",
-  loading: <Spinner size={16} color="rgba(0, 0, 0, 0.85)" />,
+  loading: <Spinner size={16} color="var(--color-spinner)" />,
 };
 
 export function GoBackNavigation({
@@ -104,13 +104,13 @@ export function GoBackNavigation({
         {/* p-1 is to make focus ring visible */}
         <div className="flex flex-row items-center gap-x-1 p-1">
           <Link href="/home" tabIndex={-1}>
-            <Button className="flex h-6 select-none items-center justify-center rounded-full bg-gray-900 px-3 text-center text-xs font-medium text-white shadow-sm hover:bg-gray-700">
+            <Button className="flex h-6 select-none items-center justify-center rounded-full bg-inverted px-3 text-center text-xs font-medium text-text-inverted shadow-sm hover:opacity-90">
               <ArrowLeftIcon className="mr-1.5 h-3.5 w-3.5" />
               Go back
             </Button>
           </Link>
 
-          <ChevronRightIcon className="h-3.5 w-3.5 text-gray-400" />
+          <ChevronRightIcon className="h-3.5 w-3.5 text-text-quaternary" />
 
           {listId && (
             <EditableText
@@ -129,7 +129,7 @@ export function GoBackNavigation({
         </div>
         <div className="hidden flex-row items-center gap-x-1 md:flex">
           <Button
-            className="relative flex h-6 select-none items-center justify-center overflow-hidden rounded-full border bg-gray-50 px-3 text-center text-xs font-medium hover:bg-gray-200"
+            className="relative flex h-6 select-none items-center justify-center overflow-hidden rounded-full border bg-surface px-3 text-center text-xs font-medium hover:bg-surface-hover"
             disabled={buttonState === "loading"}
             onClick={() => {
               setButtonState("loading");

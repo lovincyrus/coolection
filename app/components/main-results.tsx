@@ -122,7 +122,7 @@ export default function MainResults({
   return (
     <div>
         {showEmptyItemsCopy ? (
-          <p className="mt-4 text-center text-sm font-medium text-gray-700">
+          <p className="mt-4 text-center text-sm font-medium text-text-secondary">
             You have no items in your coolection. Start by{" "}
             <span
               className="cursor-pointer text-sky-400 hover:underline"
@@ -136,7 +136,7 @@ export default function MainResults({
 
         {showNoResults ? (
           <div className="mt-4 flex w-full items-center justify-center">
-            <p className="max-w-[80%] truncate text-center text-sm font-medium text-gray-700">
+            <p className="max-w-[80%] truncate text-center text-sm font-medium text-text-secondary">
               No results for <q>{querySearchParam}</q>
             </p>
           </div>
@@ -175,7 +175,7 @@ export default function MainResults({
         {showLoadMore && (
           <div>
             <Button
-              className="h-[30px] w-full items-center justify-center whitespace-nowrap rounded-lg border bg-white px-3 text-xs font-medium shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 disabled:pointer-events-none disabled:opacity-50"
+              className="h-[30px] w-full items-center justify-center whitespace-nowrap rounded-lg border bg-bg px-3 text-xs font-medium shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 disabled:pointer-events-none disabled:opacity-50"
               disabled={isLoadingOrValidating}
               onClick={() => (error ? mutateItems() : loadMore())}
             >
@@ -214,7 +214,7 @@ export default function MainResults({
             >
               <CircleArrowUpIcon
                 strokeWidth={1.5}
-                className="h-6 w-6 cursor-pointer rounded-full text-gray-500 drop-shadow backdrop-blur-sm"
+                className="h-6 w-6 cursor-pointer rounded-full text-text-tertiary drop-shadow backdrop-blur-sm"
                 onClick={() =>
                   window.scrollTo({ top: 0, behavior: "smooth" })
                 }

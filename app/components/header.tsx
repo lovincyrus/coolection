@@ -36,7 +36,7 @@ export function Header({
       <div className="flex flex-row items-center justify-between gap-2">
         <div className="flex flex-row items-center space-x-1">
           <Button
-            className="border-input bg-background hover:bg-accent hover:text-accent-foreground h-[30px] items-center justify-center whitespace-nowrap rounded-lg border bg-white px-2 text-xs font-medium shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1"
+            className="border-input bg-background hover:bg-accent hover:text-accent-foreground h-[30px] items-center justify-center whitespace-nowrap rounded-lg border bg-bg px-2 text-xs font-medium shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1"
             onClick={() => setSidebarOpen((prev) => !prev)}
             aria-label={sidebarOpen ? "Close sidebar" : "Open sidebar"}
           >
@@ -52,12 +52,12 @@ export function Header({
             </Link>
           </div>
           {heading && (
-            <span className="ml-1 max-w-[120px] truncate text-xs font-medium text-gray-800">
+            <span className="ml-1 max-w-[120px] truncate text-xs font-medium text-text-primary">
               {heading}
             </span>
           )}
           {listId && (
-            <span className="ml-1 max-w-[240px] truncate text-xs font-medium text-gray-800">
+            <span className="ml-1 max-w-[240px] truncate text-xs font-medium text-text-primary">
               {getListName(listId)}
             </span>
           )}
@@ -69,13 +69,13 @@ export function Header({
             <NewItemDialog itemsServerData={itemsServerData} />
 
             <Link href="/settings">
-              <Button className="border-input bg-background hover:bg-accent hover:text-accent-foreground h-[30px] items-center justify-center whitespace-nowrap rounded-lg border bg-white px-3 text-xs font-medium shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 disabled:pointer-events-none disabled:opacity-50">
+              <Button className="border-input bg-background hover:bg-accent hover:text-accent-foreground h-[30px] items-center justify-center whitespace-nowrap rounded-lg border bg-bg px-3 text-xs font-medium shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 disabled:pointer-events-none disabled:opacity-50">
                 <SettingsIcon className="h-4 w-4" />
               </Button>
             </Link>
 
             <Button
-              className="border-input bg-background hover:bg-accent hover:text-accent-foreground h-[30px] items-center justify-center whitespace-nowrap rounded-lg border bg-white px-3 text-xs font-medium shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 disabled:pointer-events-none disabled:opacity-50"
+              className="border-input bg-background hover:bg-accent hover:text-accent-foreground h-[30px] items-center justify-center whitespace-nowrap rounded-lg border bg-bg px-3 text-xs font-medium shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 disabled:pointer-events-none disabled:opacity-50"
               onClick={() => signOut()}
             >
               <LogOutIcon className="h-4 w-4" />

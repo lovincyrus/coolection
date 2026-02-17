@@ -109,12 +109,12 @@ export function NewItemDialog({
   return (
     <Dialog open={openNewItemDialog} onOpenChange={setOpenNewItemDialog}>
       <DialogTrigger asChild>
-        <Button className="border-input bg-background hover:bg-accent hover:text-accent-foreground ml-auto h-[30px] items-center justify-center whitespace-nowrap rounded-lg border bg-white px-3 text-xs font-medium shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 disabled:pointer-events-none disabled:opacity-50">
+        <Button className="border-input bg-background hover:bg-accent hover:text-accent-foreground ml-auto h-[30px] items-center justify-center whitespace-nowrap rounded-lg border bg-bg px-3 text-xs font-medium shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 disabled:pointer-events-none disabled:opacity-50">
           <PlusIcon className="mr-1 h-4 w-4" />
           New Item
         </Button>
       </DialogTrigger>
-      <DialogContent className="bg-white sm:max-w-[425px]">
+      <DialogContent className="bg-bg sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>New item</DialogTitle>
           <DialogDescription>
@@ -133,7 +133,7 @@ export function NewItemDialog({
           </div>
           <DialogFooter>
             <Button
-              className="border-input bg-background hover:bg-accent hover:text-accent-foreground ml-auto w-fit items-center justify-center whitespace-nowrap rounded-md border bg-white/80 px-3 text-sm font-medium shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 disabled:pointer-events-none disabled:opacity-50"
+              className="border-input bg-background hover:bg-accent hover:text-accent-foreground ml-auto w-fit items-center justify-center whitespace-nowrap rounded-md border bg-surface px-3 text-sm font-medium shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 disabled:pointer-events-none disabled:opacity-50"
               type="submit"
               disabled={!inputText.trim()}
             >

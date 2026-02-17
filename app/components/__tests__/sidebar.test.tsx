@@ -154,23 +154,23 @@ describe("Sidebar", () => {
       mockPathname = "/home";
       render(<Sidebar />);
       const link = screen.getByText("All Bookmarks").closest("a");
-      expect(link?.className).toContain("bg-gray-100");
+      expect(link?.className).toContain("bg-surface-active");
     });
 
     it("highlights the active list", () => {
       mockPathname = "/lists/list-1";
       render(<Sidebar />);
       const designLink = screen.getByText("Design").closest("a");
-      expect(designLink?.className).toContain("bg-gray-100");
+      expect(designLink?.className).toContain("bg-surface-active");
       const workLink = screen.getByText("Work").closest("a");
-      expect(workLink?.className).not.toContain("bg-gray-100");
+      expect(workLink?.className).not.toContain("bg-surface-active");
     });
 
     it("does not highlight All Bookmarks on a list page", () => {
       mockPathname = "/lists/list-1";
       render(<Sidebar />);
       const link = screen.getByText("All Bookmarks").closest("a");
-      expect(link?.className).not.toContain("bg-gray-100");
+      expect(link?.className).not.toContain("bg-surface-active");
     });
   });
 

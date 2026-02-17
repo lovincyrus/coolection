@@ -20,7 +20,7 @@ export function HighlightChars({
         part.toLowerCase() === searchTerm.toLowerCase() ? (
           <span
             key={idx}
-            className="rounded-sm bg-slate-200 box-decoration-clone"
+            className="rounded-sm bg-highlight box-decoration-clone"
           >
             {part}
           </span>

@@ -2,38 +2,155 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 214, 219, 220;
-  --background-end-rgb: 255, 255, 255;
+/* ── Theme tokens ─────────────────────────────────────────────────── */
+
+:root,
+[data-theme="light"] {
+  --color-bg: #ffffff;
+  --color-bg-surface: #f9fafb;
+  --color-bg-surface-hover: #f3f4f6;
+  --color-bg-surface-active: #f3f4f6;
+  --color-bg-input: rgba(0, 0, 0, 0.05);
+  --color-bg-overlay: rgba(255, 255, 255, 0.3);
+  --color-bg-skeleton: #f3f4f6;
+  --color-bg-highlight: #e2e8f0;
+  --color-bg-inverted: rgba(0, 0, 0, 0.8);
+  --color-text-primary: #111827;
+  --color-text-secondary: #374151;
+  --color-text-tertiary: #6b7280;
+  --color-text-quaternary: #9ca3af;
+  --color-text-inverted: #ffffff;
+  --color-text-accent: inherit;
+  --color-border: #e5e7eb;
+  --color-border-strong: #d1d5db;
+  --color-icon-default: #6b7280;
+  --color-spinner: rgba(0, 0, 0, 0.85);
+
+  /* Shadcn compatibility */
+  --background: var(--color-bg);
+  --foreground: var(--color-text-primary);
+  --primary: var(--color-bg-inverted);
+  --primary-foreground: var(--color-text-inverted);
+  --secondary: var(--color-bg-surface);
+  --secondary-foreground: var(--color-text-primary);
+  --muted: var(--color-bg-surface);
+  --muted-foreground: var(--color-text-tertiary);
+  --accent: var(--color-bg-surface-hover);
+  --accent-foreground: var(--color-text-primary);
+  --popover: var(--color-bg);
+  --popover-foreground: var(--color-text-primary);
+  --destructive: #ef4444;
+  --destructive-foreground: #ffffff;
+  --border: var(--color-border);
+  --input: var(--color-border);
+  --ring: var(--color-border-strong);
+  --ring-offset: var(--color-bg);
+
+  color-scheme: light;
 }
 
-/* @media (prefers-color-scheme: dark) {
-  :root {
-    --foreground-rgb: 255, 255, 255;
-    --background-start-rgb: 0, 0, 0;
-    --background-end-rgb: 0, 0, 0;
-  }
-} */
+[data-theme="dark"] {
+  --color-bg: #030712;
+  --color-bg-surface: #111827;
+  --color-bg-surface-hover: #1f2937;
+  --color-bg-surface-active: #1f2937;
+  --color-bg-input: rgba(255, 255, 255, 0.05);
+  --color-bg-overlay: rgba(0, 0, 0, 0.5);
+  --color-bg-skeleton: #1f2937;
+  --color-bg-highlight: #334155;
+  --color-bg-inverted: rgba(255, 255, 255, 0.9);
+  --color-text-primary: #f3f4f6;
+  --color-text-secondary: #d1d5db;
+  --color-text-tertiary: #9ca3af;
+  --color-text-quaternary: #6b7280;
+  --color-text-inverted: #111827;
+  --color-text-accent: inherit;
+  --color-border: #374151;
+  --color-border-strong: #4b5563;
+  --color-icon-default: #9ca3af;
+  --color-spinner: rgba(255, 255, 255, 0.85);
+
+  --background: var(--color-bg);
+  --foreground: var(--color-text-primary);
+  --primary: var(--color-bg-inverted);
+  --primary-foreground: var(--color-text-inverted);
+  --secondary: var(--color-bg-surface);
+  --secondary-foreground: var(--color-text-primary);
+  --muted: var(--color-bg-surface);
+  --muted-foreground: var(--color-text-tertiary);
+  --accent: var(--color-bg-surface-hover);
+  --accent-foreground: var(--color-text-primary);
+  --popover: var(--color-bg);
+  --popover-foreground: var(--color-text-primary);
+  --destructive: #ef4444;
+  --destructive-foreground: #ffffff;
+  --border: var(--color-border);
+  --input: var(--color-border);
+  --ring: var(--color-border-strong);
+  --ring-offset: var(--color-bg);
+
+  color-scheme: dark;
+}
+
+[data-theme="teal"] {
+  --color-bg: #030712;
+  --color-bg-surface: #111827;
+  --color-bg-surface-hover: #1f2937;
+  --color-bg-surface-active: rgba(45, 212, 191, 0.1);
+  --color-bg-input: rgba(255, 255, 255, 0.05);
+  --color-bg-overlay: rgba(0, 0, 0, 0.5);
+  --color-bg-skeleton: #1f2937;
+  --color-bg-highlight: #134e4a;
+  --color-bg-inverted: #2dd4bf;
+  --color-text-primary: #f3f4f6;
+  --color-text-secondary: #d1d5db;
+  --color-text-tertiary: #9ca3af;
+  --color-text-quaternary: #6b7280;
+  --color-text-inverted: #030712;
+  --color-text-accent: #2dd4bf;
+  --color-border: #374151;
+  --color-border-strong: #0d9488;
+  --color-icon-default: #9ca3af;
+  --color-spinner: #2dd4bf;
+
+  --background: var(--color-bg);
+  --foreground: var(--color-text-primary);
+  --primary: var(--color-bg-inverted);
+  --primary-foreground: var(--color-text-inverted);
+  --secondary: var(--color-bg-surface);
+  --secondary-foreground: var(--color-text-primary);
+  --muted: var(--color-bg-surface);
+  --muted-foreground: var(--color-text-tertiary);
+  --accent: var(--color-bg-surface-hover);
+  --accent-foreground: var(--color-text-primary);
+  --popover: var(--color-bg);
+  --popover-foreground: var(--color-text-primary);
+  --destructive: #ef4444;
+  --destructive-foreground: #ffffff;
+  --border: var(--color-border);
+  --input: var(--color-border);
+  --ring: var(--color-border-strong);
+  --ring-offset: var(--color-bg);
+
+  color-scheme: dark;
+}
+
+/* ── Global styles ────────────────────────────────────────────────── */
 
 body {
-  color: rgb(var(--foreground-rgb));
-  background: #ffffff;
+  background: var(--color-bg);
+  color: var(--color-text-primary);
 }
 
 .simple-bg {
-  background: linear-gradient(to bottom, transparent, #fcfcfd) white;
-}
-
-@layer utilities {
-  button {
-    @apply hover:bg-gray-50;
-  }
+  background: linear-gradient(to bottom, transparent, var(--color-bg)) var(--color-bg);
 }
 
 .background-gradient-pattern {
-  background-image: radial-gradient(#a4a4a3, transparent 50%);
+  background-image: radial-gradient(var(--color-text-quaternary), transparent 50%);
 }
+
+/* ── Spinner ──────────────────────────────────────────────────────── */
 
 .bar {
   animation: loading-spin 1.2s linear infinite;
