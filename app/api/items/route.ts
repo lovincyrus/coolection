@@ -34,14 +34,12 @@ export async function GET(req: NextRequest) {
 
     return NextResponse.json(latestItems);
   } catch (error) {
-    if (error instanceof Error) {
-      return NextResponse.json(
-        {
-          message: "Failed to fetch the latest items",
-          error: error instanceof Error ? error.message : "Unknown error",
-        },
-        { status: 500 },
-      );
-    }
+    return NextResponse.json(
+      {
+        message: "Failed to fetch the latest items",
+        error: error instanceof Error ? error.message : "Unknown error",
+      },
+      { status: 500 },
+    );
   }
 }

@@ -23,14 +23,12 @@ export async function GET() {
 
     return NextResponse.json(lists);
   } catch (error) {
-    if (error instanceof Error) {
-      return NextResponse.json(
-        {
-          message: "Failed to fetch lists",
-          error: error instanceof Error ? error.message : "Unknown error",
-        },
-        { status: 500 },
-      );
-    }
+    return NextResponse.json(
+      {
+        message: "Failed to fetch lists",
+        error: error instanceof Error ? error.message : "Unknown error",
+      },
+      { status: 500 },
+    );
   }
 }

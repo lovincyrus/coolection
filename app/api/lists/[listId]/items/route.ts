@@ -34,20 +34,18 @@ export async function GET(req: Request, ctx: Context) {
       },
     });
 
-    const items = listWithItems?.items
+    const items = (listWithItems?.items ?? [])
       .filter((itemList) => itemList.item.deletedAt === null)
       .map((itemList) => itemList.item);
 
     return NextResponse.json(items);
   } catch (error) {
-    if (error instanceof Error) {
-      return NextResponse.json(
-        {
-          message: "Failed to get items from the list",
-          error: error instanceof Error ? error.message : "Unknown error",
-        },
-        { status: 500 },
-      );
-    }
+    return NextResponse.json(
+      {
+        message: "Failed to get items from the list",
+        error: error instanceof Error ? error.message : "Unknown error",
+      },
+      { status: 500 },
+    );
   }
 }
