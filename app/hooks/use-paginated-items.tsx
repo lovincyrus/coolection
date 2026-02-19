@@ -57,7 +57,7 @@ export function usePaginatedItems(itemsServerData: any) {
   const isRefreshing = isValidating && items && items.length === size;
 
   return {
-    data: items ?? [],
+    data: Array.isArray(items) ? items : [],
     loading: loadingItems,
     mutate: mutateItems,
     size,

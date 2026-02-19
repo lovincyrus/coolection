@@ -22,7 +22,7 @@ export function useSearchResults(query: string) {
   );
 
   return {
-    data: data ?? [],
+    data: Array.isArray(data) ? data : [],
     loading: isLoading,
     isValidating,
     error,

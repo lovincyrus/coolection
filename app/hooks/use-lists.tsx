@@ -17,7 +17,7 @@ export function useLists(listsServerData: any) {
   );
 
   return {
-    data: data ?? [],
+    data: Array.isArray(data) ? data : [],
     loading: isLoading,
     mutate,
     error,

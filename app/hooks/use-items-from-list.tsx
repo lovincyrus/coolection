@@ -21,7 +21,7 @@ export function useItemsFromList(listId: string) {
   );
 
   return {
-    data: data ?? [],
+    data: Array.isArray(data) ? data : [],
     loading: isLoading,
     mutate,
     error,

@@ -64,7 +64,7 @@ export function Sidebar() {
               All Bookmarks
             </Link>
 
-            {lists.map((list) => {
+            {Array.isArray(lists) && lists.map((list) => {
               const isActive = pathname === `/lists/${list.id}`;
               return (
                 <Link
