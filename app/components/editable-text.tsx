@@ -57,7 +57,7 @@ export function EditableText({
           setValue(event.target.value);
         }}
         className={cn(
-          "flex h-6 select-none items-center justify-center rounded-full border bg-gray-50 px-3 text-center text-xs font-medium",
+          "flex h-6 select-none items-center justify-center rounded-full border bg-surface px-3 text-center text-xs font-medium",
           inputClassName,
         )}
         onKeyDown={(event: React.KeyboardEvent) => {
@@ -92,7 +92,7 @@ export function EditableText({
         inputRef.current?.select();
       }}
       className={cn(
-        "flex h-6 max-w-[240px] cursor-text select-none items-center justify-center truncate rounded-full border bg-gray-50 px-3 text-center text-xs font-medium hover:bg-gray-200",
+        "flex h-6 max-w-[240px] cursor-text select-none items-center justify-center truncate rounded-full border bg-surface px-3 text-center text-xs font-medium hover:bg-surface-hover",
         buttonClassName,
       )}
     >

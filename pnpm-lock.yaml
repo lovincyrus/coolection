@@ -11,6 +11,9 @@ dependencies:
   '@clerk/nextjs':
     specifier: ^5.0.12
     version: 5.0.12(next@14.2.3)(react-dom@18.3.1)(react@18.3.1)
+  '@clerk/themes':
+    specifier: ^2.4.52
+    version: 2.4.52(react-dom@18.3.1)(react@18.3.1)
   '@mozilla/readability':
     specifier: ^0.5.0
     version: 0.5.0
@@ -59,6 +62,9 @@ dependencies:
   next:
     specifier: 14.2.3
     version: 14.2.3(@playwright/test@1.58.2)(react-dom@18.3.1)(react@18.3.1)
+  next-themes:
+    specifier: ^0.4.6
+    version: 0.4.6(react-dom@18.3.1)(react@18.3.1)
   next-view-transitions:
     specifier: ^0.1.1
     version: 0.1.1(next@14.2.3)(react-dom@18.3.1)(react@18.3.1)
@@ -305,7 +311,6 @@ packages:
       react-dom: 18.3.1(react@18.3.1)
       std-env: 3.10.0
       swr: 2.3.4(react@18.3.1)
-    dev: true
 
   /@clerk/testing@1.13.36(@playwright/test@1.58.2)(react-dom@18.3.1)(react@18.3.1):
     resolution: {integrity: sha512-daVeCM9xsbssT2DpgF4pDljm1VmZex4C8OfU8emudItoAralkNQzRdrh7NiW60Ad1B95gHCCJuMYUuaegL48yQ==}
@@ -328,6 +333,17 @@ packages:
       - react
       - react-dom
     dev: true
+
+  /@clerk/themes@2.4.52(react-dom@18.3.1)(react@18.3.1):
+    resolution: {integrity: sha512-27UWgn+QKnUE02yu9MZ6UgTYg7k5y7qig76WFwIviVEFxXYLk0o4ttqvDjvJKTfe2UMCkZLUmyglqGErlvvPzQ==}
+    engines: {node: '>=18.17.0'}
+    dependencies:
+      '@clerk/shared': 3.45.0(react-dom@18.3.1)(react@18.3.1)
+      tslib: 2.8.1
+    transitivePeerDependencies:
+      - react
+      - react-dom
+    dev: false
 
   /@clerk/types@4.101.15(react-dom@18.3.1)(react@18.3.1):
     resolution: {integrity: sha512-Tb9FYlBQcUkyeX4ILMpNPzvZPwokk/gsDlWOayV+PQKcWvhWD2+xZYrXGv4eaxqIcbXLAMaUo8Gal+lVjQFDeg==}
@@ -2595,7 +2611,6 @@ packages:
   /dequal@2.0.3:
     resolution: {integrity: sha512-0je+qPKHEMohvfRTCEo3CrPG6cAzAYgmzKyxRiYSSDkS6eGJdyVJm7WaYA5ECaAD9wLB2T4EEeymA5aFVcYXCA==}
     engines: {node: '>=6'}
-    dev: true
 
   /detect-node-es@1.1.0:
     resolution: {integrity: sha512-ypdmJU/TbBby2Dxibuv7ZLW3Bs1QEmM7nHjEANfohJLvE0XVujisn1qPJcZxg+qDucsr+bP6fLD1rPS3AhJ7EQ==}
@@ -3875,7 +3890,6 @@ packages:
   /js-cookie@3.0.5:
     resolution: {integrity: sha512-cEiJEAEoIbWfCZYKWhVwFuvPX1gETRYPw6LlaTKoxD3s2AkXzkCjnp6h0V77ozyqj0jakteJ4YqDJT830+lVGw==}
     engines: {node: '>=14'}
-    dev: true
 
   /js-tokens@4.0.0:
     resolution: {integrity: sha512-RdJUflcE3cUzKiMqQgsCu06FPu9UdIJO0beYbPhHN4k6apgJtifcoCtT9bcxOpYBtpD2kCM6Sbzg4CausW/PKQ==}
@@ -4140,6 +4154,16 @@ packages:
   /natural-compare@1.4.0:
     resolution: {integrity: sha512-OWND8ei3VtNC9h7V60qff3SVobHr996CTwgxubgyQYEpg290h9J0buyECNNJexkFm5sOajh5G116RYA1c8ZMSw==}
     dev: true
+
+  /next-themes@0.4.6(react-dom@18.3.1)(react@18.3.1):
+    resolution: {integrity: sha512-pZvgD5L0IEvX5/9GWyHMf3m8BKiVQwsCMHfoFosXtXBMnaS0ZnIJ9ST4b4NqLVKDEm8QBxoNNGNaBv2JNF6XNA==}
+    peerDependencies:
+      react: ^16.8 || ^17 || ^18 || ^19 || ^19.0.0-rc
+      react-dom: ^16.8 || ^17 || ^18 || ^19 || ^19.0.0-rc
+    dependencies:
+      react: 18.3.1
+      react-dom: 18.3.1(react@18.3.1)
+    dev: false
 
   /next-view-transitions@0.1.1(next@14.2.3)(react-dom@18.3.1)(react@18.3.1):
     resolution: {integrity: sha512-1rpXhWF8j0VJwJG52c8WeeAYpr1K7o3ub82lahbSoUwAry54TEm1d3mqBbSLLIMl85c3OewkZjxncTHwYFk+IA==}
@@ -5079,7 +5103,6 @@ packages:
 
   /std-env@3.10.0:
     resolution: {integrity: sha512-5GS12FdOZNliM5mAOxFRg7Ir0pWz8MdpYm6AY6VPkGpbA7ZzmbzNcBJQ0GPvvyWgcY7QAhCgf9Uy89I03faLkg==}
-    dev: true
 
   /std-env@3.7.0:
     resolution: {integrity: sha512-JPbdCEQLj1w5GilpiHAx3qJvFndqybBysA3qUOnznweH4QbNYUsW/ea8QzSrnh0vNsezMMw5bcVool8lM0gwzg==}
@@ -5274,7 +5297,6 @@ packages:
       dequal: 2.0.3
       react: 18.3.1
       use-sync-external-store: 1.6.0(react@18.3.1)
-    dev: true
 
   /symbol-tree@3.2.4:
     resolution: {integrity: sha512-9QNk5KwDF+Bvz+PyObkmSYjI5ksVUYtjW7AU22r2NKcfLJcXp96hkDWU3+XndOsUb+AQ9QhfzfCT2O+CNWT5Tw==}
@@ -5452,7 +5474,6 @@ packages:
 
   /tslib@2.8.1:
     resolution: {integrity: sha512-oJFu94HQb+KVduSUQL7wnpmqnfmLsOA/nAh6b6EH0wCEoK0/mPeXU6c3wKDV83MkOuHPRHtSXKKU99IBazS/2w==}
-    dev: true
 
   /type-check@0.4.0:
     resolution: {integrity: sha512-XleUoc9uwGXqjWwXaUTZAmzMcFZ5858QA2vvx1Ur5xIcixXIP+8LnFDgRplU30us6teqdlskFfu+ae4K79Ooew==}
@@ -5615,7 +5636,6 @@ packages:
       react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
     dependencies:
       react: 18.3.1
-    dev: true
 
   /util-deprecate@1.0.2:
     resolution: {integrity: sha512-EPD5q1uXyFxJpCrLnCc1nHnq3gOa6DZBocAIiI2TaSCA7VCJ1UJDMagCzIkXNsUYfD1daK//LTEQ8xiIbrHtcw==}

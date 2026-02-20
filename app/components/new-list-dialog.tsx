@@ -68,7 +68,7 @@ export function NewListDialog() {
 
   return (
     <Dialog open={openNewListDialog} onOpenChange={setOpenNewListDialog}>
-      <DialogContent className="bg-white sm:max-w-[425px]">
+      <DialogContent className="bg-bg sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>New list</DialogTitle>
           <DialogDescription>
@@ -90,7 +90,7 @@ export function NewListDialog() {
           </div>
           <DialogFooter>
             <Button
-              className=" border-input bg-background hover:bg-accent hover:text-accent-foreground ml-auto w-fit items-center justify-center whitespace-nowrap rounded-md border bg-white/80 px-3 text-sm font-medium shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 disabled:pointer-events-none disabled:opacity-50"
+              className=" border-input bg-background hover:bg-accent hover:text-accent-foreground ml-auto w-fit items-center justify-center whitespace-nowrap rounded-md border bg-surface px-3 text-sm font-medium shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 disabled:pointer-events-none disabled:opacity-50"
               type="submit"
               disabled={!listName}
             >

@@ -183,7 +183,7 @@ export const ResultItem = React.memo(function ResultItem({
             setCurrentItem(item);
           }}
         >
-          <div className="flex select-none flex-col py-4 visited:bg-gray-50 hover:rounded-lg hover:bg-gray-50 hover:shadow">
+          <div className="flex select-none flex-col py-4 hover:rounded-lg hover:bg-surface hover:shadow">
             <div className="flex flex-col gap-1 px-4">
               <h3 className="line-clamp-1 text-sm font-medium">
                 <HighlightChars
@@ -198,21 +198,21 @@ export const ResultItem = React.memo(function ResultItem({
                 ) : item.type === ItemType._TWEET ? (
                   <Twitter className="h-3 w-3 text-sky-400" />
                 ) : (
-                  <LinkIcon className="h-3 w-3 text-gray-400" />
+                  <LinkIcon className="h-3 w-3 text-icon-default" />
                 )}
-                <p className="text-sm text-gray-400">
+                <p className="text-sm text-text-quaternary">
                   <HighlightChars
                     text={extractDomain(String(item.url))}
                     searchTerm={querySearchParam}
                   />
                 </p>
                 {item.type === ItemType._GITHUB_STAR && item.metadata?.language && (
-                  <span className="text-xs text-gray-400">
+                  <span className="text-xs text-text-quaternary">
                     {item.metadata.language}
                   </span>
                 )}
               </div>
-              <p className="line-clamp-3 text-sm text-gray-600">
+              <p className="line-clamp-3 text-sm text-text-secondary">
                 <HighlightChars
                   text={getDescription() ?? ""}
                   searchTerm={querySearchParam}

@@ -1,12 +1,20 @@
 "use client";
 
-import { ClipboardCopyIcon, ExternalLinkIcon, KeyIcon, StarIcon, TrashIcon, Twitter } from "lucide-react";
+import { ClipboardCopyIcon, ExternalLinkIcon, KeyIcon, MonitorIcon, MoonIcon, PaletteIcon, StarIcon, SunIcon, TrashIcon, Twitter } from "lucide-react";
+import { useTheme } from "next-themes";
 import { Link } from "next-view-transitions";
 import React, { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
 
 import { Button } from "@/app/components/ui/button";
 import { Input } from "@/app/components/ui/input";
+
+const themes = [
+  { value: "system", label: "System", description: "Follow your OS preference", icon: MonitorIcon },
+  { value: "light", label: "Light", description: "Light background", icon: SunIcon },
+  { value: "dark", label: "Dark", description: "Dark background", icon: MoonIcon },
+  { value: "teal", label: "Teal", description: "Dark with teal accents", icon: PaletteIcon },
+] as const;
 
 interface TokenInfo {
   id: string;
@@ -38,6 +46,7 @@ function formatLastUsed(iso: string | null) {
 }
 
 export default function SettingsPage() {
+  const { theme, setTheme } = useTheme();
   const [tokens, setTokens] = useState<TokenInfo[]>([]);
   const [loading, setLoading] = useState(true);
   const [newToken, setNewToken] = useState<string | null>(null);
@@ -180,7 +189,7 @@ export default function SettingsPage() {
                   />
                 </Link>
               </div>
-              <span className="ml-1 text-xs font-medium text-gray-800">
+              <span className="ml-1 text-xs font-medium text-text-primary">
                 Settings
               </span>
             </div>
@@ -188,10 +197,41 @@ export default function SettingsPage() {
         </div>
 
         <div className="mt-14 flex flex-col gap-6">
+          {/* Appearance */}
           <div className="flex items-start justify-between">
             <div>
-              <h2 className="text-sm font-medium text-gray-900">API Tokens</h2>
-              <p className="mt-1 text-xs text-gray-500">
+              <h2 className="text-sm font-medium text-text-primary">Appearance</h2>
+              <p className="mt-1 text-xs text-text-tertiary">
+                Choose your preferred theme
+              </p>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+            {themes.map((t) => (
+              <button
+                key={t.value}
+                onClick={() => setTheme(t.value)}
+                className={`flex flex-col items-center gap-2 rounded-md border border-dashed p-4 text-center transition-colors ${
+                  theme === t.value
+                    ? "border-border-strong bg-surface-active text-text-primary"
+                    : "text-text-tertiary hover:bg-surface hover:text-text-primary"
+                }`}
+              >
+                <t.icon className="h-5 w-5" />
+                <span className="text-xs font-medium">{t.label}</span>
+                <span className="text-[10px] leading-tight text-text-quaternary">{t.description}</span>
+              </button>
+            ))}
+          </div>
+
+          <hr className="my-4 border-dashed" />
+
+          {/* API Tokens */}
+          <div className="flex items-start justify-between">
+            <div>
+              <h2 className="text-sm font-medium text-text-primary">API Tokens</h2>
+              <p className="mt-1 text-xs text-text-tertiary">
                 Generate tokens to use with the Coolection browser extensions.
               </p>
             </div>
@@ -209,7 +249,7 @@ export default function SettingsPage() {
 
           {showForm && (
             <div className="flex flex-col gap-3 rounded-md border border-dashed p-4">
-              <label className="text-xs font-medium text-gray-700">
+              <label className="text-xs font-medium text-text-secondary">
                 Token name
               </label>
               <Input
@@ -252,7 +292,7 @@ export default function SettingsPage() {
           {newToken && (
             <div className="flex flex-col gap-2">
               <div className="flex items-center gap-2">
-                <code className="flex-1 break-all rounded-md border bg-gray-50 px-3 py-2 text-xs">
+                <code className="flex-1 break-all rounded-md border bg-surface px-3 py-2 text-xs">
                   {newToken}
                 </code>
                 <Button
@@ -272,11 +312,11 @@ export default function SettingsPage() {
           )}
 
           {loading ? (
-            <div className="py-8 text-center text-xs text-gray-400">
+            <div className="py-8 text-center text-xs text-text-quaternary">
               Loading...
             </div>
           ) : tokens.length === 0 ? (
-            <div className="rounded-md border border-dashed py-8 text-center text-xs text-gray-400">
+            <div className="rounded-md border border-dashed py-8 text-center text-xs text-text-quaternary">
               No tokens yet. Create one to start using extensions.
             </div>
           ) : (
@@ -284,18 +324,18 @@ export default function SettingsPage() {
               {tokens.map((t) => (
                 <div
                   key={t.id}
-                  className="flex items-center justify-between rounded-md border bg-gray-50 px-4 py-3"
+                  className="flex items-center justify-between rounded-md border bg-surface px-4 py-3"
                 >
                   <div className="flex flex-col gap-0.5">
                     <div className="flex items-center gap-2">
-                      <span className="text-sm font-medium text-gray-900">
+                      <span className="text-sm font-medium text-text-primary">
                         {t.name || "Unnamed token"}
                       </span>
-                      <span className="font-mono text-xs text-gray-400">
+                      <span className="font-mono text-xs text-text-quaternary">
                         ...{t.tokenPrefix}
                       </span>
                     </div>
-                    <span className="text-xs text-gray-500">
+                    <span className="text-xs text-text-tertiary">
                       Created {formatDate(t.createdAt)}
                       {" · "}
                       {formatLastUsed(t.lastUsedAt)}
@@ -305,7 +345,7 @@ export default function SettingsPage() {
                     variant="outline"
                     size="sm"
                     onClick={() => revokeToken(t.id, t.name)}
-                    className="shrink-0 text-xs text-gray-500 hover:text-red-600"
+                    className="shrink-0 text-xs text-text-tertiary hover:text-red-600"
                   >
                     <TrashIcon className="mr-1 h-3 w-3" />
                     Revoke
@@ -319,17 +359,17 @@ export default function SettingsPage() {
 
           <div className="flex items-start justify-between">
             <div>
-              <h2 className="text-sm font-medium text-gray-900">
+              <h2 className="text-sm font-medium text-text-primary">
                 GitHub Stars
               </h2>
-              <p className="mt-1 text-xs text-gray-500">
+              <p className="mt-1 text-xs text-text-tertiary">
                 Sync your starred repositories into your collection.
               </p>
             </div>
           </div>
 
           <div className="flex flex-col gap-3 rounded-md border border-dashed p-4">
-            <label className="text-xs font-medium text-gray-700">
+            <label className="text-xs font-medium text-text-secondary">
               GitHub username
             </label>
             <div className="flex items-center gap-2">
@@ -357,7 +397,7 @@ export default function SettingsPage() {
               </Button>
             </div>
             {syncStatus?.configured && (
-              <p className="text-xs text-gray-500">
+              <p className="text-xs text-text-tertiary">
                 Last synced {syncStatus.lastSyncedAt
                   ? formatLastUsed(syncStatus.lastSyncedAt)
                   : "never"}
@@ -366,7 +406,7 @@ export default function SettingsPage() {
                 )}
               </p>
             )}
-            <p className="text-xs text-gray-400">
+            <p className="text-xs text-text-quaternary">
               Only public stars are synced. Subsequent syncs skip unchanged
               stars.
             </p>
@@ -376,22 +416,22 @@ export default function SettingsPage() {
 
           <div className="flex items-start justify-between">
             <div>
-              <h2 className="text-sm font-medium text-gray-900">
+              <h2 className="text-sm font-medium text-text-primary">
                 <Twitter className="mr-1 inline h-3.5 w-3.5 text-sky-400" />
                 X Bookmarks
               </h2>
-              <p className="mt-1 text-xs text-gray-500">
+              <p className="mt-1 text-xs text-text-tertiary">
                 Sync your X (Twitter) bookmarks using the browser extension.
               </p>
             </div>
           </div>
 
           <div className="flex flex-col gap-3 rounded-md border border-dashed p-4">
-            <p className="text-xs text-gray-600">
+            <p className="text-xs text-text-secondary">
               X bookmarks are synced automatically by the Coolection Chrome
               extension. To get started:
             </p>
-            <ol className="list-inside list-decimal text-xs text-gray-600 space-y-1">
+            <ol className="list-inside list-decimal text-xs text-text-secondary space-y-1">
               <li>Install the Chrome extension from the repo</li>
               <li>Open extension options and paste your API token</li>
               <li>Enable bookmark sync and set your preferred interval</li>
@@ -401,7 +441,7 @@ export default function SettingsPage() {
               href="https://github.com/lovincyrus/coolection"
               target="_blank"
               rel="noreferrer noopener"
-              className="inline-flex items-center gap-1 text-xs text-gray-500 hover:text-gray-900"
+              className="inline-flex items-center gap-1 text-xs text-text-tertiary hover:text-text-primary"
             >
               <ExternalLinkIcon className="h-3 w-3" />
               View setup instructions on GitHub
