@@ -22,18 +22,19 @@ export async function GET(req: NextRequest) {
   }
 
   try {
-    // Approach 1: Simple ILIKE search
+    // Approach 1: Simple ILIKE search with context fields
     const results: Array<ItemWithSimilarity> = await prisma.$queryRaw`
       SELECT
         id,
-        "title", "description", "url", "type", "content", "metadata",
+        "title", "description", "url", "type", "content", "context", "metadata",
         1 as similarity
       FROM item
-      WHERE 
+      WHERE
         (
           LOWER("title") ILIKE ${"%" + query.toLowerCase() + "%"}
           OR LOWER("description") ILIKE ${"%" + query.toLowerCase() + "%"}
           OR LOWER("url") ILIKE ${"%" + query.toLowerCase() + "%"}
+          OR LOWER("context"::text) ILIKE ${"%" + query.toLowerCase() + "%"}
           OR ("type" = 'tweet' AND LOWER("content") ILIKE ${"%" + query.toLowerCase() + "%"})
         )
         AND "userId" = ${userId} AND "isDeleted" = false
