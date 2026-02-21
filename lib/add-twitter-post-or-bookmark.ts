@@ -1,4 +1,5 @@
 import { ItemType } from "@/app/types/coolection";
+import { enrichUrl } from "@/lib/enrich-url";
 import prisma from "@/lib/prisma";
 
 import { getTweet } from "./get-tweet";
@@ -46,6 +47,18 @@ export async function addTwitterPostOrBookmark(url: string, userId: string) {
 
   const tweetContent = await getTweet(tweetID as string);
 
+  // Enrich tweet with context - non-blocking
+  let context: string | undefined;
+  try {
+    const authorName = tweetContent?.user.name ?? "";
+    const tweetText = tweetContent?.text ?? "";
+    const enriched = await enrichUrl(authorName, tweetText);
+    context = enriched.formatted;
+  } catch (error) {
+    console.warn("Tweet enrichment failed:", error);
+    // Non-critical: continue without enrichment
+  }
+
   // const generatedEmbedding = await generateEmbedding(
   //   String(tweetContent?.text.replace(/\n/g, " "))
   // );
@@ -56,6 +69,7 @@ export async function addTwitterPostOrBookmark(url: string, userId: string) {
     content: tweetContent?.text.replace(/\n/g, " "),
     url: url,
     type: ItemType._TWEET,
+    context,
     metadata: {
       tweet_id: tweetID,
       tweet_url: isTwitterBookmarkUrl(url)
@@ -70,6 +84,7 @@ export async function addTwitterPostOrBookmark(url: string, userId: string) {
       title: `${tweetContent?.user.name}`,
       type: ItemType._TWEET,
       content: tweetContent?.text.replace(/\n/g, " ") ?? "",
+      context,
       url: url,
       metadata: {
         tweet_id: tweetID,

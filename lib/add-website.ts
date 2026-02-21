@@ -1,9 +1,20 @@
 import { ItemType } from "@/app/types/coolection";
+import { enrichUrl } from "@/lib/enrich-url";
 import { getMetatags } from "@/lib/get-metatags";
 import prisma from "@/lib/prisma";
 
 export async function addWebsite(url: string, userId: string) {
   const { title, description } = await getMetatags(url);
+
+  // Enrich URL with context (creator, org, entities) - non-blocking
+  let context: string | undefined;
+  try {
+    const enriched = await enrichUrl(title, description);
+    context = enriched.formatted;
+  } catch (error) {
+    console.warn("URL enrichment failed:", error);
+    // Non-critical: continue without enrichment
+  }
 
   // TODO: Uncomment this when the getArticleContent function is implemented
   // const {
@@ -34,6 +45,7 @@ export async function addWebsite(url: string, userId: string) {
     url,
     title,
     description,
+    context,
     // content: replaceNewlinesWithSpaces(textContent),
     // metadata,
     // embedding: JSON.stringify(generatedEmbedding),
@@ -44,6 +56,7 @@ export async function addWebsite(url: string, userId: string) {
       url,
       title: title ?? "Untitled",
       description: description,
+      context,
       type: ItemType._WEBSITE,
       // content: replaceNewlinesWithSpaces(textContent),
       // metadata,
