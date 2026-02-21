@@ -21,7 +21,7 @@ export async function addWebsite(url: string, userId: string) {
       title: title ?? "Untitled",
       description: description,
       type: ItemType._WEBSITE,
-      context: context,
+      context: context as any,
       userId: userId,
     },
   });

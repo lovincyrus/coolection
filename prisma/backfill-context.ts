@@ -26,7 +26,7 @@ async function backfillContext() {
     // Get count of items without context
     const count = await prisma.item.count({
       where: {
-        context: null,
+        context: { isNull: true } as any,
         isDeleted: false,
         url: { not: null },
       },
@@ -47,7 +47,7 @@ async function backfillContext() {
     for (let i = 0; i < count; i += BATCH_SIZE) {
       const batch = await prisma.item.findMany({
         where: {
-          context: null,
+          context: { isNull: true } as any,
           isDeleted: false,
           url: { not: null },
         },
@@ -78,7 +78,7 @@ async function backfillContext() {
           if (context) {
             await prisma.item.update({
               where: { id: item.id },
-              data: { context },
+              data: { context: context as any },
             });
             enriched++;
             console.log(`    ✓ Enriched`);
