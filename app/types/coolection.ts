@@ -4,6 +4,7 @@ export interface Item {
   title: string;
   description?: string;
   content?: string;
+  context?: string;
   image?: string;
   createdAt: string;
   updatedAt: string;
