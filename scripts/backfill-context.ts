@@ -78,7 +78,7 @@ async function backfillContext() {
           const enriched = await enrichUrl(
             titleForEnrichment,
             contentForEnrichment,
-            item.type === "website" ? item.content : undefined,
+            item.type === "website" ? (item.content ?? undefined) : undefined,
           );
 
           await prisma.item.update({

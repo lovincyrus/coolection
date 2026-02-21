@@ -19,16 +19,18 @@ export interface EnrichedContext {
  * @returns Enriched context with key entities and a formatted summary
  */
 export async function enrichUrl(
-  title: string,
-  description?: string,
+  title?: string | null,
+  description?: string | null,
   content?: string,
 ): Promise<EnrichedContext> {
+  const safeTitle = title || "Unknown";
+  const safeDescription = description || "";
   try {
     const contentSnippet = content ? content.slice(0, 2000) : "";
     const prompt = `Extract structured context from this webpage data for better search/discovery.
 
-Title: ${title}
-Description: ${description || "N/A"}
+Title: ${safeTitle}
+Description: ${safeDescription || "N/A"}
 ${contentSnippet ? `\nContent preview: ${contentSnippet}` : ""}
 
 Return a JSON object with:
@@ -54,7 +56,7 @@ Example format:
 
     const content_response = response.choices[0]?.message?.content;
     if (!content_response) {
-      return { formatted: title };
+      return { formatted: safeTitle };
     }
 
     let parsed;
@@ -63,11 +65,11 @@ Example format:
       const jsonMatch = content_response.match(/\{[\s\S]*\}/);
       parsed = jsonMatch ? JSON.parse(jsonMatch[0]) : null;
     } catch {
-      return { formatted: title };
+      return { formatted: safeTitle };
     }
 
     if (!parsed) {
-      return { formatted: title };
+      return { formatted: safeTitle };
     }
 
     // Build a formatted context string for full-text search
@@ -78,7 +80,7 @@ Example format:
     if (parsed.entities?.length) parts.push(`about ${parsed.entities.join(", ")}`);
 
     const formatted =
-      parts.length > 0 ? `${title} ${parts.join(" ")}` : title;
+      parts.length > 0 ? `${safeTitle} ${parts.join(" ")}` : safeTitle;
 
     return {
       creator: parsed.creator || undefined,
@@ -90,6 +92,6 @@ Example format:
   } catch (error) {
     // Non-critical: if enrichment fails, just return the title
     console.warn("URL enrichment failed:", error instanceof Error ? error.message : "Unknown error");
-    return { formatted: title };
+    return { formatted: safeTitle };
   }
 }

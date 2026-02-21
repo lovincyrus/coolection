@@ -8,12 +8,14 @@ export async function addWebsite(url: string, userId: string) {
 
   // Enrich URL with context (creator, org, entities) - non-blocking
   let context: string | undefined;
-  try {
-    const enriched = await enrichUrl(title, description);
-    context = enriched.formatted;
-  } catch (error) {
-    console.warn("URL enrichment failed:", error);
-    // Non-critical: continue without enrichment
+  if (title) {
+    try {
+      const enriched = await enrichUrl(title, description);
+      context = enriched.formatted;
+    } catch (error) {
+      console.warn("URL enrichment failed:", error);
+      // Non-critical: continue without enrichment
+    }
   }
 
   // TODO: Uncomment this when the getArticleContent function is implemented
