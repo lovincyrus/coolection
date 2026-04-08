@@ -7,7 +7,7 @@ struct Item: Codable, Identifiable {
     let description: String?
     let image: String?
     let type: String?
-    let createdAt: String
+    let createdAt: String?
 
     var domain: String? {
         guard let url, let host = URL(string: url)?.host else { return nil }
@@ -15,6 +15,7 @@ struct Item: Codable, Identifiable {
     }
 
     var relativeDate: String {
+        guard let createdAt else { return "" }
         let fmt = ISO8601DateFormatter()
         fmt.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
         guard let date = fmt.date(from: createdAt) else { return "" }

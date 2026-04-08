@@ -27,6 +27,7 @@ export async function GET(req: NextRequest) {
       SELECT
         id,
         "title", "description", "url", "type", "content", "metadata",
+        "image", "createdAt",
         1 as similarity
       FROM item
       WHERE 
