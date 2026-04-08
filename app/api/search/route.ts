@@ -1,12 +1,12 @@
-import { auth } from "@clerk/nextjs/server";
 import { NextRequest, NextResponse } from "next/server";
 
 import { ItemWithSimilarity } from "@/app/types/coolection";
 import { DEFAULT_PAGE_SIZE } from "@/lib/constants";
 import prisma from "@/lib/prisma";
+import { resolveUserId } from "@/lib/resolve-user-id";
 
 export async function GET(req: NextRequest) {
-  const { userId } = auth();
+  const userId = await resolveUserId();
 
   const searchParams = new URL(req.url).searchParams;
   const query = searchParams.get("q");

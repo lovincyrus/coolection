@@ -1,9 +1,9 @@
 "use server";
 
-import { auth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 
 import prisma from "@/lib/prisma";
+import { resolveUserId } from "@/lib/resolve-user-id";
 
 interface Context {
   params: {
@@ -12,7 +12,7 @@ interface Context {
 }
 
 export async function GET(req: Request, ctx: Context) {
-  const { userId } = auth();
+  const userId = await resolveUserId();
   const { params } = ctx;
 
   if (!userId) {

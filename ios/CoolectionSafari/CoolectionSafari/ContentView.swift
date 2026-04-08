@@ -1,241 +1,573 @@
+import Combine
 import SwiftUI
 
+// MARK: - App State
+
+final class AppState: ObservableObject {
+    @Published var isAuthenticated = false
+    @Published var serverURL: String = ""
+    @Published var token: String = ""
+
+    init() {
+        token = KeychainHelper.read() ?? ""
+        serverURL = AppConstants.defaults?.string(forKey: "serverURL") ?? AppConstants.defaultServer
+        isAuthenticated = !token.isEmpty
+    }
+
+    var api: APIClient { APIClient(serverURL: serverURL, token: token) }
+
+    func signIn(server: String, token: String) {
+        let trimmed = server.trimmingCharacters(in: CharacterSet(charactersIn: "/"))
+        serverURL = trimmed
+        self.token = token
+        AppConstants.defaults?.set(trimmed, forKey: "serverURL")
+        _ = KeychainHelper.save(token: token)
+        isAuthenticated = true
+    }
+
+    func signOut() {
+        KeychainHelper.delete()
+        token = ""
+        isAuthenticated = false
+    }
+}
+
+// MARK: - Root
+
 struct ContentView: View {
-    @State private var tokenInput: String = ""
-    @State private var serverURL: String = ""
-    @State private var hasSavedToken: Bool = false
-    @State private var isEditing: Bool = false
-    @State private var showDeleteConfirm: Bool = false
-    @State private var extensionEnabled: Bool = false
-
-    private static let defaults = AppConstants.defaults
-    private static let defaultServer = AppConstants.defaultServer
-
-    private let gray50 = Color(white: 0.98)
-    private let gray100 = Color(white: 0.96)
-    private let gray200 = Color(white: 0.91)
-    private let gray500 = Color(red: 0.42, green: 0.45, blue: 0.50)
-    private let gray800 = Color(red: 0.15, green: 0.16, blue: 0.18)
-    private let gray900 = Color(red: 0.07, green: 0.07, blue: 0.08)
-
-    private var tokenReady: Bool { hasSavedToken && !isEditing }
+    @StateObject private var appState = AppState()
 
     var body: some View {
-        VStack(spacing: 0) {
-            HStack {
-                Image("LargeIcon")
-                    .resizable()
-                    .frame(width: 24, height: 24)
-                Text("Coolection")
-                    .font(.custom("Inter-Medium", size: 16))
-                    .foregroundColor(gray900)
-                Spacer()
-            }
-            .padding(.horizontal, 20)
-            .padding(.top, 16)
-            .padding(.bottom, 24)
-
-            VStack(spacing: 0) {
-                // Server URL
-                VStack(alignment: .leading, spacing: 0) {
-                    stepRow(number: "1", title: "Server",
-                            detail: nil, done: !serverURL.isEmpty)
-
-                    HStack(spacing: 8) {
-                        TextField("https://coolection.co", text: $serverURL)
-                            .textFieldStyle(.plain)
-                            .autocapitalization(.none)
-                            .disableAutocorrection(true)
-                            .font(.system(size: 12, design: .monospaced))
-                            .foregroundColor(gray900)
-                            .padding(.horizontal, 12)
-                            .padding(.vertical, 10)
-                            .background(gray50)
-                            .cornerRadius(6)
-                            .overlay(
-                                RoundedRectangle(cornerRadius: 6)
-                                    .stroke(gray200, lineWidth: 1)
-                            )
-                            .onChange(of: serverURL) { newValue in
-                                let trimmed = newValue.trimmingCharacters(in: CharacterSet(charactersIn: "/"))
-                                Self.defaults?.set(trimmed, forKey: "serverURL")
-                            }
-                    }
-                    .padding(.leading, 52)
-                    .padding(.trailing, 20)
-                    .padding(.bottom, 16)
-                }
-
-                Divider().padding(.leading, 52)
-
-                stepRow(number: "2", title: "Generate a token",
-                        detail: "Go to your server's /settings and tap Generate Token.",
-                        done: tokenReady)
-
-                Divider().padding(.leading, 52)
-
-                VStack(alignment: .leading, spacing: 0) {
-                    stepRow(number: "3", title: "Paste your token", detail: nil, done: tokenReady)
-
-                    Group {
-                        if tokenReady {
-                            savedTokenView
-                        } else {
-                            tokenInputView
-                        }
-                    }
-                    .padding(.leading, 52)
-                    .padding(.trailing, 20)
-                    .padding(.bottom, 16)
-                }
-
-                Divider().padding(.leading, 52)
-
-                VStack(alignment: .leading, spacing: 0) {
-                    stepRow(number: "4", title: "Enable the extension",
-                            detail: "Settings → Safari → Extensions → Coolection",
-                            done: extensionEnabled)
-
-                    if !extensionEnabled {
-                        outlineButton("I've enabled it", tint: gray500) {
-                            extensionEnabled = true
-                            UserDefaults.standard.set(true, forKey: "extensionEnabled")
-                        }
-                        .padding(.leading, 52)
-                        .padding(.trailing, 20)
-                        .padding(.bottom, 16)
-                    }
-                }
-            }
-            .background(Color.white)
-            .cornerRadius(10)
-            .overlay(
-                RoundedRectangle(cornerRadius: 10)
-                    .stroke(gray200, lineWidth: 1)
-            )
-            .padding(.horizontal, 20)
-
-            Spacer()
+        if appState.isAuthenticated {
+            MainTabView().environmentObject(appState)
+        } else {
+            AuthView().environmentObject(appState)
         }
-        .background(gray50.ignoresSafeArea())
-        .alert("Delete Token?", isPresented: $showDeleteConfirm) {
-            Button("Delete", role: .destructive, action: deleteToken)
-            Button("Cancel", role: .cancel) {}
-        } message: {
-            Text("You'll need to generate a new token from your server's /settings.")
+    }
+}
+
+// MARK: - Auth
+
+struct AuthView: View {
+    @EnvironmentObject var appState: AppState
+    @State private var server: String = ""
+    @State private var token: String = ""
+    @State private var isConnecting = false
+    @State private var error: String?
+
+    var body: some View {
+        NavigationStack {
+            ScrollView {
+                VStack(spacing: 32) {
+                    Spacer().frame(height: 40)
+
+                    // Logo
+                    VStack(spacing: 8) {
+                        Image("LargeIcon")
+                            .resizable()
+                            .frame(width: 48, height: 48)
+                            .cornerRadius(12)
+                        Text("Coolection")
+                            .font(.title2.weight(.semibold))
+                    }
+
+                    // Form
+                    VStack(spacing: 16) {
+                        VStack(alignment: .leading, spacing: 6) {
+                            Text("Server").font(.subheadline.weight(.medium))
+                                .foregroundStyle(.secondary)
+                            TextField("https://coolection.co", text: $server)
+                                .textContentType(.URL)
+                                .textInputAutocapitalization(.never)
+                                .autocorrectionDisabled()
+                                .padding(12)
+                                .background(Color(.secondarySystemBackground))
+                                .cornerRadius(8)
+                        }
+
+                        VStack(alignment: .leading, spacing: 6) {
+                            Text("API Token").font(.subheadline.weight(.medium))
+                                .foregroundStyle(.secondary)
+                            SecureField("coolection_...", text: $token)
+                                .textInputAutocapitalization(.never)
+                                .autocorrectionDisabled()
+                                .padding(12)
+                                .background(Color(.secondarySystemBackground))
+                                .cornerRadius(8)
+                        }
+
+                        if let error {
+                            Text(error)
+                                .font(.footnote)
+                                .foregroundStyle(.red)
+                        }
+
+                        Button {
+                            connect()
+                        } label: {
+                            Group {
+                                if isConnecting {
+                                    ProgressView()
+                                } else {
+                                    Text("Connect")
+                                        .font(.body.weight(.medium))
+                                }
+                            }
+                            .frame(maxWidth: .infinity)
+                            .padding(12)
+                            .background(canConnect ? Color.primary : Color.secondary.opacity(0.3))
+                            .foregroundStyle(Color(.systemBackground))
+                            .cornerRadius(8)
+                        }
+                        .disabled(!canConnect || isConnecting)
+                    }
+                    .padding(20)
+                    .background(Color(.systemBackground))
+                    .cornerRadius(12)
+                    .shadow(color: .black.opacity(0.05), radius: 8, y: 2)
+
+                    Text("Generate a token at your server's /settings page.")
+                        .font(.footnote)
+                        .foregroundStyle(.tertiary)
+                }
+                .padding(.horizontal, 24)
+            }
+            .background(Color(.secondarySystemBackground))
         }
         .onAppear {
-            hasSavedToken = KeychainHelper.read() != nil
-            extensionEnabled = UserDefaults.standard.bool(forKey: "extensionEnabled")
-            serverURL = Self.defaults?.string(forKey: "serverURL") ?? Self.defaultServer
+            server = AppConstants.defaults?.string(forKey: "serverURL") ?? AppConstants.defaultServer
         }
     }
 
-    private func stepRow(number: String, title: String, detail: String?, done: Bool) -> some View {
-        HStack(alignment: .top, spacing: 12) {
-            ZStack {
-                Circle()
-                    .fill(done ? Color(red: 0.22, green: 0.65, blue: 0.36) : gray100)
-                    .frame(width: 24, height: 24)
-                if done {
-                    Image(systemName: "checkmark")
-                        .font(.system(size: 11, weight: .bold))
-                        .foregroundColor(.white)
-                } else {
-                    Text(number)
-                        .font(.custom("Inter-Medium", size: 12))
-                        .foregroundColor(gray500)
-                }
-            }
-
-            VStack(alignment: .leading, spacing: 2) {
-                Text(title)
-                    .font(.custom("Inter-Medium", size: 14))
-                    .foregroundColor(done ? gray500 : gray900)
-                if let detail = detail {
-                    Text(detail)
-                        .font(.custom("Inter-Regular", size: 12))
-                        .foregroundColor(gray500)
-                }
-            }
-
-            Spacer()
-        }
-        .padding(.horizontal, 20)
-        .padding(.vertical, 14)
+    private var canConnect: Bool {
+        token.hasPrefix("coolection_") && !server.isEmpty
     }
 
-    private var savedTokenView: some View {
-        HStack(spacing: 8) {
-            outlineButton("Replace") { isEditing = true }
-            outlineButton("Delete", tint: Color(red: 0.70, green: 0.21, blue: 0.04)) { showDeleteConfirm = true }
-        }
-    }
+    private func connect() {
+        error = nil
+        isConnecting = true
+        let s = server.trimmingCharacters(in: CharacterSet(charactersIn: "/"))
+        let t = token
+        let client = APIClient(serverURL: s, token: t)
 
-    private var tokenInputView: some View {
-        VStack(alignment: .leading, spacing: 10) {
-            TextField("coolection_...", text: $tokenInput)
-                .textFieldStyle(.plain)
-                .autocapitalization(.none)
-                .disableAutocorrection(true)
-                .font(.system(size: 12, design: .monospaced))
-                .foregroundColor(gray900)
-                .padding(.horizontal, 12)
-                .padding(.vertical, 10)
-                .background(gray50)
-                .cornerRadius(6)
-                .overlay(
-                    RoundedRectangle(cornerRadius: 6)
-                        .stroke(gray200, lineWidth: 1)
-                )
-
-            HStack(spacing: 8) {
-                let valid = tokenInput.hasPrefix("coolection_")
-                outlineButton("Save", action: saveToken)
-                    .opacity(valid ? 1.0 : 0.4)
-                    .disabled(!valid)
-
-                if hasSavedToken {
-                    outlineButton("Cancel", action: cancelEditing)
+        Task {
+            do {
+                _ = try await client.fetchItems(page: 1, limit: 1)
+                await MainActor.run {
+                    appState.signIn(server: s, token: t)
                 }
+            } catch let err as APIError where err == .unauthorized {
+                await MainActor.run { error = "Invalid token"; isConnecting = false }
+            } catch {
+                await MainActor.run { self.error = error.localizedDescription; isConnecting = false }
             }
         }
     }
+}
 
-    private func outlineButton(_ label: String, tint: Color? = nil, action: @escaping () -> Void) -> some View {
-        Button(action: action) {
-            Text(label)
-                .font(.custom("Inter-Medium", size: 13))
-                .foregroundColor(tint ?? gray800)
-                .padding(.horizontal, 16)
-                .padding(.vertical, 8)
-                .frame(maxWidth: .infinity)
-                .background(Color.white)
-                .cornerRadius(6)
-                .overlay(
-                    RoundedRectangle(cornerRadius: 6)
-                        .stroke(tint ?? gray200, lineWidth: 1)
-                )
+extension APIError: Equatable {
+    static func == (lhs: APIError, rhs: APIError) -> Bool {
+        switch (lhs, rhs) {
+        case (.invalidURL, .invalidURL),
+             (.invalidResponse, .invalidResponse),
+             (.unauthorized, .unauthorized): return true
+        case (.server(let a), .server(let b)): return a == b
+        default: return false
+        }
+    }
+}
+
+// MARK: - Main Tab
+
+struct MainTabView: View {
+    @EnvironmentObject var appState: AppState
+    @State private var selectedTab = 0
+
+    var body: some View {
+        TabView(selection: $selectedTab) {
+            ItemsTab()
+                .tabItem { Label("Items", systemImage: "square.stack") }
+                .tag(0)
+            ListsTab()
+                .tabItem { Label("Lists", systemImage: "folder") }
+                .tag(1)
+            SettingsTab()
+                .tabItem { Label("Settings", systemImage: "gearshape") }
+                .tag(2)
+        }
+        .tint(.primary)
+    }
+}
+
+// MARK: - Items Tab
+
+struct ItemsTab: View {
+    @EnvironmentObject var appState: AppState
+    @State private var items: [Item] = []
+    @State private var page = 1
+    @State private var isLoading = false
+    @State private var hasMore = true
+    @State private var searchText = ""
+    @State private var searchResults: [Item] = []
+    @State private var searchTask: Task<Void, Never>?
+    @State private var showAddSheet = false
+
+    private var displayItems: [Item] { searchText.isEmpty ? items : searchResults }
+
+    var body: some View {
+        NavigationStack {
+            List {
+                ForEach(displayItems) { item in
+                    ItemRow(item: item)
+                        .listRowInsets(EdgeInsets(top: 8, leading: 16, bottom: 8, trailing: 16))
+                        .listRowSeparator(.hidden)
+                        .swipeActions(edge: .trailing) {
+                            Button(role: .destructive) { archive(item) } label: {
+                                Label("Archive", systemImage: "archivebox")
+                            }
+                        }
+                }
+
+                if searchText.isEmpty && hasMore && !items.isEmpty {
+                    HStack {
+                        Spacer()
+                        ProgressView()
+                        Spacer()
+                    }
+                    .listRowSeparator(.hidden)
+                    .onAppear { loadMore() }
+                }
+            }
+            .listStyle(.plain)
+            .searchable(text: $searchText, prompt: "Search items")
+            .onChange(of: searchText) { newValue in
+                searchTask?.cancel()
+                guard !newValue.isEmpty else { searchResults = []; return }
+                searchTask = Task {
+                    try? await Task.sleep(nanoseconds: 300_000_000)
+                    guard !Task.isCancelled else { return }
+                    if let results = try? await appState.api.search(query: newValue) {
+                        await MainActor.run { searchResults = results }
+                    }
+                }
+            }
+            .refreshable { await refresh() }
+            .overlay {
+                if !isLoading && displayItems.isEmpty {
+                    ContentUnavailableView(
+                        searchText.isEmpty ? "No items yet" : "No results",
+                        systemImage: searchText.isEmpty ? "square.stack" : "magnifyingglass",
+                        description: Text(searchText.isEmpty ? "Save your first link to get started." : "Try a different search.")
+                    )
+                }
+            }
+            .navigationTitle("Items")
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button { showAddSheet = true } label: {
+                        Image(systemName: "plus")
+                    }
+                }
+            }
+            .sheet(isPresented: $showAddSheet) {
+                AddItemSheet { await refresh() }
+            }
+        }
+        .task { await refresh() }
+    }
+
+    private func refresh() async {
+        isLoading = true
+        page = 1
+        if let fetched = try? await appState.api.fetchItems(page: 1) {
+            items = fetched
+            hasMore = fetched.count >= AppConstants.pageSize
+        }
+        isLoading = false
+    }
+
+    private func loadMore() {
+        guard !isLoading, hasMore else { return }
+        isLoading = true
+        let nextPage = page + 1
+        Task {
+            if let fetched = try? await appState.api.fetchItems(page: nextPage) {
+                await MainActor.run {
+                    items.append(contentsOf: fetched)
+                    page = nextPage
+                    hasMore = fetched.count >= AppConstants.pageSize
+                    isLoading = false
+                }
+            }
+        }
+    }
+
+    private func archive(_ item: Item) {
+        Task {
+            try? await appState.api.archiveItem(id: item.id)
+            await MainActor.run { items.removeAll { $0.id == item.id } }
+        }
+    }
+}
+
+// MARK: - Item Row
+
+struct ItemRow: View {
+    let item: Item
+
+    var body: some View {
+        Button {
+            if let url = item.url, let link = URL(string: url) {
+                UIApplication.shared.open(link)
+            }
+        } label: {
+            HStack(alignment: .top, spacing: 12) {
+                VStack(alignment: .leading, spacing: 4) {
+                    Text(item.title)
+                        .font(.subheadline.weight(.medium))
+                        .foregroundStyle(.primary)
+                        .lineLimit(2)
+
+                    if let desc = item.description, !desc.isEmpty {
+                        Text(desc)
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                            .lineLimit(2)
+                    }
+
+                    HStack(spacing: 6) {
+                        Image(systemName: item.typeIcon)
+                            .font(.caption2)
+                            .foregroundStyle(.tertiary)
+                        if let domain = item.domain {
+                            Text(domain)
+                                .font(.caption2)
+                                .foregroundStyle(.tertiary)
+                        }
+                        Text("·")
+                            .foregroundStyle(.quaternary)
+                        Text(item.relativeDate)
+                            .font(.caption2)
+                            .foregroundStyle(.tertiary)
+                    }
+                }
+
+                Spacer(minLength: 0)
+
+                if let image = item.image, let url = URL(string: image) {
+                    AsyncImage(url: url) { phase in
+                        switch phase {
+                        case .success(let img):
+                            img.resizable()
+                                .aspectRatio(contentMode: .fill)
+                                .frame(width: 52, height: 52)
+                                .cornerRadius(6)
+                                .clipped()
+                        default:
+                            EmptyView()
+                        }
+                    }
+                }
+            }
+            .padding(.vertical, 4)
         }
         .buttonStyle(.plain)
     }
+}
 
-    private func saveToken() {
-        guard KeychainHelper.save(token: tokenInput) else { return }
-        tokenInput = ""
-        hasSavedToken = true
-        isEditing = false
+// MARK: - Add Item Sheet
+
+struct AddItemSheet: View {
+    @EnvironmentObject var appState: AppState
+    @Environment(\.dismiss) var dismiss
+    @State private var url = ""
+    @State private var isSaving = false
+    @State private var error: String?
+    var onSaved: () async -> Void
+
+    var body: some View {
+        NavigationStack {
+            VStack(spacing: 16) {
+                TextField("https://", text: $url)
+                    .textContentType(.URL)
+                    .textInputAutocapitalization(.never)
+                    .autocorrectionDisabled()
+                    .padding(12)
+                    .background(Color(.secondarySystemBackground))
+                    .cornerRadius(8)
+
+                if let error {
+                    Text(error).font(.footnote).foregroundStyle(.red)
+                }
+
+                Spacer()
+            }
+            .padding(20)
+            .navigationTitle("Add Item")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("Cancel") { dismiss() }
+                }
+                ToolbarItem(placement: .confirmationAction) {
+                    Button("Save") { save() }
+                        .disabled(url.isEmpty || isSaving)
+                }
+            }
+        }
+        .presentationDetents([.medium])
     }
 
-    private func deleteToken() {
-        KeychainHelper.delete()
-        hasSavedToken = false
-        isEditing = false
-        tokenInput = ""
+    private func save() {
+        isSaving = true
+        error = nil
+        Task {
+            do {
+                try await appState.api.createItem(url: url)
+                await onSaved()
+                await MainActor.run { dismiss() }
+            } catch {
+                await MainActor.run { self.error = error.localizedDescription; isSaving = false }
+            }
+        }
+    }
+}
+
+// MARK: - Lists Tab
+
+struct ListsTab: View {
+    @EnvironmentObject var appState: AppState
+    @State private var lists: [ItemList] = []
+    @State private var isLoading = false
+
+    var body: some View {
+        NavigationStack {
+            List {
+                ForEach(lists) { list in
+                    NavigationLink {
+                        ListDetailView(list: list)
+                    } label: {
+                        HStack(spacing: 10) {
+                            Image(systemName: list.source != nil ? "tray.fill" : "folder")
+                                .font(.subheadline)
+                                .foregroundStyle(.secondary)
+                                .frame(width: 24)
+                            VStack(alignment: .leading, spacing: 2) {
+                                Text(list.name)
+                                    .font(.subheadline.weight(.medium))
+                                if let desc = list.description, !desc.isEmpty {
+                                    Text(desc)
+                                        .font(.caption)
+                                        .foregroundStyle(.secondary)
+                                        .lineLimit(1)
+                                }
+                            }
+                        }
+                        .padding(.vertical, 4)
+                    }
+                }
+            }
+            .listStyle(.plain)
+            .refreshable { await refresh() }
+            .overlay {
+                if !isLoading && lists.isEmpty {
+                    ContentUnavailableView("No lists", systemImage: "folder",
+                        description: Text("Lists you create will appear here."))
+                }
+            }
+            .navigationTitle("Lists")
+        }
+        .task { await refresh() }
     }
 
-    private func cancelEditing() {
-        isEditing = false
-        tokenInput = ""
+    private func refresh() async {
+        isLoading = true
+        if let fetched = try? await appState.api.fetchLists() {
+            lists = fetched
+        }
+        isLoading = false
+    }
+}
+
+// MARK: - List Detail
+
+struct ListDetailView: View {
+    @EnvironmentObject var appState: AppState
+    let list: ItemList
+    @State private var items: [Item] = []
+    @State private var isLoading = false
+
+    var body: some View {
+        List {
+            ForEach(items) { item in
+                ItemRow(item: item)
+                    .listRowInsets(EdgeInsets(top: 8, leading: 16, bottom: 8, trailing: 16))
+                    .listRowSeparator(.hidden)
+            }
+        }
+        .listStyle(.plain)
+        .refreshable { await refresh() }
+        .overlay {
+            if !isLoading && items.isEmpty {
+                ContentUnavailableView("Empty list", systemImage: "folder",
+                    description: Text("No items in this list yet."))
+            }
+        }
+        .navigationTitle(list.name)
+        .task { await refresh() }
+    }
+
+    private func refresh() async {
+        isLoading = true
+        if let fetched = try? await appState.api.fetchListItems(listId: list.id) {
+            items = fetched
+        }
+        isLoading = false
+    }
+}
+
+// MARK: - Settings Tab
+
+struct SettingsTab: View {
+    @EnvironmentObject var appState: AppState
+    @State private var showSignOutConfirm = false
+
+    var body: some View {
+        NavigationStack {
+            List {
+                Section {
+                    HStack {
+                        Text("Server")
+                        Spacer()
+                        Text(appState.serverURL)
+                            .font(.footnote.monospaced())
+                            .foregroundStyle(.secondary)
+                            .lineLimit(1)
+                    }
+                    HStack {
+                        Text("Token")
+                        Spacer()
+                        Text("coolection_•••")
+                            .font(.footnote.monospaced())
+                            .foregroundStyle(.secondary)
+                    }
+                }
+
+                Section {
+                    Button(role: .destructive) {
+                        showSignOutConfirm = true
+                    } label: {
+                        Text("Sign Out")
+                    }
+                }
+            }
+            .navigationTitle("Settings")
+            .alert("Sign Out?", isPresented: $showSignOutConfirm) {
+                Button("Sign Out", role: .destructive) { appState.signOut() }
+                Button("Cancel", role: .cancel) {}
+            } message: {
+                Text("You'll need to re-enter your token to reconnect.")
+            }
+        }
     }
 }

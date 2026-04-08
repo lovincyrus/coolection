@@ -1,12 +1,12 @@
 "use server";
 
-import { auth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 
 import prisma from "@/lib/prisma";
+import { resolveUserId } from "@/lib/resolve-user-id";
 
 export async function GET() {
-  const { userId } = auth();
+  const userId = await resolveUserId();
 
   if (!userId) {
     return new NextResponse("Unauthorized", { status: 401 });

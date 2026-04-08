@@ -1,12 +1,12 @@
 "use server";
 
-import { auth } from "@clerk/nextjs/server";
 import { NextRequest, NextResponse } from "next/server";
 
 import prisma from "@/lib/prisma";
+import { resolveUserId } from "@/lib/resolve-user-id";
 
 export async function GET(req: NextRequest) {
-  const { userId } = auth();
+  const userId = await resolveUserId();
 
   const searchParams = new URL(req.url).searchParams;
   const page = Number(searchParams.get("page"));
