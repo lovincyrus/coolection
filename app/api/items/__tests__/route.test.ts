@@ -12,10 +12,12 @@ vi.mock("@/lib/prisma", () => ({
   },
 }));
 
+/* eslint-disable import/first */
 import prisma from "@/lib/prisma";
 import { resolveUserId } from "@/lib/resolve-user-id";
 
 import { GET } from "../route";
+/* eslint-enable import/first */
 
 const mockResolveUserId = vi.mocked(resolveUserId);
 const mockFindMany = vi.mocked(prisma.item.findMany);

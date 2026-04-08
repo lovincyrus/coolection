@@ -13,10 +13,12 @@ vi.mock("@/lib/prisma", () => ({
   },
 }));
 
+/* eslint-disable import/first */
 import prisma from "@/lib/prisma";
 import { resolveUserId } from "@/lib/resolve-user-id";
 
 import { PUT } from "../route";
+/* eslint-enable import/first */
 
 const mockResolveUserId = vi.mocked(resolveUserId);
 const mockFindUnique = vi.mocked(prisma.item.findUnique);
