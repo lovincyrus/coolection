@@ -29,7 +29,7 @@ final class APIClient {
         return data
     }
 
-    func fetchItems(page: Int = 1, limit: Int = AppConstants.pageSize) async throws -> [Item] {
+    func fetchItems(page: Int = 1, limit: Int = 20) async throws -> [Item] {
         let data = try await request("/api/items?page=\(page)&limit=\(limit)")
         return try JSONDecoder().decode([Item].self, from: data)
     }

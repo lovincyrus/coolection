@@ -211,7 +211,9 @@ struct ItemsTab: View {
     @State private var searchResults: [Item] = []
     @State private var searchTask: Task<Void, Never>?
     @State private var showAddSheet = false
+    @State private var didLoadCache = false
 
+    private let cache = DiskCache<[Item]>(key: "items_page1")
     private var displayItems: [Item] { searchText.isEmpty ? items : searchResults }
 
     var body: some View {
@@ -251,9 +253,9 @@ struct ItemsTab: View {
                     }
                 }
             }
-            .refreshable { await refresh() }
+            .refreshable { await revalidate() }
             .overlay {
-                if !isLoading && displayItems.isEmpty {
+                if didLoadCache && displayItems.isEmpty {
                     ContentUnavailableView(
                         searchText.isEmpty ? "No items yet" : "No results",
                         systemImage: searchText.isEmpty ? "square.stack" : "magnifyingglass",
@@ -270,18 +272,30 @@ struct ItemsTab: View {
                 }
             }
             .sheet(isPresented: $showAddSheet) {
-                AddItemSheet { await refresh() }
+                AddItemSheet {
+                    cache.clear()
+                    await revalidate()
+                }
             }
         }
-        .task { await refresh() }
+        .task {
+            // SWR: show stale cache immediately, then revalidate
+            if let cached = cache.read() {
+                items = cached
+                hasMore = cached.count >= 20
+            }
+            didLoadCache = true
+            await revalidate()
+        }
     }
 
-    private func refresh() async {
+    private func revalidate() async {
         isLoading = true
         page = 1
         if let fetched = try? await appState.api.fetchItems(page: 1) {
             items = fetched
-            hasMore = fetched.count >= AppConstants.pageSize
+            hasMore = fetched.count >= 20
+            cache.write(fetched)
         }
         isLoading = false
     }
@@ -295,7 +309,7 @@ struct ItemsTab: View {
                 await MainActor.run {
                     items.append(contentsOf: fetched)
                     page = nextPage
-                    hasMore = fetched.count >= AppConstants.pageSize
+                    hasMore = fetched.count >= 20
                     isLoading = false
                 }
             }
@@ -303,9 +317,10 @@ struct ItemsTab: View {
     }
 
     private func archive(_ item: Item) {
+        items.removeAll { $0.id == item.id }
+        cache.write(items)
         Task {
             try? await appState.api.archiveItem(id: item.id)
-            await MainActor.run { items.removeAll { $0.id == item.id } }
         }
     }
 }
@@ -438,7 +453,9 @@ struct AddItemSheet: View {
 struct ListsTab: View {
     @EnvironmentObject var appState: AppState
     @State private var lists: [ItemList] = []
-    @State private var isLoading = false
+    @State private var didLoadCache = false
+
+    private let cache = DiskCache<[ItemList]>(key: "lists")
 
     var body: some View {
         NavigationStack {
@@ -468,24 +485,29 @@ struct ListsTab: View {
                 }
             }
             .listStyle(.plain)
-            .refreshable { await refresh() }
+            .refreshable { await revalidate() }
             .overlay {
-                if !isLoading && lists.isEmpty {
+                if didLoadCache && lists.isEmpty {
                     ContentUnavailableView("No lists", systemImage: "folder",
                         description: Text("Lists you create will appear here."))
                 }
             }
             .navigationTitle("Lists")
         }
-        .task { await refresh() }
+        .task {
+            if let cached = cache.read() {
+                lists = cached
+            }
+            didLoadCache = true
+            await revalidate()
+        }
     }
 
-    private func refresh() async {
-        isLoading = true
+    private func revalidate() async {
         if let fetched = try? await appState.api.fetchLists() {
             lists = fetched
+            cache.write(fetched)
         }
-        isLoading = false
     }
 }
 
