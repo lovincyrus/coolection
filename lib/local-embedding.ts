@@ -1,21 +1,16 @@
-import { type FeatureExtractionPipeline,pipeline } from "@huggingface/transformers";
+import { type EmbeddingsModel, initModel } from "@energetic-ai/embeddings";
+import { modelSource } from "@energetic-ai/model-embeddings-en";
 
-let extractor: FeatureExtractionPipeline | null = null;
+let model: EmbeddingsModel | null = null;
 
-async function getExtractor(): Promise<FeatureExtractionPipeline> {
-  if (!extractor) {
-    extractor = await pipeline("feature-extraction", "Xenova/all-MiniLM-L6-v2", {
-      dtype: "fp32",
-    });
+async function getModel(): Promise<EmbeddingsModel> {
+  if (!model) {
+    model = await initModel(modelSource);
   }
-  return extractor;
+  return model;
 }
 
 export async function generateLocalEmbedding(input: string): Promise<number[]> {
-  const ext = await getExtractor();
-  const output = await ext(input.replace(/\n/g, " "), {
-    pooling: "mean",
-    normalize: true,
-  });
-  return Array.from(output.data as Float32Array);
+  const m = await getModel();
+  return m.embed(input.replace(/\n/g, " "));
 }

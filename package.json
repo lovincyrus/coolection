@@ -30,7 +30,8 @@
   "dependencies": {
     "@clerk/clerk-react": "^5.1.0",
     "@clerk/nextjs": "^5.0.12",
-    "@huggingface/transformers": "^4.0.1",
+    "@energetic-ai/embeddings": "^0.2.0",
+    "@energetic-ai/model-embeddings-en": "^0.2.0",
     "@mozilla/readability": "^0.5.0",
     "@piotr-cz/swr-idb-cache": "^1.0.3",
     "@prisma/client": "^5.14.0",

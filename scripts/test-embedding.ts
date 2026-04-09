@@ -37,12 +37,12 @@ async function main() {
     const scores = listEmbeddings.map((le) => {
       const sim = cosine(itemEmbeddings[i], le);
       const str = sim.toFixed(3);
-      return sim >= 0.35 ? `*${str}*`.padEnd(14) : str.padEnd(14);
+      return sim >= 0.5 ? `*${str}*`.padEnd(14) : str.padEnd(14);
     });
     console.log(label + scores.join(""));
   }
 
-  console.log("\n* = above 0.35 threshold");
+  console.log("\n* = above 0.5 threshold");
 }
 
 main().catch(console.error);

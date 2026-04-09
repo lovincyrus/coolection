@@ -1,6 +1,6 @@
 import prisma from "./prisma";
 
-const SIMILARITY_THRESHOLD = 0.35;
+const SIMILARITY_THRESHOLD = 0.55;
 const MAX_LISTS = 3;
 
 /**
