@@ -181,19 +181,17 @@ extension APIError: Equatable {
 
 struct MainTabView: View {
     @EnvironmentObject var appState: AppState
-    @State private var selectedTab = 0
 
     var body: some View {
-        TabView(selection: $selectedTab) {
+        TabView {
             ItemsTab()
                 .tabItem { Label("Items", systemImage: "square.stack") }
-                .tag(0)
             ListsTab()
                 .tabItem { Label("Lists", systemImage: "folder") }
-                .tag(1)
+            SearchTab()
+                .tabItem { Label("Search", systemImage: "magnifyingglass") }
             SettingsTab()
                 .tabItem { Label("Settings", systemImage: "gearshape") }
-                .tag(2)
         }
         .tint(.primary)
     }
@@ -207,19 +205,15 @@ struct ItemsTab: View {
     @State private var page = 1
     @State private var isLoading = false
     @State private var hasMore = true
-    @State private var searchText = ""
-    @State private var searchResults: [Item] = []
-    @State private var searchTask: Task<Void, Never>?
-    @State private var showAddSheet = false
     @State private var didLoadCache = false
+    @State private var showAddSheet = false
 
     private let cache = DiskCache<[Item]>(key: "items_page1")
-    private var displayItems: [Item] { searchText.isEmpty ? items : searchResults }
 
     var body: some View {
         NavigationStack {
             List {
-                ForEach(displayItems) { item in
+                ForEach(items) { item in
                     ItemRow(item: item)
                         .listRowInsets(EdgeInsets(top: 8, leading: 16, bottom: 8, trailing: 16))
                         .listRowSeparator(.hidden)
@@ -230,7 +224,7 @@ struct ItemsTab: View {
                         }
                 }
 
-                if searchText.isEmpty && hasMore && !items.isEmpty {
+                if hasMore && !items.isEmpty {
                     HStack {
                         Spacer()
                         ProgressView()
@@ -241,31 +235,19 @@ struct ItemsTab: View {
                 }
             }
             .listStyle(.plain)
-            .searchable(text: $searchText, prompt: "Search items")
-            .onChange(of: searchText) { newValue in
-                searchTask?.cancel()
-                guard !newValue.isEmpty else { searchResults = []; return }
-                searchTask = Task {
-                    try? await Task.sleep(nanoseconds: 300_000_000)
-                    guard !Task.isCancelled else { return }
-                    if let results = try? await appState.api.search(query: newValue) {
-                        await MainActor.run { searchResults = results }
-                    }
-                }
-            }
             .refreshable { await revalidate() }
             .overlay {
-                if didLoadCache && displayItems.isEmpty {
+                if didLoadCache && items.isEmpty {
                     ContentUnavailableView(
-                        searchText.isEmpty ? "No items yet" : "No results",
-                        systemImage: searchText.isEmpty ? "square.stack" : "magnifyingglass",
-                        description: Text(searchText.isEmpty ? "Save your first link to get started." : "Try a different search.")
+                        "No items yet",
+                        systemImage: "square.stack",
+                        description: Text("Save your first link to get started.")
                     )
                 }
             }
             .navigationTitle("Items")
             .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
+                ToolbarItem(placement: .primaryAction) {
                     Button { showAddSheet = true } label: {
                         Image(systemName: "plus")
                     }
@@ -279,7 +261,6 @@ struct ItemsTab: View {
             }
         }
         .task {
-            // SWR: show stale cache immediately, then revalidate
             if let cached = cache.read() {
                 items = cached
                 hasMore = cached.count >= 20
@@ -321,6 +302,50 @@ struct ItemsTab: View {
         cache.write(items)
         Task {
             try? await appState.api.archiveItem(id: item.id)
+        }
+    }
+}
+
+// MARK: - Search Tab
+
+struct SearchTab: View {
+    @EnvironmentObject var appState: AppState
+    @State private var searchText = ""
+    @State private var results: [Item] = []
+    @State private var searchTask: Task<Void, Never>?
+
+    var body: some View {
+        NavigationStack {
+            List {
+                ForEach(results) { item in
+                    ItemRow(item: item)
+                        .listRowInsets(EdgeInsets(top: 8, leading: 16, bottom: 8, trailing: 16))
+                        .listRowSeparator(.hidden)
+                }
+            }
+            .listStyle(.plain)
+            .searchable(text: $searchText, prompt: "Search items")
+            .onChange(of: searchText) { newValue in
+                searchTask?.cancel()
+                guard !newValue.isEmpty else { results = []; return }
+                searchTask = Task {
+                    try? await Task.sleep(nanoseconds: 300_000_000)
+                    guard !Task.isCancelled else { return }
+                    if let fetched = try? await appState.api.search(query: newValue) {
+                        await MainActor.run { results = fetched }
+                    }
+                }
+            }
+            .overlay {
+                if results.isEmpty {
+                    ContentUnavailableView(
+                        searchText.isEmpty ? "Search" : "No results",
+                        systemImage: "magnifyingglass",
+                        description: Text(searchText.isEmpty ? "Search your saved items." : "Try a different search.")
+                    )
+                }
+            }
+            .navigationTitle("Search")
         }
     }
 }
@@ -398,6 +423,8 @@ struct AddItemSheet: View {
     @State private var url = ""
     @State private var isSaving = false
     @State private var error: String?
+    @State private var hasClipboardURL = false
+    @FocusState private var isFieldFocused: Bool
     var onSaved: () async -> Void
 
     var body: some View {
@@ -407,9 +434,24 @@ struct AddItemSheet: View {
                     .textContentType(.URL)
                     .textInputAutocapitalization(.never)
                     .autocorrectionDisabled()
+                    .keyboardType(.URL)
+                    .focused($isFieldFocused)
+                    .submitLabel(.go)
+                    .onSubmit { if canSave { save() } }
                     .padding(12)
                     .background(Color(.secondarySystemBackground))
                     .cornerRadius(8)
+
+                if hasClipboardURL && url.isEmpty {
+                    PasteButton(payloadType: URL.self) { urls in
+                        if let pasted = urls.first {
+                            url = pasted.absoluteString
+                            hasClipboardURL = false
+                        }
+                    }
+                    .buttonBorderShape(.roundedRectangle(radius: 8))
+                    .labelStyle(.titleAndIcon)
+                }
 
                 if let error {
                     Text(error).font(.footnote).foregroundStyle(.red)
@@ -425,12 +467,30 @@ struct AddItemSheet: View {
                     Button("Cancel") { dismiss() }
                 }
                 ToolbarItem(placement: .confirmationAction) {
-                    Button("Save") { save() }
-                        .disabled(url.isEmpty || isSaving)
+                    if isSaving {
+                        ProgressView()
+                    } else {
+                        Button("Add") { save() }
+                            .disabled(!canSave)
+                            .fontWeight(.semibold)
+                    }
                 }
             }
         }
-        .presentationDetents([.medium])
+        .presentationDetents([.medium, .large])
+        .presentationDragIndicator(.visible)
+        .onAppear {
+            isFieldFocused = true
+            detectClipboard()
+        }
+    }
+
+    private var canSave: Bool {
+        !url.isEmpty && !isSaving
+    }
+
+    private func detectClipboard() {
+        hasClipboardURL = UIPasteboard.general.hasURLs
     }
 
     private func save() {
