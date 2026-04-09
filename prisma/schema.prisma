@@ -62,17 +62,18 @@ model Item {
 }
 
 model List {
-  id          String     @id @default(nanoid())
+  id          String                 @id @default(nanoid())
   name        String
   slug        String
   description String?
   source      String?
-  createdAt   DateTime   @default(now())
-  updatedAt   DateTime   @updatedAt
+  createdAt   DateTime               @default(now())
+  updatedAt   DateTime               @updatedAt
   deletedAt   DateTime?
-  isDeleted   Boolean    @default(false)
+  isDeleted   Boolean                @default(false)
+  embedding   Unsupported("vector")?
   userId      String
-  user        User       @relation(fields: [userId], references: [id])
+  user        User                   @relation(fields: [userId], references: [id])
   items       ItemList[]
 
   @@unique([userId, name])

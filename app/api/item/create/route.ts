@@ -4,7 +4,9 @@ import { NextResponse } from "next/server";
 
 import { addTwitterPostOrBookmark } from "@/lib/add-twitter-post-or-bookmark";
 import { addWebsite } from "@/lib/add-website";
+import { autoCategorize } from "@/lib/auto-categorize";
 import { checkDuplicateItem } from "@/lib/check-duplicate-item";
+import { embedItem } from "@/lib/embed-and-store";
 import { resolveUserId } from "@/lib/resolve-user-id";
 import { assignItemsToSourceList, ensureSourceList, SOURCE_X } from "@/lib/source-lists";
 import { isTwitterPostOrBookmarkUrl, normalizeLink } from "@/lib/url";
@@ -51,6 +53,11 @@ export async function POST(req: Request) {
       const newWebsite = await addWebsite(normalizedLink, userId);
       newItem = newWebsite;
     }
+
+    // Fire-and-forget: embed item and auto-categorize into matching lists
+    embedItem(newItem.id, newItem.title, newItem.description)
+      .then((embedding) => autoCategorize(newItem.id, embedding, userId))
+      .catch(console.error);
 
     return NextResponse.json(
       { message: "Item added successfully", item: newItem },

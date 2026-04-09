@@ -2,6 +2,7 @@
 
 import { NextResponse } from "next/server";
 
+import { embedList } from "@/lib/embed-and-store";
 import prisma from "@/lib/prisma";
 import { resolveUserId } from "@/lib/resolve-user-id";
 
@@ -48,6 +49,9 @@ export async function POST(req: Request) {
         userId: userId,
       },
     });
+
+    // Fire-and-forget: embed list for auto-categorization
+    embedList(createdList.id, createdList.name, createdList.description).catch(console.error);
 
     return NextResponse.json(
       {

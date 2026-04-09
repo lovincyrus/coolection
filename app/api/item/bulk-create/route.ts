@@ -2,7 +2,9 @@ import { NextResponse } from "next/server";
 
 import { addTwitterPostOrBookmark } from "@/lib/add-twitter-post-or-bookmark";
 import { addWebsite } from "@/lib/add-website";
+import { autoCategorize } from "@/lib/auto-categorize";
 import { checkDuplicateItem } from "@/lib/check-duplicate-item";
+import { embedItem } from "@/lib/embed-and-store";
 import { resolveUserId } from "@/lib/resolve-user-id";
 import { assignItemsToSourceList, ensureSourceList, SOURCE_X } from "@/lib/source-lists";
 import { isTwitterPostOrBookmarkUrl, normalizeLink } from "@/lib/url";
@@ -44,6 +46,7 @@ export async function POST(req: Request) {
 
   const results: { url: string; status: "created" | "duplicate" | "failed"; error?: string }[] = [];
   const createdTweetItemIds: string[] = [];
+  const createdItems: { id: string; title: string; description: string | null }[] = [];
 
   for (const url of urls) {
     if (!url || typeof url !== "string" || !URL_PATTERN.test(url)) {
@@ -63,8 +66,10 @@ export async function POST(req: Request) {
       if (isTwitterPostOrBookmarkUrl(normalizedLink)) {
         const item = await addTwitterPostOrBookmark(normalizedLink, userId);
         createdTweetItemIds.push(item.id);
+        createdItems.push({ id: item.id, title: item.title, description: item.description });
       } else {
-        await addWebsite(normalizedLink, userId);
+        const item = await addWebsite(normalizedLink, userId);
+        createdItems.push({ id: item.id, title: item.title, description: item.description });
       }
 
       results.push({ url, status: "created" });
@@ -86,6 +91,14 @@ export async function POST(req: Request) {
       // Non-critical: items are saved even if list assignment fails
     }
   }
+
+  // Fire-and-forget: embed items and auto-categorize
+  Promise.all(
+    createdItems.map(async (item) => {
+      const embedding = await embedItem(item.id, item.title, item.description);
+      await autoCategorize(item.id, embedding, userId);
+    }),
+  ).catch(console.error);
 
   const created = results.filter((r) => r.status === "created").length;
   const duplicates = results.filter((r) => r.status === "duplicate").length;

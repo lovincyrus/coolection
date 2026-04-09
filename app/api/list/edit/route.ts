@@ -2,6 +2,7 @@
 
 import { NextResponse } from "next/server";
 
+import { embedList } from "@/lib/embed-and-store";
 import prisma from "@/lib/prisma";
 import { resolveUserId } from "@/lib/resolve-user-id";
 
@@ -25,6 +26,9 @@ export async function PATCH(req: Request) {
         name: name,
       },
     });
+
+    // Fire-and-forget: re-embed list with updated name
+    embedList(newListName.id, newListName.name, newListName.description).catch(console.error);
 
     return NextResponse.json(
       { message: `List ${newListName.name} name updated successfully` },

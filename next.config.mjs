@@ -1,4 +1,8 @@
 /** @type {import('next').NextConfig} */
-const nextConfig = {};
+const nextConfig = {
+  experimental: {
+    serverComponentsExternalPackages: ["onnxruntime-node", "@huggingface/transformers"],
+  },
+};
 
 export default nextConfig;
