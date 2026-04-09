@@ -207,6 +207,7 @@ struct ItemsTab: View {
     @State private var hasMore = true
     @State private var didLoadCache = false
     @State private var showAddSheet = false
+    @State private var itemToAddToList: Item?
 
     private let cache = DiskCache<[Item]>(key: "items_page1")
 
@@ -218,6 +219,20 @@ struct ItemsTab: View {
                         .listRowInsets(EdgeInsets(top: 8, leading: 16, bottom: 8, trailing: 16))
                         .listRowSeparator(.hidden)
                         .swipeActions(edge: .trailing) {
+                            Button(role: .destructive) { archive(item) } label: {
+                                Label("Archive", systemImage: "archivebox")
+                            }
+                        }
+                        .swipeActions(edge: .leading) {
+                            Button { itemToAddToList = item } label: {
+                                Label("Add to List", systemImage: "folder.badge.plus")
+                            }
+                            .tint(.blue)
+                        }
+                        .contextMenu {
+                            Button { itemToAddToList = item } label: {
+                                Label("Add to List", systemImage: "folder.badge.plus")
+                            }
                             Button(role: .destructive) { archive(item) } label: {
                                 Label("Archive", systemImage: "archivebox")
                             }
@@ -258,6 +273,9 @@ struct ItemsTab: View {
                     cache.clear()
                     await revalidate()
                 }
+            }
+            .sheet(item: $itemToAddToList) { item in
+                ListPickerSheet(item: item)
             }
         }
         .task {
@@ -508,12 +526,124 @@ struct AddItemSheet: View {
     }
 }
 
+// MARK: - List Picker
+
+struct ListPickerSheet: View {
+    @EnvironmentObject var appState: AppState
+    @Environment(\.dismiss) var dismiss
+    let item: Item
+    @State private var lists: [ItemList] = []
+    @State private var isLoading = true
+    @State private var addedListId: String?
+    @State private var error: String?
+
+    private let listsCache = DiskCache<[ItemList]>(key: "lists")
+    private var userLists: [ItemList] { lists.filter { $0.source == nil } }
+
+    var body: some View {
+        NavigationStack {
+            List {
+                ForEach(userLists) { list in
+                    listRow(list)
+                }
+            }
+            .listStyle(.plain)
+            .overlay {
+                if !isLoading && userLists.isEmpty {
+                    ContentUnavailableView("No lists", systemImage: "folder",
+                        description: Text("Create a list on the web to get started."))
+                }
+            }
+            .safeAreaInset(edge: .bottom) {
+                if let error {
+                    Text(error)
+                        .font(.footnote)
+                        .foregroundColor(addedListId != nil ? .secondary : .red)
+                        .padding()
+                        .frame(maxWidth: .infinity)
+                }
+            }
+            .navigationTitle("Add to List")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("Cancel") { dismiss() }
+                }
+            }
+        }
+        .presentationDetents([.medium, .large])
+        .presentationDragIndicator(.visible)
+        .task {
+            if let cached = listsCache.read() {
+                lists = cached
+            }
+            isLoading = false
+            if let fetched = try? await appState.api.fetchLists() {
+                lists = fetched
+                listsCache.write(fetched)
+            }
+        }
+    }
+
+    private func listRow(_ list: ItemList) -> some View {
+        Button { addToList(list) } label: {
+            HStack(spacing: 10) {
+                Image(systemName: "folder")
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+                    .frame(width: 24)
+                Text(list.name)
+                    .font(.subheadline.weight(.medium))
+                    .foregroundStyle(.primary)
+                Spacer()
+                if addedListId == list.id {
+                    Image(systemName: "checkmark")
+                        .font(.subheadline.weight(.semibold))
+                        .foregroundStyle(.green)
+                }
+            }
+            .padding(.vertical, 4)
+        }
+        .disabled(addedListId != nil)
+    }
+
+    private func addToList(_ list: ItemList) {
+        error = nil
+        Task {
+            do {
+                try await appState.api.addItemToList(itemId: item.id, listId: list.id)
+                await MainActor.run { addedListId = list.id }
+                try? await Task.sleep(nanoseconds: 600_000_000)
+                await MainActor.run { dismiss() }
+            } catch let err as APIError {
+                await MainActor.run {
+                    switch err {
+                    case .server(400):
+                        addedListId = list.id
+                        error = "Already in this list"
+                    default:
+                        error = err.localizedDescription
+                    }
+                }
+                if case .server(400) = err {
+                    try? await Task.sleep(nanoseconds: 800_000_000)
+                    await MainActor.run { dismiss() }
+                }
+            } catch {
+                await MainActor.run { self.error = error.localizedDescription }
+            }
+        }
+    }
+}
+
 // MARK: - Lists Tab
 
 struct ListsTab: View {
     @EnvironmentObject var appState: AppState
     @State private var lists: [ItemList] = []
     @State private var didLoadCache = false
+    @State private var listToRename: ItemList?
+    @State private var renameText = ""
 
     private let cache = DiskCache<[ItemList]>(key: "lists")
 
@@ -542,6 +672,17 @@ struct ListsTab: View {
                         }
                         .padding(.vertical, 4)
                     }
+                    .listRowSeparator(.hidden)
+                    .contextMenu {
+                        if list.source == nil {
+                            Button {
+                                renameText = list.name
+                                listToRename = list
+                            } label: {
+                                Label("Rename", systemImage: "pencil")
+                            }
+                        }
+                    }
                 }
             }
             .listStyle(.plain)
@@ -553,6 +694,14 @@ struct ListsTab: View {
                 }
             }
             .navigationTitle("Lists")
+            .alert("Rename List", isPresented: .init(
+                get: { listToRename != nil },
+                set: { if !$0 { listToRename = nil } }
+            )) {
+                TextField("Name", text: $renameText)
+                Button("Rename") { rename() }
+                Button("Cancel", role: .cancel) { listToRename = nil }
+            }
         }
         .task {
             if let cached = cache.read() {
@@ -569,6 +718,20 @@ struct ListsTab: View {
             cache.write(fetched)
         }
     }
+
+    private func rename() {
+        guard let list = listToRename, !renameText.isEmpty else { return }
+        let newName = renameText
+        if let idx = lists.firstIndex(where: { $0.id == list.id }) {
+            lists[idx] = ItemList(id: list.id, name: newName, description: list.description, source: list.source)
+            cache.write(lists)
+        }
+        Task {
+            try? await appState.api.renameList(listId: list.id, name: newName)
+            await revalidate()
+        }
+        listToRename = nil
+    }
 }
 
 // MARK: - List Detail
@@ -578,6 +741,9 @@ struct ListDetailView: View {
     let list: ItemList
     @State private var items: [Item] = []
     @State private var isLoading = false
+    @State private var didLoadCache = false
+
+    private var cache: DiskCache<[Item]> { DiskCache<[Item]>(key: "list_\(list.id)") }
 
     var body: some View {
         List {
@@ -588,21 +754,28 @@ struct ListDetailView: View {
             }
         }
         .listStyle(.plain)
-        .refreshable { await refresh() }
+        .refreshable { await revalidate() }
         .overlay {
-            if !isLoading && items.isEmpty {
+            if didLoadCache && items.isEmpty {
                 ContentUnavailableView("Empty list", systemImage: "folder",
                     description: Text("No items in this list yet."))
             }
         }
         .navigationTitle(list.name)
-        .task { await refresh() }
+        .task {
+            if let cached = cache.read() {
+                items = cached
+            }
+            didLoadCache = true
+            await revalidate()
+        }
     }
 
-    private func refresh() async {
+    private func revalidate() async {
         isLoading = true
         if let fetched = try? await appState.api.fetchListItems(listId: list.id) {
             items = fetched
+            cache.write(fetched)
         }
         isLoading = false
     }
@@ -612,36 +785,18 @@ struct ListDetailView: View {
 
 struct SettingsTab: View {
     @EnvironmentObject var appState: AppState
+    @State private var server = ""
+    @State private var token = ""
+    @State private var isSaving = false
     @State private var showSignOutConfirm = false
+    @State private var statusMessage: String?
+    @State private var statusIsError = false
 
     var body: some View {
         NavigationStack {
-            List {
-                Section {
-                    HStack {
-                        Text("Server")
-                        Spacer()
-                        Text(appState.serverURL)
-                            .font(.footnote.monospaced())
-                            .foregroundStyle(.secondary)
-                            .lineLimit(1)
-                    }
-                    HStack {
-                        Text("Token")
-                        Spacer()
-                        Text("coolection_•••")
-                            .font(.footnote.monospaced())
-                            .foregroundStyle(.secondary)
-                    }
-                }
-
-                Section {
-                    Button(role: .destructive) {
-                        showSignOutConfirm = true
-                    } label: {
-                        Text("Sign Out")
-                    }
-                }
+            Form {
+                connectionSection
+                signOutSection
             }
             .navigationTitle("Settings")
             .alert("Sign Out?", isPresented: $showSignOutConfirm) {
@@ -649,6 +804,105 @@ struct SettingsTab: View {
                 Button("Cancel", role: .cancel) {}
             } message: {
                 Text("You'll need to re-enter your token to reconnect.")
+            }
+        }
+        .onAppear {
+            server = appState.serverURL
+            token = appState.token
+        }
+    }
+
+    private var connectionSection: some View {
+        Section {
+            LabeledContent("Server") {
+                TextField("https://coolection.co", text: $server)
+                    .textContentType(.URL)
+                    .textInputAutocapitalization(.never)
+                    .autocorrectionDisabled()
+                    .keyboardType(.URL)
+                    .multilineTextAlignment(.trailing)
+            }
+            LabeledContent("Token") {
+                SecureField("coolection_...", text: $token)
+                    .textInputAutocapitalization(.never)
+                    .autocorrectionDisabled()
+                    .multilineTextAlignment(.trailing)
+            }
+            Button {
+                saveSettings()
+            } label: {
+                HStack {
+                    Spacer()
+                    if isSaving {
+                        ProgressView()
+                    } else {
+                        Text("Save Changes")
+                    }
+                    Spacer()
+                }
+            }
+            .disabled(!hasChanges || isSaving)
+        } header: {
+            Text("Connection")
+        } footer: {
+            if let statusMessage {
+                Text(statusMessage)
+                    .foregroundColor(statusIsError ? .red : .green)
+            } else {
+                Text("Generate a token at your server's /settings page.")
+            }
+        }
+    }
+
+    private var signOutSection: some View {
+        Section {
+            Button(role: .destructive) {
+                showSignOutConfirm = true
+            } label: {
+                HStack {
+                    Spacer()
+                    Text("Sign Out")
+                    Spacer()
+                }
+            }
+        }
+    }
+
+    private var hasChanges: Bool {
+        server != appState.serverURL || token != appState.token
+    }
+
+    private func saveSettings() {
+        isSaving = true
+        statusMessage = nil
+        statusIsError = false
+        let s = server.trimmingCharacters(in: CharacterSet(charactersIn: "/"))
+        let t = token
+        let client = APIClient(serverURL: s, token: t)
+
+        Task {
+            do {
+                _ = try await client.fetchItems(page: 1, limit: 1)
+                await MainActor.run {
+                    appState.signIn(server: s, token: t)
+                    DiskCache<[Item]>(key: "items_page1").clear()
+                    DiskCache<[ItemList]>(key: "lists").clear()
+                    statusMessage = "Connected"
+                    statusIsError = false
+                    isSaving = false
+                }
+            } catch let err as APIError where err == .unauthorized {
+                await MainActor.run {
+                    statusMessage = "Invalid token"
+                    statusIsError = true
+                    isSaving = false
+                }
+            } catch {
+                await MainActor.run {
+                    statusMessage = error.localizedDescription
+                    statusIsError = true
+                    isSaving = false
+                }
             }
         }
     }

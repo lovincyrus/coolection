@@ -57,6 +57,14 @@ final class APIClient {
     func archiveItem(id: String) async throws {
         _ = try await request("/api/item/archive", method: "PUT", body: ["item_id": id])
     }
+
+    func addItemToList(itemId: String, listId: String) async throws {
+        _ = try await request("/api/list/add", method: "POST", body: ["item_id": itemId, "list_id": listId])
+    }
+
+    func renameList(listId: String, name: String) async throws {
+        _ = try await request("/api/list/edit", method: "PATCH", body: ["list_id": listId, "name": name])
+    }
 }
 
 enum APIError: LocalizedError {
