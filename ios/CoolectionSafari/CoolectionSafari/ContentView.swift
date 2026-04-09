@@ -343,6 +343,8 @@ struct SearchTab: View {
     @State private var searchText = ""
     @State private var results: [Item] = []
     @State private var searchTask: Task<Void, Never>?
+    @State private var itemToEdit: Item?
+    @State private var itemToAddToList: Item?
 
     var body: some View {
         NavigationStack {
@@ -351,6 +353,20 @@ struct SearchTab: View {
                     ItemRow(item: item)
                         .listRowInsets(EdgeInsets(top: 8, leading: 16, bottom: 8, trailing: 16))
                         .listRowSeparator(.hidden)
+                        .swipeActions(edge: .leading) {
+                            Button { itemToAddToList = item } label: {
+                                Label("Add to List", systemImage: "folder.badge.plus")
+                            }
+                            .tint(.blue)
+                        }
+                        .contextMenu {
+                            Button { itemToEdit = item } label: {
+                                Label("Edit", systemImage: "pencil")
+                            }
+                            Button { itemToAddToList = item } label: {
+                                Label("Add to List", systemImage: "folder.badge.plus")
+                            }
+                        }
                 }
             }
             .listStyle(.plain)
@@ -376,6 +392,16 @@ struct SearchTab: View {
                 }
             }
             .navigationTitle("Search")
+            .sheet(item: $itemToEdit) { item in
+                EditItemSheet(item: item) { updated in
+                    if let idx = results.firstIndex(where: { $0.id == updated.id }) {
+                        results[idx] = updated
+                    }
+                }
+            }
+            .sheet(item: $itemToAddToList) { item in
+                ListPickerSheet(item: item)
+            }
         }
     }
 }
