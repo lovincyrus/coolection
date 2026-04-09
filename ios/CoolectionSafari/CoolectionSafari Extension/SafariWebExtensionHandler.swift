@@ -9,7 +9,6 @@ class ShareViewController: UIViewController {
     private let titleLabel = UILabel()
     private let urlLabel = UILabel()
     private let statusLabel = UILabel()
-    private let spinner = UIActivityIndicatorView(style: .medium)
     private let statusIcon = UIImageView()
     private let feedbackGenerator = UINotificationFeedbackGenerator()
 
@@ -69,19 +68,17 @@ class ShareViewController: UIViewController {
         urlLabel.lineBreakMode = .byTruncatingMiddle
         urlLabel.isHidden = true
 
-        spinner.startAnimating()
-
         statusIcon.contentMode = .scaleAspectFit
         statusIcon.translatesAutoresizingMaskIntoConstraints = false
-        statusIcon.alpha = 0
+        statusIcon.isHidden = true
 
         statusLabel.text = "Saving..."
         statusLabel.font = .systemFont(ofSize: 14, weight: .medium)
         statusLabel.textColor = .secondaryLabel
 
-        let statusRow = UIStackView(arrangedSubviews: [spinner, statusIcon, statusLabel])
+        let statusRow = UIStackView(arrangedSubviews: [statusIcon, statusLabel])
         statusRow.axis = .horizontal
-        statusRow.spacing = 6
+        statusRow.spacing = 4
         statusRow.alignment = .center
 
         stack.addArrangedSubview(iconView)
@@ -127,9 +124,9 @@ class ShareViewController: UIViewController {
         statusIcon.tintColor = color
 
         statusIcon.transform = CGAffineTransform(scaleX: 0.3, y: 0.3)
-        spinner.isHidden = true
+
+        statusIcon.isHidden = false
         UIView.animate(withDuration: 0.4, delay: 0, usingSpringWithDamping: 0.5, initialSpringVelocity: 0.8) {
-            self.statusIcon.alpha = 1
             self.statusIcon.transform = .identity
             self.statusLabel.text = duplicate ? "Already saved" : "Saved"
             self.statusLabel.textColor = color
@@ -147,9 +144,9 @@ class ShareViewController: UIViewController {
         statusIcon.tintColor = .systemRed
 
         statusIcon.transform = CGAffineTransform(scaleX: 0.3, y: 0.3)
-        spinner.isHidden = true
+
+        statusIcon.isHidden = false
         UIView.animate(withDuration: 0.4, delay: 0, usingSpringWithDamping: 0.5, initialSpringVelocity: 0.8) {
-            self.statusIcon.alpha = 1
             self.statusIcon.transform = .identity
             self.statusLabel.text = message
             self.statusLabel.textColor = .systemRed
