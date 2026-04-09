@@ -27,6 +27,13 @@ chrome.action.onClicked.addListener((tab) => {
   saveUrl(tab.id, tab.url);
 });
 
+// 2b. Keyboard shortcut (Cmd+Shift+C / Ctrl+Shift+C)
+chrome.commands.onCommand.addListener((command, tab) => {
+  if (command === "save-to-coolection" && tab?.id != null) {
+    saveUrl(tab.id, tab.url);
+  }
+});
+
 // 3. Context menu click — MUST be at top level
 chrome.contextMenus.onClicked.addListener((info, tab) => {
   if (info.menuItemId === "add-to-coolection" && tab?.id != null) {

@@ -28,6 +28,15 @@
       "run_at": "document_idle"
     }
   ],
+  "commands": {
+    "save-to-coolection": {
+      "suggested_key": {
+        "default": "Alt+Shift+C",
+        "mac": "MacCtrl+Shift+C"
+      },
+      "description": "Save current page to Coolection"
+    }
+  },
   "icons": {
     "16": "icons/icon-16.png",
     "48": "icons/icon-48.png",
