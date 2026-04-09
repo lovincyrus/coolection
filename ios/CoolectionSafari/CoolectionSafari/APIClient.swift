@@ -62,6 +62,10 @@ final class APIClient {
         _ = try await request("/api/list/add", method: "POST", body: ["item_id": itemId, "list_id": listId])
     }
 
+    func createList(name: String) async throws {
+        _ = try await request("/api/list/create", method: "POST", body: ["list_name": name])
+    }
+
     func renameList(listId: String, name: String) async throws {
         _ = try await request("/api/list/edit", method: "PATCH", body: ["list_id": listId, "name": name])
     }

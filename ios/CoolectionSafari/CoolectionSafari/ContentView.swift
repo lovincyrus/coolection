@@ -664,6 +664,7 @@ struct ListPickerSheet: View {
             List {
                 ForEach(userLists) { list in
                     listRow(list)
+                        .listRowSeparator(.hidden)
                 }
             }
             .listStyle(.plain)
@@ -763,6 +764,8 @@ struct ListsTab: View {
     @State private var didLoadCache = false
     @State private var listToRename: ItemList?
     @State private var renameText = ""
+    @State private var showCreateAlert = false
+    @State private var newListName = ""
 
     private let cache = DiskCache<[ItemList]>(key: "lists")
 
@@ -813,6 +816,21 @@ struct ListsTab: View {
                 }
             }
             .navigationTitle("Lists")
+            .toolbar {
+                ToolbarItem(placement: .primaryAction) {
+                    Button {
+                        newListName = ""
+                        showCreateAlert = true
+                    } label: {
+                        Image(systemName: "plus")
+                    }
+                }
+            }
+            .alert("New List", isPresented: $showCreateAlert) {
+                TextField("Name", text: $newListName)
+                Button("Create") { createList() }
+                Button("Cancel", role: .cancel) {}
+            }
             .alert("Rename List", isPresented: .init(
                 get: { listToRename != nil },
                 set: { if !$0 { listToRename = nil } }
@@ -835,6 +853,15 @@ struct ListsTab: View {
         if let fetched = try? await appState.api.fetchLists() {
             lists = fetched
             cache.write(fetched)
+        }
+    }
+
+    private func createList() {
+        guard !newListName.isEmpty else { return }
+        Task {
+            try? await appState.api.createList(name: newListName)
+            cache.clear()
+            await revalidate()
         }
     }
 
