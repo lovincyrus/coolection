@@ -2,6 +2,7 @@
 
 import { NextResponse } from "next/server";
 
+import { categorizeExistingItems } from "@/lib/auto-categorize";
 import { embedList } from "@/lib/embed-and-store";
 import prisma from "@/lib/prisma";
 import { resolveUserId } from "@/lib/resolve-user-id";
@@ -27,8 +28,13 @@ export async function PATCH(req: Request) {
       },
     });
 
-    // Fire-and-forget: re-embed list with updated name
-    embedList(newListName.id, newListName.name, newListName.description).catch(console.error);
+    // Re-embed list and retroactively categorize matching items
+    try {
+      const embedding = await embedList(newListName.id, newListName.name, newListName.description);
+      await categorizeExistingItems(newListName.id, embedding, userId);
+    } catch (e) {
+      console.error("Failed to embed/categorize list:", e);
+    }
 
     return NextResponse.json(
       { message: `List ${newListName.name} name updated successfully` },

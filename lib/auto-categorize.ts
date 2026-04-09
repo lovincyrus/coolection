@@ -53,3 +53,42 @@ export async function autoCategorize(
 
   return matches.map((m) => m.id);
 }
+
+const MAX_ITEMS_PER_LIST = 100;
+
+/**
+ * Retroactively categorize existing items into a newly created/updated list.
+ * Finds items whose embeddings are similar to the list embedding and assigns them.
+ */
+export async function categorizeExistingItems(
+  listId: string,
+  listEmbedding: number[],
+  userId: string,
+): Promise<number> {
+  const embeddingStr = JSON.stringify(listEmbedding);
+
+  const matchingItems = await prisma.$queryRaw<{ id: string; title: string; similarity: number }[]>`
+    SELECT i.id, i.title, 1 - (i.embedding <=> ${embeddingStr}::vector) AS similarity
+    FROM item i
+    WHERE i."userId" = ${userId}
+      AND i."isDeleted" = false
+      AND i.embedding IS NOT NULL
+      AND i.id NOT IN (SELECT il."itemId" FROM item_list il WHERE il."listId" = ${listId})
+      AND 1 - (i.embedding <=> ${embeddingStr}::vector) > ${SIMILARITY_THRESHOLD}
+    ORDER BY similarity DESC
+    LIMIT ${MAX_ITEMS_PER_LIST};
+  `;
+
+  if (matchingItems.length === 0) return 0;
+
+  await prisma.itemList.createMany({
+    data: matchingItems.map((item) => ({ itemId: item.id, listId })),
+    skipDuplicates: true,
+  });
+
+  console.log(
+    `Retroactively categorized ${matchingItems.length} items into list ${listId}: ${matchingItems.map((i) => `${i.title} (${i.similarity.toFixed(2)})`).join(", ")}`,
+  );
+
+  return matchingItems.length;
+}
