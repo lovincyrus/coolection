@@ -54,10 +54,13 @@ export async function POST(req: Request) {
       newItem = newWebsite;
     }
 
-    // Fire-and-forget: embed item and auto-categorize into matching lists
-    embedItem(newItem.id, newItem.title, newItem.description)
-      .then((embedding) => autoCategorize(newItem.id, embedding, userId))
-      .catch(console.error);
+    // Embed item and auto-categorize into matching lists
+    try {
+      const embedding = await embedItem(newItem.id, newItem.title, newItem.description);
+      await autoCategorize(newItem.id, embedding, userId);
+    } catch (e) {
+      console.error("Failed to embed/categorize item:", e);
+    }
 
     return NextResponse.json(
       { message: "Item added successfully", item: newItem },

@@ -92,13 +92,17 @@ export async function POST(req: Request) {
     }
   }
 
-  // Fire-and-forget: embed items and auto-categorize
-  Promise.all(
-    createdItems.map(async (item) => {
-      const embedding = await embedItem(item.id, item.title, item.description);
-      await autoCategorize(item.id, embedding, userId);
-    }),
-  ).catch(console.error);
+  // Embed items and auto-categorize
+  try {
+    await Promise.all(
+      createdItems.map(async (item) => {
+        const embedding = await embedItem(item.id, item.title, item.description);
+        await autoCategorize(item.id, embedding, userId);
+      }),
+    );
+  } catch (e) {
+    console.error("Failed to embed/categorize items:", e);
+  }
 
   const created = results.filter((r) => r.status === "created").length;
   const duplicates = results.filter((r) => r.status === "duplicate").length;
