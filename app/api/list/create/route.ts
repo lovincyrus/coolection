@@ -2,6 +2,7 @@
 
 import { NextResponse } from "next/server";
 
+import { categorizeExistingItems } from "@/lib/auto-categorize";
 import { embedList } from "@/lib/embed-and-store";
 import prisma from "@/lib/prisma";
 import { resolveUserId } from "@/lib/resolve-user-id";
@@ -50,8 +51,13 @@ export async function POST(req: Request) {
       },
     });
 
-    // Fire-and-forget: embed list for auto-categorization
-    embedList(createdList.id, createdList.name, createdList.description).catch(console.error);
+    // Embed list and retroactively categorize matching items
+    try {
+      const embedding = await embedList(createdList.id, createdList.name, createdList.description);
+      await categorizeExistingItems(createdList.id, embedding, userId);
+    } catch (e) {
+      console.error("Failed to embed/categorize list:", e);
+    }
 
     return NextResponse.json(
       {
