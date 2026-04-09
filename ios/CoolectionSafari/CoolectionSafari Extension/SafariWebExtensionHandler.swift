@@ -7,12 +7,15 @@ class ShareViewController: UIViewController {
     private let card = UIView()
     private let iconView = UIImageView()
     private let titleLabel = UILabel()
+    private let urlLabel = UILabel()
     private let statusLabel = UILabel()
     private let spinner = UIActivityIndicatorView(style: .medium)
-    private let checkmark = UIImageView()
+    private let statusIcon = UIImageView()
+    private let feedbackGenerator = UINotificationFeedbackGenerator()
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        feedbackGenerator.prepare()
         setupUI()
         handleShare()
     }
@@ -22,12 +25,14 @@ class ShareViewController: UIViewController {
     private func setupUI() {
         view.backgroundColor = UIColor.black.withAlphaComponent(0.0)
 
-        card.backgroundColor = .systemBackground
+        card.backgroundColor = .secondarySystemBackground
         card.layer.cornerRadius = 16
+        card.layer.borderWidth = 0.5
+        card.layer.borderColor = UIColor.separator.cgColor
         card.layer.shadowColor = UIColor.black.cgColor
-        card.layer.shadowOpacity = 0.15
-        card.layer.shadowRadius = 20
-        card.layer.shadowOffset = CGSize(width: 0, height: 4)
+        card.layer.shadowOpacity = 0.25
+        card.layer.shadowRadius = 24
+        card.layer.shadowOffset = CGSize(width: 0, height: 6)
         card.translatesAutoresizingMaskIntoConstraints = false
         card.alpha = 0
         card.transform = CGAffineTransform(translationX: 0, y: 30)
@@ -36,13 +41,21 @@ class ShareViewController: UIViewController {
         let stack = UIStackView()
         stack.axis = .vertical
         stack.alignment = .center
-        stack.spacing = 12
+        stack.spacing = 10
         stack.translatesAutoresizingMaskIntoConstraints = false
         card.addSubview(stack)
 
-        iconView.image = UIImage(named: "LargeIcon")
+        // Load icon from main app bundle or fall back to SF Symbol
+        if let appIcon = UIImage(named: "LargeIcon") {
+            iconView.image = appIcon
+        } else if let bundleIcon = Bundle.main.icon {
+            iconView.image = bundleIcon
+        } else {
+            iconView.image = UIImage(systemName: "bookmark.fill")
+            iconView.tintColor = .label
+        }
         iconView.contentMode = .scaleAspectFit
-        iconView.layer.cornerRadius = 8
+        iconView.layer.cornerRadius = 10
         iconView.clipsToBounds = true
         iconView.translatesAutoresizingMaskIntoConstraints = false
 
@@ -50,77 +63,105 @@ class ShareViewController: UIViewController {
         titleLabel.font = .systemFont(ofSize: 17, weight: .semibold)
         titleLabel.textColor = .label
 
-        statusLabel.text = "Saving..."
-        statusLabel.font = .systemFont(ofSize: 14)
-        statusLabel.textColor = .secondaryLabel
+        urlLabel.font = .systemFont(ofSize: 12)
+        urlLabel.textColor = .tertiaryLabel
+        urlLabel.textAlignment = .center
+        urlLabel.lineBreakMode = .byTruncatingMiddle
+        urlLabel.isHidden = true
 
         spinner.startAnimating()
 
-        checkmark.image = UIImage(systemName: "checkmark.circle.fill")
-        checkmark.tintColor = UIColor(red: 0.22, green: 0.65, blue: 0.36, alpha: 1)
-        checkmark.contentMode = .scaleAspectFit
-        checkmark.translatesAutoresizingMaskIntoConstraints = false
-        checkmark.alpha = 0
+        statusIcon.contentMode = .scaleAspectFit
+        statusIcon.translatesAutoresizingMaskIntoConstraints = false
+        statusIcon.alpha = 0
 
-        let statusRow = UIStackView(arrangedSubviews: [spinner, checkmark, statusLabel])
+        statusLabel.text = "Saving..."
+        statusLabel.font = .systemFont(ofSize: 14, weight: .medium)
+        statusLabel.textColor = .secondaryLabel
+
+        let statusRow = UIStackView(arrangedSubviews: [spinner, statusIcon, statusLabel])
         statusRow.axis = .horizontal
         statusRow.spacing = 6
         statusRow.alignment = .center
 
         stack.addArrangedSubview(iconView)
         stack.addArrangedSubview(titleLabel)
+        stack.addArrangedSubview(urlLabel)
         stack.addArrangedSubview(statusRow)
 
         NSLayoutConstraint.activate([
             card.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             card.centerYAnchor.constraint(equalTo: view.centerYAnchor),
-            card.widthAnchor.constraint(equalToConstant: 220),
+            card.widthAnchor.constraint(equalToConstant: 240),
 
             stack.topAnchor.constraint(equalTo: card.topAnchor, constant: 28),
             stack.bottomAnchor.constraint(equalTo: card.bottomAnchor, constant: -28),
             stack.leadingAnchor.constraint(equalTo: card.leadingAnchor, constant: 20),
             stack.trailingAnchor.constraint(equalTo: card.trailingAnchor, constant: -20),
 
-            iconView.widthAnchor.constraint(equalToConstant: 40),
-            iconView.heightAnchor.constraint(equalToConstant: 40),
-            checkmark.widthAnchor.constraint(equalToConstant: 18),
-            checkmark.heightAnchor.constraint(equalToConstant: 18),
+            iconView.widthAnchor.constraint(equalToConstant: 44),
+            iconView.heightAnchor.constraint(equalToConstant: 44),
+            statusIcon.widthAnchor.constraint(equalToConstant: 18),
+            statusIcon.heightAnchor.constraint(equalToConstant: 18),
         ])
 
-        UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseOut) {
+        UIView.animate(withDuration: 0.35, delay: 0, usingSpringWithDamping: 0.85, initialSpringVelocity: 0.5) {
             self.view.backgroundColor = UIColor.black.withAlphaComponent(0.3)
             self.card.alpha = 1
             self.card.transform = .identity
         }
     }
 
-    private func showSuccess() {
-        UIView.animate(withDuration: 0.25) {
-            self.spinner.alpha = 0
-            self.checkmark.alpha = 1
-            self.statusLabel.text = "Saved"
-            self.statusLabel.textColor = UIColor(red: 0.22, green: 0.65, blue: 0.36, alpha: 1)
+    private func showURL(_ urlString: String) {
+        if let url = URL(string: urlString), let host = url.host {
+            urlLabel.text = host.hasPrefix("www.") ? String(host.dropFirst(4)) : host
+            urlLabel.isHidden = false
+        }
+    }
+
+    private func showSuccess(duplicate: Bool = false) {
+        feedbackGenerator.notificationOccurred(.success)
+
+        let color = UIColor(red: 0.22, green: 0.65, blue: 0.36, alpha: 1)
+        statusIcon.image = UIImage(systemName: duplicate ? "checkmark.circle" : "checkmark.circle.fill")
+        statusIcon.tintColor = color
+
+        statusIcon.transform = CGAffineTransform(scaleX: 0.3, y: 0.3)
+        spinner.isHidden = true
+        UIView.animate(withDuration: 0.4, delay: 0, usingSpringWithDamping: 0.5, initialSpringVelocity: 0.8) {
+            self.statusIcon.alpha = 1
+            self.statusIcon.transform = .identity
+            self.statusLabel.text = duplicate ? "Already saved" : "Saved"
+            self.statusLabel.textColor = color
         }
 
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.8) {
-            self.dismiss()
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+            self.animateDismiss()
         }
     }
 
     private func showError(_ message: String) {
-        UIView.animate(withDuration: 0.25) {
-            self.spinner.alpha = 0
+        feedbackGenerator.notificationOccurred(.error)
+
+        statusIcon.image = UIImage(systemName: "xmark.circle.fill")
+        statusIcon.tintColor = .systemRed
+
+        statusIcon.transform = CGAffineTransform(scaleX: 0.3, y: 0.3)
+        spinner.isHidden = true
+        UIView.animate(withDuration: 0.4, delay: 0, usingSpringWithDamping: 0.5, initialSpringVelocity: 0.8) {
+            self.statusIcon.alpha = 1
+            self.statusIcon.transform = .identity
             self.statusLabel.text = message
             self.statusLabel.textColor = .systemRed
         }
 
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
-            self.dismiss()
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.8) {
+            self.animateDismiss()
         }
     }
 
-    private func dismiss() {
-        UIView.animate(withDuration: 0.25, animations: {
+    private func animateDismiss() {
+        UIView.animate(withDuration: 0.25, delay: 0, options: .curveEaseIn, animations: {
             self.view.backgroundColor = UIColor.black.withAlphaComponent(0.0)
             self.card.alpha = 0
             self.card.transform = CGAffineTransform(translationX: 0, y: 20).concatenating(
@@ -145,8 +186,10 @@ class ShareViewController: UIViewController {
                 provider.loadItem(forTypeIdentifier: UTType.url.identifier) { [weak self] item, _ in
                     DispatchQueue.main.async {
                         if let url = item as? URL {
+                            self?.showURL(url.absoluteString)
                             self?.saveURL(url.absoluteString)
                         } else if let data = item as? Data, let url = URL(dataRepresentation: data, relativeTo: nil) {
+                            self?.showURL(url.absoluteString)
                             self?.saveURL(url.absoluteString)
                         } else {
                             self?.showError("Could not read URL")
@@ -162,7 +205,7 @@ class ShareViewController: UIViewController {
 
     private func saveURL(_ urlString: String) {
         guard let token = KeychainHelper.read() else {
-            showError("Set up token first")
+            showError("Not signed in")
             return
         }
 
@@ -170,7 +213,7 @@ class ShareViewController: UIViewController {
             .trimmingCharacters(in: CharacterSet(charactersIn: "/"))
 
         guard let endpoint = URL(string: "\(serverURL)/api/item/create") else {
-            showError("Invalid server URL")
+            showError("Invalid server")
             return
         }
 
@@ -194,7 +237,7 @@ class ShareViewController: UIViewController {
                 case 200..<300:
                     self?.showSuccess()
                 case 409:
-                    self?.showSuccess() // already saved
+                    self?.showSuccess(duplicate: true)
                 case 401:
                     self?.showError("Invalid token")
                 default:
@@ -202,5 +245,15 @@ class ShareViewController: UIViewController {
                 }
             }
         }.resume()
+    }
+}
+
+private extension Bundle {
+    var icon: UIImage? {
+        guard let icons = infoDictionary?["CFBundleIcons"] as? [String: Any],
+              let primary = icons["CFBundlePrimaryIcon"] as? [String: Any],
+              let files = primary["CFBundleIconFiles"] as? [String],
+              let name = files.last else { return nil }
+        return UIImage(named: name)
     }
 }

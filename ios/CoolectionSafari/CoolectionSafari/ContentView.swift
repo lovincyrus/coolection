@@ -655,23 +655,31 @@ struct ListPickerSheet: View {
     @State private var isLoading = true
     @State private var addedListId: String?
     @State private var error: String?
+    @State private var searchText = ""
 
     private let listsCache = DiskCache<[ItemList]>(key: "lists")
     private var userLists: [ItemList] { lists.filter { $0.source == nil } }
+    private var filteredLists: [ItemList] {
+        guard !searchText.isEmpty else { return userLists }
+        return userLists.filter { $0.name.localizedCaseInsensitiveContains(searchText) }
+    }
 
     var body: some View {
         NavigationStack {
             List {
-                ForEach(userLists) { list in
+                ForEach(filteredLists) { list in
                     listRow(list)
                         .listRowSeparator(.hidden)
                 }
             }
             .listStyle(.plain)
+            .searchable(text: $searchText, prompt: "Search lists")
             .overlay {
-                if !isLoading && userLists.isEmpty {
-                    ContentUnavailableView("No lists", systemImage: "folder",
-                        description: Text("Create a list on the web to get started."))
+                if !isLoading && filteredLists.isEmpty {
+                    ContentUnavailableView(
+                        searchText.isEmpty ? "No lists" : "No results",
+                        systemImage: searchText.isEmpty ? "folder" : "magnifyingglass",
+                        description: Text(searchText.isEmpty ? "Create a list to get started." : "Try a different search."))
                 }
             }
             .safeAreaInset(edge: .bottom) {
