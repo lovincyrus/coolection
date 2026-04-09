@@ -1,10 +1,12 @@
-import { auth } from "@clerk/nextjs/server";
+"use server";
+
 import { NextResponse } from "next/server";
 
 import prisma from "@/lib/prisma";
+import { resolveUserId } from "@/lib/resolve-user-id";
 
 export async function PATCH(req: Request) {
-  const { userId } = auth();
+  const userId = await resolveUserId();
 
   const body = await req.json();
   const { item_id, title, description } = body;

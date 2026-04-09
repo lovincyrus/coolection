@@ -208,6 +208,7 @@ struct ItemsTab: View {
     @State private var didLoadCache = false
     @State private var showAddSheet = false
     @State private var itemToAddToList: Item?
+    @State private var itemToEdit: Item?
 
     private let cache = DiskCache<[Item]>(key: "items_page1")
 
@@ -230,6 +231,9 @@ struct ItemsTab: View {
                             .tint(.blue)
                         }
                         .contextMenu {
+                            Button { itemToEdit = item } label: {
+                                Label("Edit", systemImage: "pencil")
+                            }
                             Button { itemToAddToList = item } label: {
                                 Label("Add to List", systemImage: "folder.badge.plus")
                             }
@@ -276,6 +280,14 @@ struct ItemsTab: View {
             }
             .sheet(item: $itemToAddToList) { item in
                 ListPickerSheet(item: item)
+            }
+            .sheet(item: $itemToEdit) { item in
+                EditItemSheet(item: item) { updated in
+                    if let idx = items.firstIndex(where: { $0.id == updated.id }) {
+                        items[idx] = updated
+                        cache.write(items)
+                    }
+                }
             }
         }
         .task {
@@ -526,6 +538,87 @@ struct AddItemSheet: View {
     }
 }
 
+// MARK: - Edit Item Sheet
+
+struct EditItemSheet: View {
+    @EnvironmentObject var appState: AppState
+    @Environment(\.dismiss) var dismiss
+    let item: Item
+    var onSaved: (Item) -> Void
+
+    @State private var title: String = ""
+    @State private var desc: String = ""
+    @State private var isSaving = false
+    @State private var error: String?
+
+    var body: some View {
+        NavigationStack {
+            Form {
+                Section("Title") {
+                    TextField("Title", text: $title)
+                }
+                Section("Description") {
+                    TextField("Description", text: $desc, axis: .vertical)
+                        .lineLimit(3...6)
+                }
+                if let error {
+                    Section {
+                        Text(error).foregroundColor(.red).font(.footnote)
+                    }
+                }
+            }
+            .navigationTitle("Edit Item")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("Cancel") { dismiss() }
+                }
+                ToolbarItem(placement: .confirmationAction) {
+                    if isSaving {
+                        ProgressView()
+                    } else {
+                        Button("Save") { save() }
+                            .disabled(title.isEmpty || !hasChanges)
+                            .fontWeight(.semibold)
+                    }
+                }
+            }
+        }
+        .presentationDetents([.medium, .large])
+        .presentationDragIndicator(.visible)
+        .onAppear {
+            title = item.title
+            desc = item.description ?? ""
+        }
+    }
+
+    private var hasChanges: Bool {
+        title != item.title || desc != (item.description ?? "")
+    }
+
+    private func save() {
+        isSaving = true
+        error = nil
+        let newTitle = title
+        let newDesc = desc.isEmpty ? nil : desc
+        Task {
+            do {
+                try await appState.api.editItem(id: item.id, title: newTitle, description: newDesc)
+                let updated = Item(id: item.id, url: item.url, title: newTitle, description: newDesc, image: item.image, type: item.type, createdAt: item.createdAt)
+                await MainActor.run {
+                    onSaved(updated)
+                    dismiss()
+                }
+            } catch {
+                await MainActor.run {
+                    self.error = error.localizedDescription
+                    isSaving = false
+                }
+            }
+        }
+    }
+}
+
 // MARK: - List Picker
 
 struct ListPickerSheet: View {
@@ -742,6 +835,8 @@ struct ListDetailView: View {
     @State private var items: [Item] = []
     @State private var isLoading = false
     @State private var didLoadCache = false
+    @State private var itemToEdit: Item?
+    @State private var itemToAddToList: Item?
 
     private var cache: DiskCache<[Item]> { DiskCache<[Item]>(key: "list_\(list.id)") }
 
@@ -751,6 +846,20 @@ struct ListDetailView: View {
                 ItemRow(item: item)
                     .listRowInsets(EdgeInsets(top: 8, leading: 16, bottom: 8, trailing: 16))
                     .listRowSeparator(.hidden)
+                    .swipeActions(edge: .leading) {
+                        Button { itemToAddToList = item } label: {
+                            Label("Add to List", systemImage: "folder.badge.plus")
+                        }
+                        .tint(.blue)
+                    }
+                    .contextMenu {
+                        Button { itemToEdit = item } label: {
+                            Label("Edit", systemImage: "pencil")
+                        }
+                        Button { itemToAddToList = item } label: {
+                            Label("Add to List", systemImage: "folder.badge.plus")
+                        }
+                    }
             }
         }
         .listStyle(.plain)
@@ -762,6 +871,17 @@ struct ListDetailView: View {
             }
         }
         .navigationTitle(list.name)
+        .sheet(item: $itemToEdit) { item in
+            EditItemSheet(item: item) { updated in
+                if let idx = items.firstIndex(where: { $0.id == updated.id }) {
+                    items[idx] = updated
+                    cache.write(items)
+                }
+            }
+        }
+        .sheet(item: $itemToAddToList) { item in
+            ListPickerSheet(item: item)
+        }
         .task {
             if let cached = cache.read() {
                 items = cached

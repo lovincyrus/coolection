@@ -65,6 +65,12 @@ final class APIClient {
     func renameList(listId: String, name: String) async throws {
         _ = try await request("/api/list/edit", method: "PATCH", body: ["list_id": listId, "name": name])
     }
+
+    func editItem(id: String, title: String, description: String?) async throws {
+        var body: [String: Any] = ["item_id": id, "title": title]
+        if let description { body["description"] = description }
+        _ = try await request("/api/item/edit", method: "PATCH", body: body)
+    }
 }
 
 enum APIError: LocalizedError {
