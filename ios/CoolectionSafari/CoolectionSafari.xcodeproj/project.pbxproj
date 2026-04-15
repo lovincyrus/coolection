@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0ED254101EC31288DBDD2127 /* CoolectionShare.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 7CB6F0B72D73AC05C36A3544 /* CoolectionShare.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		6B850B177308A58A48A11792 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D32B7EA269A167452DE63DF7 /* Foundation.framework */; };
+		B2EC0BD82F318D1014F054F7 /* APIClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = E10000042F500000003CF7DD /* APIClient.swift */; };
 		B33754D22F37BD39003CF7DD /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B33754D12F37BD39003CF7DD /* AppDelegate.swift */; };
 		B33754D62F37BD39003CF7DD /* Main.html in Resources */ = {isa = PBXBuildFile; fileRef = B33754D42F37BD39003CF7DD /* Main.html */; };
 		B33754D82F37BD39003CF7DD /* Icon.png in Resources */ = {isa = PBXBuildFile; fileRef = B33754D72F37BD39003CF7DD /* Icon.png */; };
@@ -16,18 +19,48 @@
 		B33754E12F37BD39003CF7DD /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B33754DF2F37BD39003CF7DD /* LaunchScreen.storyboard */; };
 		B33754E42F37BD39003CF7DD /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B33754E22F37BD39003CF7DD /* Main.storyboard */; };
 		B33754F32F37BD3A003CF7DD /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B33754E52F37BD3A003CF7DD /* Assets.xcassets */; };
+		B92A0B6FC6B9B4F996FC2977 /* KeychainHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = C00000032F380000003CF7DD /* KeychainHelper.swift */; };
 		C00000022F380000003CF7DD /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C00000012F380000003CF7DD /* ContentView.swift */; };
 		C00000042F380000003CF7DD /* KeychainHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = C00000032F380000003CF7DD /* KeychainHelper.swift */; };
 		C00000072F380000003CF7DD /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = C00000092F380000003CF7DD /* Constants.swift */; };
 		C0000A012F380000003CF7DD /* Inter-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C0000A032F380000003CF7DD /* Inter-Regular.ttf */; };
 		C0000A022F380000003CF7DD /* Inter-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C0000A042F380000003CF7DD /* Inter-Medium.ttf */; };
+		C0BDCB610746E7377F791D87 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = C00000092F380000003CF7DD /* Constants.swift */; };
 		D00000012F400000003CF7DD /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = D00000032F400000003CF7DD /* PrivacyInfo.xcprivacy */; };
 		E10000012F500000003CF7DD /* Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = E10000032F500000003CF7DD /* Models.swift */; };
 		E10000022F500000003CF7DD /* APIClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = E10000042F500000003CF7DD /* APIClient.swift */; };
 		E10000052F500000003CF7DD /* Cache.swift in Sources */ = {isa = PBXBuildFile; fileRef = E10000062F500000003CF7DD /* Cache.swift */; };
+		EE2FA5CA60E5CBFEB8778AC1 /* ShareViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BB95D95EF2B3E2638A3CB2A /* ShareViewController.swift */; };
+		F56F2144C0BBA87F7D03F4B8 /* Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = E10000032F500000003CF7DD /* Models.swift */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		8817CFA4BEF303C6896263F3 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = B33754C62F37BD39003CF7DD /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 20845529CFD3E580CF06B2D2;
+			remoteInfo = CoolectionShare;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		5793A7EDEF14D789E200411D /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				0ED254101EC31288DBDD2127 /* CoolectionShare.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
+		0BB95D95EF2B3E2638A3CB2A /* ShareViewController.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ShareViewController.swift; sourceTree = "<group>"; };
+		7CB6F0B72D73AC05C36A3544 /* CoolectionShare.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = CoolectionShare.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		B33754CE2F37BD39003CF7DD /* CoolectionSafari.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CoolectionSafari.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B33754D12F37BD39003CF7DD /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		B33754D52F37BD39003CF7DD /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.html; name = Base; path = Base.lproj/Main.html; sourceTree = "<group>"; };
@@ -39,15 +72,18 @@
 		B33754E32F37BD39003CF7DD /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		B33754E52F37BD3A003CF7DD /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		B33754E62F37BD3A003CF7DD /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		B78A20E32C1DA1288FA93CD7 /* CoolectionShare.entitlements */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.entitlements; path = CoolectionShare.entitlements; sourceTree = "<group>"; };
 		C00000012F380000003CF7DD /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		C00000032F380000003CF7DD /* KeychainHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = KeychainHelper.swift; path = Shared/KeychainHelper.swift; sourceTree = "<group>"; };
 		C00000092F380000003CF7DD /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = Constants.swift; path = Shared/Constants.swift; sourceTree = "<group>"; };
 		C0000A032F380000003CF7DD /* Inter-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Inter-Regular.ttf"; sourceTree = "<group>"; };
 		C0000A042F380000003CF7DD /* Inter-Medium.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Inter-Medium.ttf"; sourceTree = "<group>"; };
 		D00000032F400000003CF7DD /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
+		D32B7EA269A167452DE63DF7 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS18.0.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
 		E10000032F500000003CF7DD /* Models.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Models.swift; sourceTree = "<group>"; };
 		E10000042F500000003CF7DD /* APIClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIClient.swift; sourceTree = "<group>"; };
 		E10000062F500000003CF7DD /* Cache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Cache.swift; sourceTree = "<group>"; };
+		E8800A30C14B2BA62BE8AC4F /* Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -58,15 +94,44 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		E258ABE14FC5D5D618FB5C79 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				6B850B177308A58A48A11792 /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		0315269F7BA6BD30F4143281 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				E5861E97090A220C956530F4 /* iOS */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		8758181EF7BD59572244C4BB /* CoolectionShare */ = {
+			isa = PBXGroup;
+			children = (
+				0BB95D95EF2B3E2638A3CB2A /* ShareViewController.swift */,
+				E8800A30C14B2BA62BE8AC4F /* Info.plist */,
+				B78A20E32C1DA1288FA93CD7 /* CoolectionShare.entitlements */,
+			);
+			name = CoolectionShare;
+			path = CoolectionShare;
+			sourceTree = "<group>";
+		};
 		B33754C52F37BD39003CF7DD = {
 			isa = PBXGroup;
 			children = (
 				B33754D02F37BD39003CF7DD /* CoolectionSafari */,
 				C00000062F380000003CF7DD /* Shared */,
 				B33754CF2F37BD39003CF7DD /* Products */,
+				0315269F7BA6BD30F4143281 /* Frameworks */,
+				8758181EF7BD59572244C4BB /* CoolectionShare */,
 			);
 			sourceTree = "<group>";
 		};
@@ -74,6 +139,7 @@
 			isa = PBXGroup;
 			children = (
 				B33754CE2F37BD39003CF7DD /* CoolectionSafari.app */,
+				7CB6F0B72D73AC05C36A3544 /* CoolectionShare.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -127,9 +193,34 @@
 			path = Fonts;
 			sourceTree = "<group>";
 		};
+		E5861E97090A220C956530F4 /* iOS */ = {
+			isa = PBXGroup;
+			children = (
+				D32B7EA269A167452DE63DF7 /* Foundation.framework */,
+			);
+			name = iOS;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		20845529CFD3E580CF06B2D2 /* CoolectionShare */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 1F73918BFEB7A5481CE23AE5 /* Build configuration list for PBXNativeTarget "CoolectionShare" */;
+			buildPhases = (
+				3B25C221F336E06111BC20CD /* Sources */,
+				E258ABE14FC5D5D618FB5C79 /* Frameworks */,
+				51DB1EA336C713F5DE811AB2 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = CoolectionShare;
+			productName = CoolectionShare;
+			productReference = 7CB6F0B72D73AC05C36A3544 /* CoolectionShare.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 		B33754CD2F37BD39003CF7DD /* CoolectionSafari */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = B33754FA2F37BD3A003CF7DD /* Build configuration list for PBXNativeTarget "CoolectionSafari" */;
@@ -137,14 +228,14 @@
 				B33754CA2F37BD39003CF7DD /* Sources */,
 				B33754CB2F37BD39003CF7DD /* Frameworks */,
 				B33754CC2F37BD39003CF7DD /* Resources */,
+				5793A7EDEF14D789E200411D /* Embed Foundation Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				EC617C21D441F86DE3D7500D /* PBXTargetDependency */,
 			);
 			name = CoolectionSafari;
-			packageProductDependencies = (
-			);
 			productName = CoolectionSafari;
 			productReference = B33754CE2F37BD39003CF7DD /* CoolectionSafari.app */;
 			productType = "com.apple.product-type.application";
@@ -179,11 +270,19 @@
 			projectRoot = "";
 			targets = (
 				B33754CD2F37BD39003CF7DD /* CoolectionSafari */,
+				20845529CFD3E580CF06B2D2 /* CoolectionShare */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		51DB1EA336C713F5DE811AB2 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		B33754CC2F37BD39003CF7DD /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -203,6 +302,18 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		3B25C221F336E06111BC20CD /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				EE2FA5CA60E5CBFEB8778AC1 /* ShareViewController.swift in Sources */,
+				B2EC0BD82F318D1014F054F7 /* APIClient.swift in Sources */,
+				F56F2144C0BBA87F7D03F4B8 /* Models.swift in Sources */,
+				C0BDCB610746E7377F791D87 /* Constants.swift in Sources */,
+				B92A0B6FC6B9B4F996FC2977 /* KeychainHelper.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		B33754CA2F37BD39003CF7DD /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -220,6 +331,15 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		EC617C21D441F86DE3D7500D /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = CoolectionShare;
+			target = 20845529CFD3E580CF06B2D2 /* CoolectionShare */;
+			targetProxy = 8817CFA4BEF303C6896263F3 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
 		B33754D42F37BD39003CF7DD /* Main.html */ = {
@@ -249,6 +369,35 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
+		7628BE3E00F5D48365521773 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = NO;
+				CODE_SIGN_ENTITLEMENTS = CoolectionShare/CoolectionShare.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = J5VFW878S4;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = CoolectionShare/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = co.coolection.safari.share;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
 		B33754F42F37BD3A003CF7DD /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -450,9 +599,48 @@
 			};
 			name = Release;
 		};
+		DE63A4EF2A037D4AAD0339FD /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = NO;
+				CODE_SIGN_ENTITLEMENTS = CoolectionShare/CoolectionShare.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = J5VFW878S4;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = CoolectionShare/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = co.coolection.safari.share;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		1F73918BFEB7A5481CE23AE5 /* Build configuration list for PBXNativeTarget "CoolectionShare" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				DE63A4EF2A037D4AAD0339FD /* Release */,
+				7628BE3E00F5D48365521773 /* Debug */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		B33754C92F37BD39003CF7DD /* Build configuration list for PBXProject "CoolectionSafari" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
