@@ -75,18 +75,18 @@ enum DemoData {
         ),
         Item(
             id: "demo-item-06",
-            url: "https://www.nngroup.com/articles/",
-            title: "Nielsen Norman Group — UX research articles",
-            description: "Evidence-based usability research and design guidance.",
+            url: "https://linear.app/blog",
+            title: "Linear Blog — Behind the product and team",
+            description: "Posts on building Linear, product principles, and the company's engineering and design culture.",
             image: nil,
             type: "link",
             createdAt: relativeDate(daysAgo: 7)
         ),
         Item(
             id: "demo-item-07",
-            url: "https://www.raycast.com/",
-            title: "Raycast — A faster way to launch and automate",
-            description: "Productivity launcher for macOS with extensions and AI commands.",
+            url: "https://ramp.com/labs",
+            title: "Ramp Labs — Engineering and product writing",
+            description: "Ramp's builders blog on shipping fast, AI-native finance tooling, and engineering culture.",
             image: nil,
             type: "link",
             createdAt: relativeDate(daysAgo: 9)
@@ -136,12 +136,21 @@ enum DemoData {
             type: "link",
             createdAt: relativeDate(daysAgo: 28)
         ),
+        Item(
+            id: "demo-item-13",
+            url: "https://cursor.com/blog",
+            title: "Cursor Blog — The AI code editor",
+            description: "Posts from the Cursor team on AI coding, model evaluation, and editor design.",
+            image: nil,
+            type: "link",
+            createdAt: relativeDate(daysAgo: 6)
+        ),
     ]
 
     static let listMembership: [String: [String]] = [
-        designListId: ["demo-item-01", "demo-item-04", "demo-item-06", "demo-item-08"],
-        readingListId: ["demo-item-03", "demo-item-06", "demo-item-10", "demo-item-11", "demo-item-12"],
-        toolsListId: ["demo-item-07"],
+        designListId: ["demo-item-01", "demo-item-04", "demo-item-08"],
+        readingListId: ["demo-item-03", "demo-item-06", "demo-item-07", "demo-item-10", "demo-item-11", "demo-item-12", "demo-item-13"],
+        toolsListId: ["demo-item-13"],
     ]
 
     static func items(in listId: String) -> [Item] {
