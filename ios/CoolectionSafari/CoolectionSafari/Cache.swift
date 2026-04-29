@@ -6,7 +6,7 @@ private let _memoryCache: NSCache<NSString, AnyObject> = {
     return c
 }()
 
-final class DiskCache<T: Codable> {
+struct DiskCache<T: Codable> {
     private let key: String
 
     init(key: String) {
@@ -14,8 +14,9 @@ final class DiskCache<T: Codable> {
     }
 
     func read() -> T? {
-        if let box = _memoryCache.object(forKey: key as NSString) as? Box<T> {
-            return box.value
+        if let box = _memoryCache.object(forKey: key as NSString) as? Box,
+           let value = box.value as? T {
+            return value
         }
         guard let data = try? Data(contentsOf: fileURL),
               let decoded = try? JSONDecoder().decode(T.self, from: data) else {
@@ -47,7 +48,7 @@ final class DiskCache<T: Codable> {
     }
 }
 
-private final class Box<T>: NSObject {
-    let value: T
-    init(_ value: T) { self.value = value }
+private final class Box: NSObject {
+    let value: Any
+    init(_ value: Any) { self.value = value }
 }

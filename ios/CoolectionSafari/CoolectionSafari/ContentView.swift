@@ -5,6 +5,7 @@ import SwiftUI
 
 final class AppState: ObservableObject {
     @Published var isAuthenticated = false
+    @Published var isDemoMode = false
     @Published var serverURL: String = ""
     @Published var token: String = ""
 
@@ -14,7 +15,9 @@ final class AppState: ObservableObject {
         isAuthenticated = !token.isEmpty
     }
 
-    var api: APIClient { APIClient(serverURL: serverURL, token: token) }
+    var api: APIClient { APIClient(serverURL: serverURL, token: token, isDemoMode: isDemoMode) }
+
+    var canBrowse: Bool { isAuthenticated || isDemoMode }
 
     func signIn(server: String, token: String) {
         let trimmed = server.trimmingCharacters(in: CharacterSet(charactersIn: "/"))
@@ -23,12 +26,26 @@ final class AppState: ObservableObject {
         AppConstants.defaults?.set(trimmed, forKey: "serverURL")
         _ = KeychainHelper.save(token: token)
         isAuthenticated = true
+        isDemoMode = false
+    }
+
+    func enterDemoMode() {
+        isDemoMode = true
+        DiskCache<[Item]>(key: "items_page1").clear()
+        DiskCache<[ItemList]>(key: "lists").clear()
+    }
+
+    func exitDemoMode() {
+        isDemoMode = false
+        DiskCache<[Item]>(key: "items_page1").clear()
+        DiskCache<[ItemList]>(key: "lists").clear()
     }
 
     func signOut() {
         KeychainHelper.delete()
         token = ""
         isAuthenticated = false
+        isDemoMode = false
     }
 }
 
@@ -38,7 +55,7 @@ struct ContentView: View {
     @StateObject private var appState = AppState()
 
     var body: some View {
-        if appState.isAuthenticated {
+        if appState.canBrowse {
             MainTabView().environmentObject(appState)
         } else {
             AuthView().environmentObject(appState)
@@ -129,6 +146,37 @@ struct AuthView: View {
                     Text("Generate a token at your server's /settings page.")
                         .font(.footnote)
                         .foregroundStyle(.tertiary)
+
+                    VStack(spacing: 8) {
+                        HStack {
+                            Rectangle().fill(Color.secondary.opacity(0.25)).frame(height: 1)
+                            Text("or")
+                                .font(.footnote)
+                                .foregroundStyle(.secondary)
+                            Rectangle().fill(Color.secondary.opacity(0.25)).frame(height: 1)
+                        }
+
+                        Button {
+                            appState.enterDemoMode()
+                        } label: {
+                            Text("Browse Demo")
+                                .font(.body.weight(.medium))
+                                .frame(maxWidth: .infinity)
+                                .padding(12)
+                                .background(Color(.secondarySystemBackground))
+                                .foregroundStyle(.primary)
+                                .cornerRadius(8)
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: 8)
+                                        .stroke(Color.secondary.opacity(0.3), lineWidth: 1)
+                                )
+                        }
+
+                        Text("Explore the app with sample data — no account needed.")
+                            .font(.caption)
+                            .foregroundStyle(.tertiary)
+                            .multilineTextAlignment(.center)
+                    }
                 }
                 .padding(.horizontal, 24)
             }
@@ -170,7 +218,8 @@ extension APIError: Equatable {
         switch (lhs, rhs) {
         case (.invalidURL, .invalidURL),
              (.invalidResponse, .invalidResponse),
-             (.unauthorized, .unauthorized): return true
+             (.unauthorized, .unauthorized),
+             (.demoMode, .demoMode): return true
         case (.server(let a), .server(let b)): return a == b
         default: return false
         }
@@ -181,19 +230,90 @@ extension APIError: Equatable {
 
 struct MainTabView: View {
     @EnvironmentObject var appState: AppState
+    @State private var selection: Int = 3
 
     var body: some View {
-        TabView {
+        TabView(selection: $selection) {
             ItemsTab()
                 .tabItem { Label("Items", systemImage: "square.stack") }
+                .tag(0)
             ListsTab()
                 .tabItem { Label("Lists", systemImage: "folder") }
+                .tag(1)
             SearchTab()
                 .tabItem { Label("Search", systemImage: "magnifyingglass") }
+                .tag(2)
             SettingsTab()
                 .tabItem { Label("Settings", systemImage: "gearshape") }
+                .tag(3)
         }
         .tint(.primary)
+        .safeAreaInset(edge: .top, spacing: 0) {
+            if appState.isDemoMode {
+                DemoBanner()
+                    .environmentObject(appState)
+            }
+        }
+    }
+}
+
+// MARK: - Demo Banner
+
+struct DemoBanner: View {
+    @EnvironmentObject var appState: AppState
+
+    var body: some View {
+        HStack(spacing: 10) {
+            Image(systemName: "sparkles")
+                .font(.footnote.weight(.medium))
+                .foregroundStyle(.primary)
+            Text("Demo mode — sample data")
+                .font(.footnote.weight(.medium))
+                .foregroundStyle(.primary)
+            Spacer(minLength: 8)
+            Button {
+                appState.exitDemoMode()
+            } label: {
+                Text("Connect")
+                    .font(.footnote.weight(.semibold))
+                    .padding(.horizontal, 12)
+                    .padding(.vertical, 6)
+                    .background(Color.primary)
+                    .foregroundStyle(Color(.systemBackground))
+                    .cornerRadius(6)
+            }
+        }
+        .padding(.horizontal, 16)
+        .padding(.vertical, 8)
+        .background(Color(.secondarySystemBackground))
+        .overlay(alignment: .bottom) {
+            Rectangle()
+                .fill(Color.secondary.opacity(0.15))
+                .frame(height: 0.5)
+        }
+    }
+}
+
+// MARK: - Demo Prompt
+
+struct DemoConnectPrompt: ViewModifier {
+    @EnvironmentObject var appState: AppState
+    @Binding var isPresented: Bool
+
+    func body(content: Content) -> some View {
+        content
+            .alert("Connect to save your own links", isPresented: $isPresented) {
+                Button("Connect") { appState.exitDemoMode() }
+                Button("Keep Browsing", role: .cancel) {}
+            } message: {
+                Text("This is a read-only demo. Connect your account to add, edit, and organize your own links.")
+            }
+    }
+}
+
+extension View {
+    func demoConnectPrompt(isPresented: Binding<Bool>) -> some View {
+        modifier(DemoConnectPrompt(isPresented: isPresented))
     }
 }
 
@@ -209,6 +329,7 @@ struct ItemsTab: View {
     @State private var showAddSheet = false
     @State private var itemToAddToList: Item?
     @State private var itemToEdit: Item?
+    @State private var showDemoPrompt = false
 
     private let cache = DiskCache<[Item]>(key: "items_page1")
 
@@ -225,16 +346,16 @@ struct ItemsTab: View {
                             }
                         }
                         .swipeActions(edge: .leading) {
-                            Button { itemToAddToList = item } label: {
+                            Button { tapAddToList(item) } label: {
                                 Label("Add to List", systemImage: "folder.badge.plus")
                             }
                             .tint(.blue)
                         }
                         .contextMenu {
-                            Button { itemToEdit = item } label: {
+                            Button { tapEdit(item) } label: {
                                 Label("Edit", systemImage: "pencil")
                             }
-                            Button { itemToAddToList = item } label: {
+                            Button { tapAddToList(item) } label: {
                                 Label("Add to List", systemImage: "folder.badge.plus")
                             }
                             Button(role: .destructive) { archive(item) } label: {
@@ -267,7 +388,7 @@ struct ItemsTab: View {
             .navigationTitle("Items")
             .toolbar {
                 ToolbarItem(placement: .primaryAction) {
-                    Button { showAddSheet = true } label: {
+                    Button { tapAdd() } label: {
                         Image(systemName: "plus")
                     }
                 }
@@ -289,6 +410,7 @@ struct ItemsTab: View {
                     }
                 }
             }
+            .demoConnectPrompt(isPresented: $showDemoPrompt)
         }
         .task {
             if let cached = cache.read() {
@@ -298,6 +420,18 @@ struct ItemsTab: View {
             didLoadCache = true
             await revalidate()
         }
+    }
+
+    private func tapAdd() {
+        if appState.isDemoMode { showDemoPrompt = true } else { showAddSheet = true }
+    }
+
+    private func tapAddToList(_ item: Item) {
+        if appState.isDemoMode { showDemoPrompt = true } else { itemToAddToList = item }
+    }
+
+    private func tapEdit(_ item: Item) {
+        if appState.isDemoMode { showDemoPrompt = true } else { itemToEdit = item }
     }
 
     private func revalidate() async {
@@ -328,6 +462,7 @@ struct ItemsTab: View {
     }
 
     private func archive(_ item: Item) {
+        if appState.isDemoMode { showDemoPrompt = true; return }
         items.removeAll { $0.id == item.id }
         cache.write(items)
         Task {
@@ -345,6 +480,7 @@ struct SearchTab: View {
     @State private var searchTask: Task<Void, Never>?
     @State private var itemToEdit: Item?
     @State private var itemToAddToList: Item?
+    @State private var showDemoPrompt = false
 
     var body: some View {
         NavigationStack {
@@ -354,16 +490,16 @@ struct SearchTab: View {
                         .listRowInsets(EdgeInsets(top: 8, leading: 16, bottom: 8, trailing: 16))
                         .listRowSeparator(.hidden)
                         .swipeActions(edge: .leading) {
-                            Button { itemToAddToList = item } label: {
+                            Button { tapAddToList(item) } label: {
                                 Label("Add to List", systemImage: "folder.badge.plus")
                             }
                             .tint(.blue)
                         }
                         .contextMenu {
-                            Button { itemToEdit = item } label: {
+                            Button { tapEdit(item) } label: {
                                 Label("Edit", systemImage: "pencil")
                             }
-                            Button { itemToAddToList = item } label: {
+                            Button { tapAddToList(item) } label: {
                                 Label("Add to List", systemImage: "folder.badge.plus")
                             }
                         }
@@ -402,7 +538,16 @@ struct SearchTab: View {
             .sheet(item: $itemToAddToList) { item in
                 ListPickerSheet(item: item)
             }
+            .demoConnectPrompt(isPresented: $showDemoPrompt)
         }
+    }
+
+    private func tapAddToList(_ item: Item) {
+        if appState.isDemoMode { showDemoPrompt = true } else { itemToAddToList = item }
+    }
+
+    private func tapEdit(_ item: Item) {
+        if appState.isDemoMode { showDemoPrompt = true } else { itemToEdit = item }
     }
 }
 
@@ -774,6 +919,7 @@ struct ListsTab: View {
     @State private var renameText = ""
     @State private var showCreateAlert = false
     @State private var newListName = ""
+    @State private var showDemoPrompt = false
 
     private let cache = DiskCache<[ItemList]>(key: "lists")
 
@@ -806,8 +952,7 @@ struct ListsTab: View {
                     .contextMenu {
                         if list.source == nil {
                             Button {
-                                renameText = list.name
-                                listToRename = list
+                                tapRename(list)
                             } label: {
                                 Label("Rename", systemImage: "pencil")
                             }
@@ -827,8 +972,7 @@ struct ListsTab: View {
             .toolbar {
                 ToolbarItem(placement: .primaryAction) {
                     Button {
-                        newListName = ""
-                        showCreateAlert = true
+                        tapCreate()
                     } label: {
                         Image(systemName: "plus")
                     }
@@ -847,6 +991,7 @@ struct ListsTab: View {
                 Button("Rename") { rename() }
                 Button("Cancel", role: .cancel) { listToRename = nil }
             }
+            .demoConnectPrompt(isPresented: $showDemoPrompt)
         }
         .task {
             if let cached = cache.read() {
@@ -861,6 +1006,24 @@ struct ListsTab: View {
         if let fetched = try? await appState.api.fetchLists() {
             lists = fetched
             cache.write(fetched)
+        }
+    }
+
+    private func tapCreate() {
+        if appState.isDemoMode {
+            showDemoPrompt = true
+        } else {
+            newListName = ""
+            showCreateAlert = true
+        }
+    }
+
+    private func tapRename(_ list: ItemList) {
+        if appState.isDemoMode {
+            showDemoPrompt = true
+        } else {
+            renameText = list.name
+            listToRename = list
         }
     }
 
@@ -898,6 +1061,7 @@ struct ListDetailView: View {
     @State private var didLoadCache = false
     @State private var itemToEdit: Item?
     @State private var itemToAddToList: Item?
+    @State private var showDemoPrompt = false
 
     private var cache: DiskCache<[Item]> { DiskCache<[Item]>(key: "list_\(list.id)") }
 
@@ -908,16 +1072,16 @@ struct ListDetailView: View {
                     .listRowInsets(EdgeInsets(top: 8, leading: 16, bottom: 8, trailing: 16))
                     .listRowSeparator(.hidden)
                     .swipeActions(edge: .leading) {
-                        Button { itemToAddToList = item } label: {
+                        Button { tapAddToList(item) } label: {
                             Label("Add to List", systemImage: "folder.badge.plus")
                         }
                         .tint(.blue)
                     }
                     .contextMenu {
-                        Button { itemToEdit = item } label: {
+                        Button { tapEdit(item) } label: {
                             Label("Edit", systemImage: "pencil")
                         }
-                        Button { itemToAddToList = item } label: {
+                        Button { tapAddToList(item) } label: {
                             Label("Add to List", systemImage: "folder.badge.plus")
                         }
                     }
@@ -943,6 +1107,7 @@ struct ListDetailView: View {
         .sheet(item: $itemToAddToList) { item in
             ListPickerSheet(item: item)
         }
+        .demoConnectPrompt(isPresented: $showDemoPrompt)
         .task {
             if let cached = cache.read() {
                 items = cached
@@ -950,6 +1115,14 @@ struct ListDetailView: View {
             didLoadCache = true
             await revalidate()
         }
+    }
+
+    private func tapAddToList(_ item: Item) {
+        if appState.isDemoMode { showDemoPrompt = true } else { itemToAddToList = item }
+    }
+
+    private func tapEdit(_ item: Item) {
+        if appState.isDemoMode { showDemoPrompt = true } else { itemToEdit = item }
     }
 
     private func revalidate() async {
@@ -976,8 +1149,12 @@ struct SettingsTab: View {
     var body: some View {
         NavigationStack {
             Form {
-                connectionSection
-                signOutSection
+                if appState.isDemoMode {
+                    demoSection
+                } else {
+                    connectionSection
+                    signOutSection
+                }
             }
             .navigationTitle("Settings")
             .alert("Sign Out?", isPresented: $showSignOutConfirm) {
@@ -990,6 +1167,25 @@ struct SettingsTab: View {
         .onAppear {
             server = appState.serverURL
             token = appState.token
+        }
+    }
+
+    private var demoSection: some View {
+        Section {
+            Button {
+                appState.exitDemoMode()
+            } label: {
+                HStack {
+                    Spacer()
+                    Text("Connect Account")
+                        .font(.body.weight(.semibold))
+                    Spacer()
+                }
+            }
+        } header: {
+            Text("Demo Mode")
+        } footer: {
+            Text("You're browsing sample data. Connect your account to save and organize your own links.")
         }
     }
 

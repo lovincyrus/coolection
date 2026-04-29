@@ -3,10 +3,12 @@ import Foundation
 final class APIClient {
     let serverURL: String
     let token: String
+    let isDemoMode: Bool
 
-    init(serverURL: String, token: String) {
+    init(serverURL: String, token: String, isDemoMode: Bool = false) {
         self.serverURL = serverURL.trimmingCharacters(in: CharacterSet(charactersIn: "/"))
         self.token = token
+        self.isDemoMode = isDemoMode
     }
 
     private func request(_ path: String, method: String = "GET", body: [String: Any]? = nil) async throws -> Data {
@@ -30,47 +32,62 @@ final class APIClient {
     }
 
     func fetchItems(page: Int = 1, limit: Int = 20) async throws -> [Item] {
+        if isDemoMode {
+            let start = (page - 1) * limit
+            guard start < DemoData.items.count else { return [] }
+            let end = min(start + limit, DemoData.items.count)
+            return Array(DemoData.items[start..<end])
+        }
         let data = try await request("/api/items?page=\(page)&limit=\(limit)")
         return try JSONDecoder().decode([Item].self, from: data)
     }
 
     func fetchLists() async throws -> [ItemList] {
+        if isDemoMode { return DemoData.lists }
         let data = try await request("/api/lists")
         return try JSONDecoder().decode([ItemList].self, from: data)
     }
 
     func fetchListItems(listId: String) async throws -> [Item] {
+        if isDemoMode { return DemoData.items(in: listId) }
         let data = try await request("/api/lists/\(listId)/items")
         return try JSONDecoder().decode([Item].self, from: data)
     }
 
     func search(query: String) async throws -> [Item] {
+        if isDemoMode { return DemoData.search(query: query) }
         let encoded = query.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? query
         let data = try await request("/api/search?q=\(encoded)")
         return try JSONDecoder().decode([Item].self, from: data)
     }
 
     func createItem(url: String) async throws {
+        if isDemoMode { throw APIError.demoMode }
         _ = try await request("/api/item/create", method: "POST", body: ["url": url])
     }
 
     func archiveItem(id: String) async throws {
+        if isDemoMode { throw APIError.demoMode }
         _ = try await request("/api/item/archive", method: "PUT", body: ["item_id": id])
     }
 
     func addItemToList(itemId: String, listId: String) async throws {
+        if isDemoMode { throw APIError.demoMode }
         _ = try await request("/api/list/add", method: "POST", body: ["item_id": itemId, "list_id": listId])
     }
 
     func createList(name: String) async throws {
+        if isDemoMode { throw APIError.demoMode }
         _ = try await request("/api/list/create", method: "POST", body: ["list_name": name])
     }
 
     func renameList(listId: String, name: String) async throws {
+        if isDemoMode { throw APIError.demoMode }
         _ = try await request("/api/list/edit", method: "PATCH", body: ["list_id": listId, "name": name])
     }
 
     func editItem(id: String, title: String, description: String?) async throws {
+        if isDemoMode { throw APIError.demoMode }
         var body: [String: Any] = ["item_id": id, "title": title]
         if let description { body["description"] = description }
         _ = try await request("/api/item/edit", method: "PATCH", body: body)
@@ -82,6 +99,7 @@ enum APIError: LocalizedError {
     case invalidResponse
     case unauthorized
     case server(Int)
+    case demoMode
 
     var errorDescription: String? {
         switch self {
@@ -89,6 +107,7 @@ enum APIError: LocalizedError {
         case .invalidResponse: return "Invalid response"
         case .unauthorized: return "Invalid token"
         case .server(let code): return "Server error (\(code))"
+        case .demoMode: return "Connect your account to save your own links."
         }
     }
 }
