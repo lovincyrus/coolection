@@ -6,6 +6,7 @@ import SwiftUI
 final class AppState: ObservableObject {
     @Published var isAuthenticated = false
     @Published var isDemoMode = false
+    @Published var showAuthSheet = false
     @Published var serverURL: String = ""
     @Published var token: String = ""
 
@@ -13,11 +14,10 @@ final class AppState: ObservableObject {
         token = KeychainHelper.read() ?? ""
         serverURL = AppConstants.defaults?.string(forKey: "serverURL") ?? AppConstants.defaultServer
         isAuthenticated = !token.isEmpty
+        isDemoMode = !isAuthenticated
     }
 
     var api: APIClient { APIClient(serverURL: serverURL, token: token, isDemoMode: isDemoMode) }
-
-    var canBrowse: Bool { isAuthenticated || isDemoMode }
 
     func signIn(server: String, token: String) {
         let trimmed = server.trimmingCharacters(in: CharacterSet(charactersIn: "/"))
@@ -27,25 +27,21 @@ final class AppState: ObservableObject {
         _ = KeychainHelper.save(token: token)
         isAuthenticated = true
         isDemoMode = false
-    }
-
-    func enterDemoMode() {
-        isDemoMode = true
-        DiskCache<[Item]>(key: "items_page1").clear()
-        DiskCache<[ItemList]>(key: "lists").clear()
-    }
-
-    func exitDemoMode() {
-        isDemoMode = false
-        DiskCache<[Item]>(key: "items_page1").clear()
-        DiskCache<[ItemList]>(key: "lists").clear()
+        showAuthSheet = false
+        clearBrowseCaches()
     }
 
     func signOut() {
         KeychainHelper.delete()
         token = ""
         isAuthenticated = false
-        isDemoMode = false
+        isDemoMode = true
+        clearBrowseCaches()
+    }
+
+    private func clearBrowseCaches() {
+        DiskCache<[Item]>(key: "items_page1").clear()
+        DiskCache<[ItemList]>(key: "lists").clear()
     }
 }
 
@@ -55,11 +51,11 @@ struct ContentView: View {
     @StateObject private var appState = AppState()
 
     var body: some View {
-        if appState.canBrowse {
-            MainTabView().environmentObject(appState)
-        } else {
-            AuthView().environmentObject(appState)
-        }
+        MainTabView()
+            .environmentObject(appState)
+            .sheet(isPresented: $appState.showAuthSheet) {
+                AuthView().environmentObject(appState)
+            }
     }
 }
 
@@ -67,6 +63,7 @@ struct ContentView: View {
 
 struct AuthView: View {
     @EnvironmentObject var appState: AppState
+    @Environment(\.dismiss) private var dismiss
     @State private var server: String = ""
     @State private var token: String = ""
     @State private var isConnecting = false
@@ -76,7 +73,7 @@ struct AuthView: View {
         NavigationStack {
             ScrollView {
                 VStack(spacing: 32) {
-                    Spacer().frame(height: 40)
+                    Spacer().frame(height: 24)
 
                     // Logo
                     VStack(spacing: 8) {
@@ -84,8 +81,13 @@ struct AuthView: View {
                             .resizable()
                             .frame(width: 48, height: 48)
                             .cornerRadius(12)
-                        Text("Coolection")
+                        Text("Sign in to Coolection")
                             .font(.title2.weight(.semibold))
+                        Text("Connect your account to save and organize your own links.")
+                            .font(.footnote)
+                            .foregroundStyle(.secondary)
+                            .multilineTextAlignment(.center)
+                            .padding(.horizontal, 24)
                     }
 
                     // Form
@@ -146,41 +148,16 @@ struct AuthView: View {
                     Text("Generate a token at your server's /settings page.")
                         .font(.footnote)
                         .foregroundStyle(.tertiary)
-
-                    VStack(spacing: 8) {
-                        HStack {
-                            Rectangle().fill(Color.secondary.opacity(0.25)).frame(height: 1)
-                            Text("or")
-                                .font(.footnote)
-                                .foregroundStyle(.secondary)
-                            Rectangle().fill(Color.secondary.opacity(0.25)).frame(height: 1)
-                        }
-
-                        Button {
-                            appState.enterDemoMode()
-                        } label: {
-                            Text("Browse Demo")
-                                .font(.body.weight(.medium))
-                                .frame(maxWidth: .infinity)
-                                .padding(12)
-                                .background(Color(.secondarySystemBackground))
-                                .foregroundStyle(.primary)
-                                .cornerRadius(8)
-                                .overlay(
-                                    RoundedRectangle(cornerRadius: 8)
-                                        .stroke(Color.secondary.opacity(0.3), lineWidth: 1)
-                                )
-                        }
-
-                        Text("Explore the app with sample data — no account needed.")
-                            .font(.caption)
-                            .foregroundStyle(.tertiary)
-                            .multilineTextAlignment(.center)
-                    }
                 }
                 .padding(.horizontal, 24)
+                .padding(.bottom, 32)
             }
             .background(Color(.secondarySystemBackground))
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("Cancel") { dismiss() }
+                }
+            }
         }
         .onAppear {
             server = AppConstants.defaults?.string(forKey: "serverURL") ?? AppConstants.defaultServer
@@ -230,7 +207,7 @@ extension APIError: Equatable {
 
 struct MainTabView: View {
     @EnvironmentObject var appState: AppState
-    @State private var selection: Int = 3
+    @State private var selection: Int = 0
 
     var body: some View {
         TabView(selection: $selection) {
@@ -272,9 +249,9 @@ struct DemoBanner: View {
                 .foregroundStyle(.primary)
             Spacer(minLength: 8)
             Button {
-                appState.exitDemoMode()
+                appState.showAuthSheet = true
             } label: {
-                Text("Connect")
+                Text("Sign In")
                     .font(.footnote.weight(.semibold))
                     .padding(.horizontal, 12)
                     .padding(.vertical, 6)
@@ -302,11 +279,11 @@ struct DemoConnectPrompt: ViewModifier {
 
     func body(content: Content) -> some View {
         content
-            .alert("Connect to save your own links", isPresented: $isPresented) {
-                Button("Connect") { appState.exitDemoMode() }
+            .alert("Sign in to save your own links", isPresented: $isPresented) {
+                Button("Sign In") { appState.showAuthSheet = true }
                 Button("Keep Browsing", role: .cancel) {}
             } message: {
-                Text("This is a read-only demo. Connect your account to add, edit, and organize your own links.")
+                Text("This is a read-only demo. Sign in to add, edit, and organize your own links.")
             }
     }
 }
@@ -1173,11 +1150,11 @@ struct SettingsTab: View {
     private var demoSection: some View {
         Section {
             Button {
-                appState.exitDemoMode()
+                appState.showAuthSheet = true
             } label: {
                 HStack {
                     Spacer()
-                    Text("Connect Account")
+                    Text("Sign In")
                         .font(.body.weight(.semibold))
                     Spacer()
                 }
@@ -1185,7 +1162,7 @@ struct SettingsTab: View {
         } header: {
             Text("Demo Mode")
         } footer: {
-            Text("You're browsing sample data. Connect your account to save and organize your own links.")
+            Text("You're browsing sample data. Sign in to save and organize your own links.")
         }
     }
 
@@ -1262,8 +1239,6 @@ struct SettingsTab: View {
                 _ = try await client.fetchItems(page: 1, limit: 1)
                 await MainActor.run {
                     appState.signIn(server: s, token: t)
-                    DiskCache<[Item]>(key: "items_page1").clear()
-                    DiskCache<[ItemList]>(key: "lists").clear()
                     statusMessage = "Connected"
                     statusIsError = false
                     isSaving = false
