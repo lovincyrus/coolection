@@ -1,226 +1,301 @@
 import {
-  ArrowRightIcon,
   BookmarkIcon,
+  ChromeIcon,
   CompassIcon,
   FolderOpenIcon,
-  GlobeIcon,
-  PuzzleIcon,
+  GithubIcon,
+  ListPlusIcon,
   SearchIcon,
+  ServerIcon,
+  ShieldCheckIcon,
+  SparklesIcon,
 } from "lucide-react";
-import { Link } from "next-view-transitions";
-import Balancer from "react-wrap-balancer";
+import Image from "next/image";
 
-import { Footer } from "./components/footer";
-
-const platforms = [
-  {
-    icon: GlobeIcon,
-    label: "Web App",
-    description: "Save and manage bookmarks from any browser",
-  },
-  {
-    icon: PuzzleIcon,
-    label: "Chrome Extension",
-    description: "One-click save from your toolbar",
-  },
-  {
-    icon: CompassIcon,
-    label: "Safari Extension",
-    description: "Native extension for Safari on iOS and Mac",
-  },
-];
+import { fontSerif } from "@/lib/fonts";
 
 const features = [
   {
     icon: BookmarkIcon,
-    label: "Save",
-    description:
-      "One click to save. Use browser extensions or the web app to capture any link instantly.",
+    title: "One-click saving",
+    description: "Keep the page you’re on without breaking your flow",
   },
   {
     icon: FolderOpenIcon,
-    label: "Organize",
-    description:
-      "Collections that make sense. Group bookmarks into lists and find them when you need them.",
+    title: "Flexible lists",
+    description: "Organize bookmarks around projects, interests, and ideas",
   },
   {
     icon: SearchIcon,
-    label: "Search",
-    description:
-      "Find anything fast. Full-text search across all your saved links and metadata.",
+    title: "Full-text search",
+    description: "Find any saved link by title, description, or content",
+  },
+  {
+    icon: SparklesIcon,
+    title: "Smart organization",
+    description: "Let Coolection suggest the right list for every new link",
+  },
+  {
+    icon: ChromeIcon,
+    title: "Chrome extension",
+    description: "Save the current tab straight from your browser toolbar",
+  },
+  {
+    icon: CompassIcon,
+    title: "Safari extension",
+    description: "Keep links from Safari on Mac, iPhone, and iPad",
+  },
+  {
+    icon: ListPlusIcon,
+    title: "Quick capture",
+    description: "Paste a URL and Coolection fills in the useful details",
+  },
+  {
+    icon: ShieldCheckIcon,
+    title: "Private by default",
+    description: "No public profile, follower counts, or attention traps",
+  },
+  {
+    icon: ServerIcon,
+    title: "Self-hostable",
+    description: "Run your collection on infrastructure you control",
+  },
+  {
+    icon: GithubIcon,
+    title: "Open source",
+    description: "Inspect the code, contribute a fix, or make it your own",
   },
 ];
 
-export default async function RootPage() {
+function ProductIcon() {
   return (
-    <main className="relative flex w-full flex-col items-center">
-      {/* Hero */}
-      <section
-        aria-label="Hero"
-        className="relative flex min-h-[80dvh] w-full flex-col items-center justify-center"
+    <div className="relative mb-2.5 grid h-24 w-24 place-items-center overflow-hidden rounded-3xl border border-neutral-950/5 bg-[#f4a13b] shadow-xl">
+      <Image
+        src="/icon.svg"
+        alt="Coolection app icon"
+        width={72}
+        height={72}
+        priority
+        className="h-[72px] w-[72px] brightness-0 invert"
+      />
+    </div>
+  );
+}
+
+function Actions() {
+  return (
+    <div className="mb-3 flex w-full flex-col items-center justify-center gap-2 sm:flex-row">
+      <a
+        href="https://www.coolection.co/sign-in"
+        className="inline-flex h-10 w-full items-center justify-center gap-2 rounded-md bg-[#26251f] px-6 text-[13px] font-semibold text-white shadow-[0_0_0_1px_rgba(0,0,0,0.08),0_1px_1px_rgba(0,0,0,0.08)] transition-colors hover:bg-[#37362f] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#26251f]/25 sm:w-auto"
       >
-        <div
-          aria-hidden="true"
-          className="background-gradient-pattern pointer-events-none absolute left-1/2 top-0 z-10 hidden h-[100px] w-full -translate-x-1/2 -translate-y-1/2 opacity-[0.15] md:block"
-        />
+        Start your collection
+      </a>
+      <a
+        href="https://github.com/lovincyrus/coolection"
+        target="_blank"
+        rel="noreferrer noopener"
+        className="inline-flex h-10 w-full items-center justify-center gap-1.5 rounded-md border border-black/[0.06] bg-[#e9e8e4] pl-6 pr-3 text-[13px] font-semibold text-[#26251f] transition-colors hover:bg-[#dfded9] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#26251f]/20 sm:w-auto"
+      >
+        <span>View on GitHub</span>
+        <span className="rounded bg-black/[0.06] px-1.5 py-0.5 text-[11px] font-medium text-[#26251f]/50">
+          OSS
+        </span>
+      </a>
+    </div>
+  );
+}
 
-        <svg
-          className="pointer-events-none absolute inset-0 h-full w-full stroke-gray-200 opacity-50 [mask-image:radial-gradient(100%_100%_at_top_center,white,transparent)]"
-          aria-hidden="true"
-        >
-          <defs>
-            <pattern
-              id="grid"
-              width="200"
-              height="200"
-              x="50%"
-              y="-1"
-              patternUnits="userSpaceOnUse"
-            >
-              <path d="M100 200V.5M.5 .5H200" fill="none" />
-            </pattern>
-          </defs>
-          <svg x="50%" y="-1" className="overflow-visible fill-gray-50">
-            <path
-              d="M-100.5 0h201v201h-201Z M699.5 0h201v201h-201Z M499.5 400h201v201h-201Z M-300.5 600h201v201h-201Z"
-              strokeWidth="0"
-            />
-          </svg>
-          <rect
-            width="100%"
-            height="100%"
-            strokeWidth="0"
-            fill="url(#grid)"
-          />
-        </svg>
+function DemoBackdrop({ closing = false }: { closing?: boolean }) {
+  return (
+    <>
+      <Image
+        src="https://iip.smk.dk/iiif/jp2/x346d846q_kmssp437.tif.jp2/full/!1200,/0/default.jpg"
+        alt=""
+        fill
+        unoptimized
+        sizes="100vw"
+        className={`-z-20 object-cover brightness-[0.92] contrast-[0.88] saturate-[0.55] ${
+          closing ? "object-top" : "object-center"
+        }`}
+      />
+      <div
+        className={`absolute inset-0 -z-10 ${
+          closing
+            ? "bg-[linear-gradient(to_top,#f7f7f5_0%,transparent_70%)]"
+            : "bg-[linear-gradient(to_bottom,#f7f7f5_0%,transparent_60%)]"
+        }`}
+      />
+      <div className="absolute inset-0 -z-30 bg-[#f7f7f5]" />
+    </>
+  );
+}
 
-        <div className="relative z-20 mx-auto w-full max-w-2xl px-4 text-center">
-          <h1 className="font-serif text-4xl font-extrabold tracking-tight text-gray-900 sm:text-5xl lg:text-6xl">
-            Your bookmarks, everywhere
+export default function RootPage() {
+  return (
+    <main className="min-h-screen overflow-x-hidden bg-[#f7f7f5] text-[#26251f] transition-colors duration-200 selection:bg-black/10">
+      <div className="flex min-h-screen flex-col items-center justify-center pb-9 pt-20 sm:pt-24">
+        <section className="landing-reveal-one flex w-full max-w-3xl flex-col items-center px-8 text-center">
+          <ProductIcon />
+
+          <h1
+            className={`${fontSerif.className} mb-7 max-w-2xl text-[40px] font-normal leading-[1.08] tracking-[-0.025em] sm:text-5xl`}
+          >
+            Your bookmarks, organized everywhere
           </h1>
 
-          <p className="mx-auto mt-6 max-w-lg text-lg text-gray-600">
-            <Balancer>
-              Save from Chrome, Safari, or the web. Find anything instantly.
-            </Balancer>
-          </p>
+          <Actions />
 
-          <div className="mt-10">
-            <Link
-              href="/sign-in"
-              className="text-md group inline-flex items-center rounded-full bg-black/80 px-5 py-2.5 font-semibold text-white transition-colors hover:bg-black/90"
+          <div className="mb-6 text-sm leading-5 text-[#26251f]/50 md:mb-1">
+            Web app ·{" "}
+            <a
+              href="#features"
+              className="underline decoration-black/25 underline-offset-2 transition-colors hover:decoration-black/60"
             >
-              Get started
-              <ArrowRightIcon className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-0.5" />
-            </Link>
+              Chrome &amp; Safari extensions included
+            </a>
           </div>
-        </div>
-      </section>
+        </section>
 
-      {/* Ecosystem */}
-      <section
-        aria-label="Platforms"
-        className="w-full py-20 md:py-28"
-      >
-        <div className="mx-auto max-w-2xl px-4">
-          <h2 className="text-center font-serif text-2xl font-bold text-gray-900 sm:text-3xl">
-            Save from anywhere
-          </h2>
-
-          <div className="mt-12 grid grid-cols-1 gap-8 sm:grid-cols-3">
-            {platforms.map((platform) => (
-              <div key={platform.label} className="text-center">
-                <platform.icon className="mx-auto h-6 w-6 text-gray-400" />
-                <p className="mt-3 text-sm font-medium text-gray-900">
-                  {platform.label}
-                </p>
-                <p className="mt-1 text-sm text-gray-500">
-                  {platform.description}
-                </p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Features */}
-      <section aria-label="Features" className="w-full py-20 md:py-28">
-        <div className="mx-auto max-w-2xl px-4">
-          <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
-            {features.map((feature) => (
-              <div
-                key={feature.label}
-                className="rounded-lg bg-gray-50 p-6"
-              >
-                <feature.icon className="h-5 w-5 text-gray-400" />
-                <p className="mt-3 text-sm font-medium text-gray-900">
-                  {feature.label}
-                </p>
-                <p className="mt-1 text-sm leading-relaxed text-gray-500">
-                  {feature.description}
-                </p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Product Preview */}
-      <section aria-label="Preview" className="w-full py-20 md:py-28">
-        <div className="mx-auto max-w-4xl px-4">
-          <div className="overflow-hidden rounded-xl border border-gray-200 shadow-sm">
-            {/* Browser title bar */}
-            <div className="flex items-center gap-1.5 bg-gray-100 px-4 py-3">
-              <span className="h-2.5 w-2.5 rounded-full bg-gray-300" />
-              <span className="h-2.5 w-2.5 rounded-full bg-gray-300" />
-              <span className="h-2.5 w-2.5 rounded-full bg-gray-300" />
-            </div>
-            {/* Demo video */}
-            <div className="relative aspect-[16/10] w-full bg-white">
+        <section
+          aria-label="Product demo"
+          className="landing-reveal-two mx-auto w-full max-w-[1600px] md:px-6"
+        >
+          <div className="relative overflow-hidden md:rounded-b-2xl">
+            <DemoBackdrop />
+            <div className="mx-auto w-full max-w-[960px] px-6 py-6 md:py-24">
               <video
                 src="/demo-dashboard.mp4"
+                poster="/screenshot-dashboard.png"
                 autoPlay
                 loop
                 muted
                 playsInline
-                preload="none"
-                className="h-full w-full object-cover object-top"
-                aria-label="Coolection dashboard demo showing bookmarks being searched and organized"
+                className="aspect-[8/5] h-auto w-full rounded-xl border border-black/10 object-contain shadow-[0_12px_36px_rgba(38,37,31,0.12)] sm:rounded-2xl sm:shadow-[0_20px_60px_rgba(38,37,31,0.14)]"
+                aria-label="Coolection dashboard demo"
               />
             </div>
           </div>
-        </div>
-      </section>
+        </section>
 
-      {/* Self-hosting */}
-      <section
-        aria-label="Self-hosting"
-        className="w-full bg-gray-50 py-20 md:py-28"
-      >
-        <div className="mx-auto max-w-2xl px-4 text-center">
-          <h2 className="font-serif text-2xl font-bold text-gray-900 sm:text-3xl">
-            Open source &amp; self-hosted
-          </h2>
+        <section
+          id="features"
+          className="landing-reveal-two flex w-full max-w-[840px] scroll-mt-12 flex-col px-8 pt-16 sm:pt-24"
+        >
+          <div
+            className={`${fontSerif.className} mb-10 flex flex-col gap-4 text-left text-[28px] font-normal leading-[1.2] tracking-[-0.015em] sm:mb-20 sm:text-[32px]`}
+          >
+            <p>
+              Coolection is a home for the links you want to keep. It’s fast,
+              searchable, and available everywhere.
+            </p>
+          </div>
 
-          <p className="mx-auto mt-4 max-w-md text-gray-600">
-            Run Coolection on your own infrastructure. Fully open source.
-          </p>
+          <div className="mb-12 grid grid-cols-1 gap-x-10 gap-y-8 text-left sm:grid-cols-2">
+            {features.map((feature) => (
+              <article
+                key={feature.title}
+                className="flex max-w-72 flex-col items-start gap-3 py-1"
+              >
+                <div className="flex items-center justify-center rounded-lg bg-black/[0.04] p-2">
+                  <feature.icon
+                    className="mt-0.5 h-6 w-6 shrink-0 text-[#26251f] opacity-45"
+                    strokeWidth={1.2}
+                  />
+                </div>
+                <div className="flex flex-col gap-0.5">
+                  <h2 className="text-base font-medium leading-[25px]">
+                    {feature.title}
+                  </h2>
+                  <p className="text-sm leading-5 text-[#26251f]/55">
+                    {feature.description}
+                  </p>
+                </div>
+              </article>
+            ))}
+          </div>
 
-          <div className="mt-8">
+          <div className="mb-16 text-left text-base leading-[25px] text-[#26251f]/55 sm:mb-24">
+            Plus browser extensions, automatic metadata, fast list filtering,
+            and{" "}
             <a
               href="https://github.com/lovincyrus/coolection"
               target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center rounded-full border border-gray-300 bg-white px-5 py-2.5 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50"
+              rel="noreferrer noopener"
+              className="underline decoration-black/25 underline-offset-2 transition-colors hover:decoration-black/60"
             >
-              View on GitHub
-              <ArrowRightIcon className="ml-2 h-3.5 w-3.5" />
+              lots more
             </a>
+            .
           </div>
-        </div>
-      </section>
+        </section>
 
-      <Footer />
+        <section className="landing-reveal-two mx-auto mb-8 w-full max-w-[1600px] sm:mb-20 md:px-6">
+          <div className="relative overflow-hidden md:rounded-t-2xl">
+            <DemoBackdrop closing />
+            <div className="flex flex-col items-center gap-6 px-8 pb-20 pt-28 sm:pt-32">
+              <div
+                className={`${fontSerif.className} max-w-2xl text-center text-[28px] font-normal leading-[1.2] tracking-[-0.015em] text-[#26251f] sm:text-[32px]`}
+              >
+                Coolection is free and open source. No account needed.
+              </div>
+              <Actions />
+            </div>
+          </div>
+        </section>
+
+        <footer className="w-full max-w-[1600px] px-8 text-sm text-[#26251f]/50 md:px-12">
+          <div className="hidden grid-cols-3 items-end sm:grid">
+            <div className="flex items-center gap-1.5 pb-0.5">
+              <span>By</span>
+              <a
+                href="https://www.lovincyrus.com/"
+                target="_blank"
+                rel="noreferrer noopener"
+                className="border-b border-dotted border-black/20 pb-px font-medium transition-opacity hover:opacity-60"
+              >
+                Cyrus Goh
+              </a>
+            </div>
+            <div className="flex justify-center">
+              <Image
+                src="/icon.svg"
+                alt="Coolection"
+                width={80}
+                height={93}
+                className="h-[93px] w-20 object-contain opacity-70"
+              />
+            </div>
+            <div className="flex items-center justify-end gap-5 pb-0.5">
+              <a
+                href="https://github.com/lovincyrus/coolection"
+                target="_blank"
+                rel="noreferrer noopener"
+                className="border-b border-dotted border-black/20 pb-px font-medium transition-opacity hover:opacity-60"
+              >
+                GitHub
+              </a>
+            </div>
+          </div>
+
+          <div className="flex items-end justify-between sm:hidden">
+            <div className="flex items-center gap-1.5">
+              <span>By</span>
+              <a
+                href="https://www.lovincyrus.com/"
+                target="_blank"
+                rel="noreferrer noopener"
+                className="border-b border-dotted border-black/20 pb-px font-medium transition-opacity hover:opacity-60"
+              >
+                Cyrus Goh
+              </a>
+            </div>
+            <div className="flex gap-5">
+              <a href="https://github.com/lovincyrus/coolection">GitHub</a>
+            </div>
+          </div>
+        </footer>
+      </div>
     </main>
   );
 }

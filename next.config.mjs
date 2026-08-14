@@ -1,4 +1,14 @@
 /** @type {import('next').NextConfig} */
-const nextConfig = {};
+const nextConfig = {
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "iip.smk.dk",
+        pathname: "/iiif/**",
+      },
+    ],
+  },
+};
 
 export default nextConfig;
