@@ -113,7 +113,6 @@ function DemoBackdrop({ closing = false }: { closing?: boolean }) {
         src="https://iip.smk.dk/iiif/jp2/x346d846q_kmssp437.tif.jp2/full/!1200,/0/default.jpg"
         alt=""
         fill
-        unoptimized
         sizes="100vw"
         className={`-z-20 object-cover brightness-[0.92] contrast-[0.88] saturate-[0.55] ${
           closing ? "object-top" : "object-center"
